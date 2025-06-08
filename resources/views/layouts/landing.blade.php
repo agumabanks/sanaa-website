@@ -13,7 +13,12 @@
  
 		<meta name="keywords" content="Sanaa Co.,Sanaa Brands, soko.ug, soko 24, soko ug,kampala,nasser road, museveni, sanaa, sanaa media, oyes, aguma banks, sanaa finance, sanaa pay, uganda, east africa entreprenuers, jumia, jiji, bank of ugada, aguma ibrahim, aguma banks, king Ceasor" />
 		<meta name="description" content="Sanaa Co. building digital infrastructure solutions, Value addition and supply chain for small, medium and large busineses in Africa.">
-		<meta name="author" content="Aguma Banks">
+        <meta name="author" content="Aguma Banks">
+        <link rel="canonical" href="{{ url()->current() }}" />
+        <meta property="og:title" content="Sanaa" />
+        <meta property="og:description" content="Sanaa is building digital infrastructure across Africa." />
+        <meta property="og:url" content="{{ url()->current() }}" />
+        <meta property="og:type" content="website" />
 		
 		   <!-- Subcompany Links for SEO -->
             <link rel="alternate" hreflang="en" href="https://soko.sanaa.co/">

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 // use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\BlogController;
 
 // Landing Pages
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -16,6 +17,10 @@ Route::get('/support', [PageController::class, 'support'])->name('support');
 Route::get('/products', [PageController::class, 'products'])->name('products');
 Route::get('/services', [PageController::class, 'services'])->name('services');
 Route::get('/prices', [PageController::class, 'prices'])->name('prices');
+
+// Blog
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 
 Route::get('/api/product/{productId}', [PageController::class, 'getProductDetails']);

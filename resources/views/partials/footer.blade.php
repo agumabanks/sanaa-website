@@ -8,7 +8,7 @@
                     <li><a href="#" class="text-gray-600 hover:text-gray-800">About</a></li>
                     <li><a href="#" class="text-gray-600 hover:text-gray-800">Policies</a></li>
                     <li><a href="#" class="text-gray-600 hover:text-gray-800">Careers</a></li>
-                    <li><a href="#" class="text-gray-600 hover:text-gray-800">Blog</a></li>
+                    <li><a href="{{ route('blog.index') }}" class="text-gray-600 hover:text-gray-800">Blog</a></li>
                 </ul>
             </div>
             <!-- Right side: Social / Extra Info -->

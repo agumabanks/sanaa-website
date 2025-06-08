@@ -10,13 +10,9 @@
             </div>
             <!-- Primary Nav -->
             <div class="hidden md:flex space-x-8 ml-10">
-                <a href="#" class="text-gray-700 hover:text-gray-900">Personal</a>
-                <a href="#" class="text-gray-700 hover:text-gray-900">Discover Revolut</a>
-                <a href="#" class="text-gray-700 hover:text-gray-900">Accounts</a>
-                <a href="#" class="text-gray-700 hover:text-gray-900">Joint Accounts</a>
-                <a href="#" class="text-gray-700 hover:text-gray-900">Pro for Freelance</a>
-                <a href="#" class="text-gray-700 hover:text-gray-900">Crypto</a>
-                <a href="#" class="text-gray-700 hover:text-gray-900">Insurance</a>
+                <a href="{{ route('home') }}" class="text-gray-700 hover:text-gray-900">Home</a>
+                <a href="{{ route('about') }}" class="text-gray-700 hover:text-gray-900">About</a>
+                <a href="{{ route('blog.index') }}" class="text-gray-700 hover:text-gray-900">Blog</a>
             </div>
             <!-- Secondary Nav / Auth Links -->
             <div class="flex space-x-4">

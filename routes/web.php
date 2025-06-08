@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Route;
 // use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\BlogController;
+ 
 use App\Http\Controllers\BusinessCategoryController;
+ 
 
 // Landing Pages
 Route::get('/', [PageController::class, 'home'])->name('home');

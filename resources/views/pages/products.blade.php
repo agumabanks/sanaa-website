@@ -1,8 +1,11 @@
 @extends('layouts.landing')
 
 @section('content')
-<div class="container mx-auto py-12 px-4">
-    <h1 class="text-3xl font-bold mb-4">Our Products</h1>
-    <p>Details about our product offerings coming soon.</p>
-</div>
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-2xl font-bold">Products</h1>
+            <p class="mt-4 text-gray-600">Product listings will appear here soon.</p>
+        </div>
+    </section>
+
 @endsection

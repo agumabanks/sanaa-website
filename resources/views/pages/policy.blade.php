@@ -1,8 +1,10 @@
 @extends('layouts.landing')
 
 @section('content')
-<div class="container mx-auto py-12 px-4">
-    <h1 class="text-3xl font-bold mb-4">Policies</h1>
-    <p>Our policy information will be added soon.</p>
-</div>
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-2xl font-bold">Privacy Policy</h1>
+            <p class="mt-4 text-gray-600">Our policy details will be available soon.</p>
+        </div>
+    </section>
 @endsection

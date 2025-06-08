@@ -7,4 +7,5 @@
             <p class="mt-4 text-gray-600">Product listings will appear here soon.</p>
         </div>
     </section>
+
 @endsection

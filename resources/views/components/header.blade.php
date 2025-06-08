@@ -222,15 +222,15 @@
         </div>
         
         <!-- More Simple Links -->
-        <a 
-          href="{{ route('products') }}" 
-          class="text-gray-800 hover:text-green-600 font-medium text-sm transition-colors duration-200"
+        <a
+          href="{{ route('products') }}"
+          class="font-medium text-sm transition-colors duration-200 {{ request()->routeIs('products') ? 'text-green-600' : 'text-gray-800 hover:text-green-600' }}"
         >
           Products
         </a>
-        <a 
-          href="{{ route('services') }}" 
-          class="text-gray-800 hover:text-green-600 font-medium text-sm transition-colors duration-200"
+        <a
+          href="{{ route('services') }}"
+          class="font-medium text-sm transition-colors duration-200 {{ request()->routeIs('services') ? 'text-green-600' : 'text-gray-800 hover:text-green-600' }}"
         >
           Services
         </a>

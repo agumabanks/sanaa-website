@@ -86,6 +86,21 @@
       </div>
     </section>
 
+    <!-- Team Section -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold mb-8 text-center">Meet the Team</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <img src="/img/placeholder-team.jpg" alt="Aguma I. Banks" class="w-32 h-32 rounded-full mx-auto mb-4">
+            <h3 class="text-xl font-semibold">Aguma I. Banks</h3>
+            <p class="text-gray-600">Founder &amp; CEO</p>
+          </div>
+          <!-- Additional team members can be added here -->
+        </div>
+      </div>
+    </section>
+
   
     
     <!-- Soko Products Section -->
@@ -325,7 +340,7 @@
 <!-- External Dependencies -->
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLV7mu49-p4Hgme7BLDBzvnPmIBIL2FQM"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}"></script>
 
 <script>
 // Mobile Menu Toggle

@@ -1,14 +1,26 @@
 @extends('layouts.landing')
 
 @section('content')
-<div class="body">
-  <div role="main" class="main">
-    <!-- Sanaa Ecosystem Section -->
+  <div class="body">
+    <div role="main" class="main">
+      <!-- Hero Section -->
+      <section id="hero" class="bg-black text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+          <h1 class="text-5xl md:text-6xl font-extrabold mb-6">Building the future of African commerce</h1>
+          <p class="text-xl md:text-2xl text-gray-300 mb-8">Sanaa OS/ERP powers businesses with digital infrastructure for payments, media and commerce.</p>
+          <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="#services" class="bg-white text-black px-8 py-3 font-semibold rounded hover:bg-gray-200 transition">Explore Sanaa</a>
+            <a href="https://soko.sanaa.co" target="_blank" class="border border-white px-8 py-3 rounded text-white hover:bg-white hover:text-black transition">Shop on Soko 24</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sanaa OS/ERP Section -->
     <section id="services" class="section section-height-3 bg-primary border-0 m-0 appear-animation" data-appear-animation="fadeIn">
       <div class="container my-3">
         <div class="row mb-5">
           <div class="col text-center appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="200">
-            <h2 class="text-2xl font-weight-bold text-color-black mb-2">Sanaa Ecosystem</h2>
+            <h2 class="text-2xl font-weight-bold text-color-black mb-2">Sanaa OS/ERP</h2>
           </div>
         </div>
         <div class="row mb-lg-4">
@@ -20,6 +32,7 @@
                 <p class="text-color-black opacity-7">
                   Our online shopping destination features authentic brands, everyday essentials, beauty/personal care items, and cutting-edge gadgets. Our e-commerce platform strives to redefine the shopping experience by focusing on value addition and supply chain innovation.
                 </p>
+                <a href="https://soko.sanaa.co" target="_blank" class="inline-block mt-3 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100 transition">Visit Soko 24</a>
               </div>
             </div>
           </div>
@@ -31,6 +44,7 @@
                 <p class="text-color-black opacity-7">
                   Provide the simplest and most reliable financial solution for businesses across Africa. From receiving payments to accessing credit. Sanaa Fi aims to simplify the way businesses manage their finances in Africa.
                 </p>
+                <a href="https://fin.sanaa.co" target="_blank" class="inline-block mt-3 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100 transition">Visit Sanaa Fin</a>
               </div>
             </div>
           </div>
@@ -42,6 +56,7 @@
                 <p class="text-color-black opacity-7">
                   Serving African content creators by enabling them to build fully digital media brands ready to bridge the gap between the world's youngest continent, still primarily served by traditional media.
                 </p>
+                <a href="https://media.sanaa.co" target="_blank" class="inline-block mt-3 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100 transition">Visit Sanaa Media</a>
               </div>
             </div>
           </div>

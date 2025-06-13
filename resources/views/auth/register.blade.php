@@ -4,6 +4,8 @@
             <x-authentication-card-logo />
         </x-slot>
 
+        <h1 class="text-2xl font-bold mb-6 text-center">{{ __('Create an account') }}</h1>
+
         <x-validation-errors class="mb-4" />
 
         <form method="POST" action="{{ route('register') }}">
@@ -46,10 +48,12 @@
                 </div>
             @endif
 
-            <div class="flex items-center justify-end mt-4">
+            <div class="flex items-center justify-between mt-4">
                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
                     {{ __('Already registered?') }}
                 </a>
+
+                <a href="{{ route('admin.login') }}" class="text-xs text-gray-500 hover:text-gray-700 mr-auto ml-2">{{ __('Admin?') }}</a>
 
                 <x-button class="ms-4">
                     {{ __('Register') }}

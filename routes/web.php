@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Route;
 // use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\BlogController;
- 
 use App\Http\Controllers\BusinessCategoryController;
+use App\Http\Controllers\TeamController;
  
 
 // Landing Pages
@@ -23,6 +23,9 @@ Route::get('/prices', [PageController::class, 'prices'])->name('prices');
 // Blog
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+
+// Team
+Route::get('/team', [TeamController::class, 'index'])->name('team.index');
 
 
 Route::get('/api/product/{productId}', [PageController::class, 'getProductDetails']);
@@ -42,4 +45,5 @@ Route::middleware([
 
     Route::post('/dashboard/blog', [BlogController::class, 'store'])->name('dashboard.blog.store');
     Route::post('/dashboard/category', [\App\Http\Controllers\BusinessCategoryController::class, 'store'])->name('dashboard.category.store');
+    Route::post('/dashboard/team', [TeamController::class, 'store'])->name('dashboard.team.store');
 });

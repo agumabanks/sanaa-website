@@ -4,13 +4,13 @@
   <div class="body">
     <div role="main" class="main">
       <!-- Hero Section -->
-      <section id="hero" class="bg-black text-white py-20">
+      <section id="hero" class="bg-gradient-to-br from-black via-gray-900 to-purple-950 text-white py-32">
         <div class="container mx-auto px-4 text-center">
-          <h1 class="text-5xl md:text-6xl font-extrabold mb-6">Building the future of African commerce</h1>
-          <p class="text-xl md:text-2xl text-gray-300 mb-8">Sanaa OS/ERP powers businesses with digital infrastructure for payments, media and commerce.</p>
-          <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#services" class="bg-white text-black px-8 py-3 font-semibold rounded hover:bg-gray-200 transition">Explore Sanaa</a>
-            <a href="https://soko.sanaa.co" target="_blank" class="border border-white px-8 py-3 rounded text-white hover:bg-white hover:text-black transition">Shop on Soko 24</a>
+          <h1 class="text-6xl md:text-7xl font-extrabold mb-8">Building the future of African commerce</h1>
+          <p class="text-2xl md:text-3xl text-gray-300 mb-10">Sanaa OS/ERP powers businesses with digital infrastructure for payments, media and commerce.</p>
+          <div class="flex flex-col sm:flex-row justify-center gap-6">
+            <a href="#services" class="px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold shadow-lg transform hover:-translate-y-1 hover:shadow-xl transition">Explore Sanaa</a>
+            <a href="https://soko.sanaa.co" target="_blank" class="px-8 py-4 rounded-full border-2 border-white text-white font-semibold hover:bg-white hover:text-black transform hover:-translate-y-1 hover:shadow-xl transition">Shop on Soko 24</a>
           </div>
         </div>
       </section>
@@ -32,7 +32,7 @@
                 <p class="text-color-black opacity-7">
                   Our online shopping destination features authentic brands, everyday essentials, beauty/personal care items, and cutting-edge gadgets. Our e-commerce platform strives to redefine the shopping experience by focusing on value addition and supply chain innovation.
                 </p>
-                <a href="https://soko.sanaa.co" target="_blank" class="inline-block mt-3 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100 transition">Visit Soko 24</a>
+                <a href="https://soko.sanaa.co" target="_blank" class="inline-block mt-3 px-4 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow hover:from-pink-600 hover:to-purple-600 transform hover:-translate-y-1 hover:shadow-lg transition">Visit Soko 24</a>
               </div>
             </div>
           </div>
@@ -44,7 +44,7 @@
                 <p class="text-color-black opacity-7">
                   Provide the simplest and most reliable financial solution for businesses across Africa. From receiving payments to accessing credit. Sanaa Fi aims to simplify the way businesses manage their finances in Africa.
                 </p>
-                <a href="https://fin.sanaa.co" target="_blank" class="inline-block mt-3 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100 transition">Visit Sanaa Fin</a>
+                <a href="https://fin.sanaa.co" target="_blank" class="inline-block mt-3 px-4 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow hover:from-pink-600 hover:to-purple-600 transform hover:-translate-y-1 hover:shadow-lg transition">Visit Sanaa Fin</a>
               </div>
             </div>
           </div>
@@ -56,7 +56,7 @@
                 <p class="text-color-black opacity-7">
                   Serving African content creators by enabling them to build fully digital media brands ready to bridge the gap between the world's youngest continent, still primarily served by traditional media.
                 </p>
-                <a href="https://media.sanaa.co" target="_blank" class="inline-block mt-3 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100 transition">Visit Sanaa Media</a>
+                <a href="https://media.sanaa.co" target="_blank" class="inline-block mt-3 px-4 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow hover:from-pink-600 hover:to-purple-600 transform hover:-translate-y-1 hover:shadow-lg transition">Visit Sanaa Media</a>
               </div>
             </div>
           </div>
@@ -201,7 +201,7 @@
     
     <div class="row mt-5">
       <div class="col text-center">
-        <a href="https://soko.sanaa.co" class="btn btn-primary btn-lg px-5 py-2 shadow-sm" target="_blank">
+        <a href="https://soko.sanaa.co" class="btn btn-primary btn-lg px-5 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg hover:from-pink-600 hover:to-purple-600 transform hover:-translate-y-1 hover:shadow-xl transition" target="_blank">
           <i class="fas fa-shopping-cart mr-2"></i> Visit Soko 24
         </a>
       </div>

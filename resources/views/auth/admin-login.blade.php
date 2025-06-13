@@ -4,7 +4,7 @@
             <x-authentication-card-logo />
         </x-slot>
 
-        <h1 class="text-2xl font-bold mb-6 text-center">{{ __('Sign in to your account') }}</h1>
+        <h1 class="text-2xl font-bold mb-6 text-center">{{ __('Admin Login') }}</h1>
 
         <x-validation-errors class="mb-4" />
 
@@ -14,7 +14,7 @@
             </div>
         @endsession
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('admin.login.submit') }}">
             @csrf
 
             <div>
@@ -40,8 +40,6 @@
                         {{ __('Forgot your password?') }}
                     </a>
                 @endif
-
-                <a href="{{ route('admin.login') }}" class="text-xs text-gray-500 hover:text-gray-700 mr-auto">{{ __('Admin?') }}</a>
 
                 <x-button class="ms-4">
                     {{ __('Log in') }}

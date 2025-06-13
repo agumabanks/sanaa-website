@@ -8,6 +8,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BusinessCategoryController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\AdminAuthController;
  
 
 // Landing Pages
@@ -26,6 +27,11 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // Team
 Route::get('/team', [TeamController::class, 'index'])->name('team.index');
+
+
+// Admin Authentication
+Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 
 
 Route::get('/api/product/{productId}', [PageController::class, 'getProductDetails']);

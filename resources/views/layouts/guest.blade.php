@@ -19,16 +19,14 @@
     </head>
     <body class="font-sans text-gray-900 antialiased">
         
-        <!-- Include the Header Partial -->
-        @include('partials.header')
+        @include('components.header')
 
         <!-- Body Content -->
         <div>
             {{ $slot }}
         </div>
 
-        <!-- Include the Footer Partial -->
-        @include('partials.footer')
+        @include('components.footer')
 
         <!-- Livewire Scripts -->
         @livewireScripts

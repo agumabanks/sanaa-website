@@ -4,13 +4,17 @@
   <div class="body">
     <div role="main" class="main">
       <!-- Hero Section -->
-      <section id="hero" class="bg-black text-white py-20">
-        <div class="container mx-auto px-4 text-center">
-          <h1 class="text-5xl md:text-6xl font-extrabold mb-6">Building the future of African commerce</h1>
-          <p class="text-xl md:text-2xl text-gray-300 mb-8">Sanaa OS/ERP powers businesses with digital infrastructure for payments, media and commerce.</p>
+      <section id="hero" class="bg-black text-white flex items-center justify-center min-h-[70vh] px-4">
+        <div class="text-center space-y-6">
+          <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight">
+            Building the future of African commerce
+          </h1>
+          <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+            Our mission is to empower businesses with modern digital infrastructure for payments, media and commerce.
+          </p>
           <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#services" class="bg-white text-black px-8 py-3 font-semibold rounded hover:bg-gray-200 transition">Explore Sanaa</a>
-            <a href="https://soko.sanaa.co" target="_blank" class="border border-white px-8 py-3 rounded text-white hover:bg-white hover:text-black transition">Shop on Soko 24</a>
+            <a href="#services" class="bg-white text-black font-semibold px-8 py-3 rounded-md hover:bg-gray-200 transition">Explore Sanaa</a>
+            <a href="https://soko.sanaa.co" target="_blank" class="border border-white px-8 py-3 rounded-md hover:bg-white hover:text-black transition">Shop on Soko 24</a>
           </div>
         </div>
       </section>

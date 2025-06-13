@@ -43,6 +43,28 @@
                     </div>
                     <x-button>Create</x-button>
                 </form>
+
+                <h3 class="text-lg font-semibold mb-4 mt-8">Add Team Member</h3>
+                <form method="POST" action="{{ route('dashboard.team.store') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-4">
+                        <x-label for="team-name" value="Name" />
+                        <x-input id="team-name" name="name" class="w-full" />
+                    </div>
+                    <div class="mb-4">
+                        <x-label for="team-title" value="Title" />
+                        <x-input id="team-title" name="title" class="w-full" />
+                    </div>
+                    <div class="mb-4">
+                        <x-label for="team-bio" value="Bio" />
+                        <textarea id="team-bio" name="bio" class="w-full rounded"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <x-label for="team-photo" value="Photo" />
+                        <input type="file" name="photo" id="team-photo">
+                    </div>
+                    <x-button>Add Member</x-button>
+                </form>
             </div>
         </div>
     </div>

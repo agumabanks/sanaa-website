@@ -106,6 +106,14 @@ class PageController extends Controller
     }
 
     /**
+     * Display the Bulk SMS page.
+     */
+    public function bulkSms()
+    {
+        return view('pages.bulk-sms');
+    }
+
+    /**
      * Display the Prices page.
      */
     public function prices()

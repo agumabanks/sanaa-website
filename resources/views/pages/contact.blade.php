@@ -15,6 +15,7 @@
                     <ul class="space-y-2 text-gray-700">
                         <li><span class="font-semibold">Customer Support:</span> 0706 27-2481</li>
                         <li><span class="font-semibold">Sales:</span> 0200 90-3222</li>
+                        <li><span class="font-semibold">WhatsApp:</span> <a href="https://wa.me/256706272481" class="text-green-600 underline">Chat with us</a></li>
                         <li><span class="font-semibold">Address:</span> Kampala, Uganda</li>
                     </ul>
                 </div>

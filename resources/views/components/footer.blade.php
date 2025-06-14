@@ -18,7 +18,7 @@
             <div>
               <h4 class="font-semibold mb-4 text-gray-500">Products</h4>
               <ul>
-                <li class="mb-2"><a href="#" class="hover:underline">Commerce</a></li>
+                <li class="mb-2"><a href="https://soko.sanaa.co/" class="hover:underline">Commerce</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">Point of Sale</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">Payments</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">Online</a></li>
@@ -33,6 +33,7 @@
                 <li class="mb-2"><a href="#" class="hover:underline">Payroll</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">Advanced Access</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">Buy Now, Pay Later</a></li>
+                <li class="mb-2"><a href="https://media.sanaa.co/" class="hover:underline">Sanaa Media</a></li>
               </ul>
             </div>
           
@@ -101,6 +102,7 @@
                   <li class="mb-2"><a href="#" class="hover:underline">Careers</a></li>
                   <li class="mb-2"><a href="#" class="hover:underline">Referrals</a></li>
                   <li class="mb-2"><a href="#" class="hover:underline">Partners</a></li>
+                   <li class="mb-2"><a href="https://os.sanaa.co/" class="hover:underline">My Sanaa</a></li>
                 </ul>
               </div>
             </div>

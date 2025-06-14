@@ -31,6 +31,7 @@ Route::get('/partners', [PartnerController::class, 'index'])->name('partners');
 Route::get('/developer-platforms', [DeveloperPlatformController::class, 'index'])->name('developer-platforms');
 Route::get('/rent-hardware', [HardwareRentalController::class, 'index'])->name('rent-hardware');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // Blog
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');

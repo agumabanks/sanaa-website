@@ -64,7 +64,7 @@
             <div>
               <h4 class="font-semibold mb-4 text-gray-500">Resources</h4>
               <ul>
-                <li class="mb-2"><a href="#" class="hover:underline">Pricing</a></li>
+                <li class="mb-2"><a href="{{ route('prices') }}" class="hover:underline">Pricing</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">Why Sanaa?</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">Testimonials</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">The Bottom Line</a></li>
@@ -75,10 +75,10 @@
                     Seller Community
                   </a>
                 </li>
-                <li class="mb-2"><a href="#" class="hover:underline">Developer Platform</a></li>
+                <li class="mb-2"><a href="{{ route('developer-platforms') }}" class="hover:underline">Developer Platform</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">Merchant Services</a></li>
-                <li class="mb-2"><a href="#" class="hover:underline">Rent Hardware</a></li>
-                <li class="mb-2"><a href="#" class="hover:underline">Contact</a></li>
+                <li class="mb-2"><a href="{{ route('rent-hardware') }}" class="hover:underline">Rent Hardware</a></li>
+                <li class="mb-2"><a href="{{ route('contact') }}" class="hover:underline">Contact</a></li>
               </ul>
             </div>
           
@@ -99,9 +99,9 @@
                 <h4 class="font-semibold mb-4 mt-5 text-gray-500">Sanaa</h4>
                 <ul>
                   <li class="mb-2"><a href="#" class="hover:underline">Press &amp; Media</a></li>
-                  <li class="mb-2"><a href="#" class="hover:underline">Careers</a></li>
+                  <li class="mb-2"><a href="{{ route('careers') }}" class="hover:underline">Careers</a></li>
                   <li class="mb-2"><a href="#" class="hover:underline">Referrals</a></li>
-                  <li class="mb-2"><a href="#" class="hover:underline">Partners</a></li>
+                  <li class="mb-2"><a href="{{ route('partners') }}" class="hover:underline">Partners</a></li>
                    <li class="mb-2"><a href="https://os.sanaa.co/" class="hover:underline">My Sanaa</a></li>
                 </ul>
               </div>

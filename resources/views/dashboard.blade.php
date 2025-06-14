@@ -63,7 +63,81 @@
                         <x-label for="team-photo" value="Photo" />
                         <input type="file" name="photo" id="team-photo">
                     </div>
-                    <x-button>Add Member</x-button>
+                <x-button>Add Member</x-button>
+                </form>
+
+                <h3 class="text-lg font-semibold mb-4 mt-8">Add Career</h3>
+                <form method="POST" action="{{ route('dashboard.career.store') }}">
+                    @csrf
+                    <div class="mb-4">
+                        <x-label for="career-title" value="Title" />
+                        <x-input id="career-title" name="title" class="w-full" />
+                    </div>
+                    <div class="mb-4">
+                        <x-label for="career-description" value="Description" />
+                        <textarea id="career-description" name="description" class="w-full rounded"></textarea>
+                    </div>
+                    <x-button>Create</x-button>
+                </form>
+
+                <h3 class="text-lg font-semibold mb-4 mt-8">Add Partner</h3>
+                <form method="POST" action="{{ route('dashboard.partner.store') }}">
+                    @csrf
+                    <div class="mb-4">
+                        <x-label for="partner-name" value="Name" />
+                        <x-input id="partner-name" name="name" class="w-full" />
+                    </div>
+                    <div class="mb-4">
+                        <x-label for="partner-description" value="Description" />
+                        <textarea id="partner-description" name="description" class="w-full rounded"></textarea>
+                    </div>
+                    <x-button>Create</x-button>
+                </form>
+
+                <h3 class="text-lg font-semibold mb-4 mt-8">Add Developer Platform</h3>
+                <form method="POST" action="{{ route('dashboard.developer-platform.store') }}">
+                    @csrf
+                    <div class="mb-4">
+                        <x-label for="platform-name" value="Name" />
+                        <x-input id="platform-name" name="name" class="w-full" />
+                    </div>
+                    <div class="mb-4">
+                        <x-label for="platform-description" value="Description" />
+                        <textarea id="platform-description" name="description" class="w-full rounded"></textarea>
+                    </div>
+                    <x-button>Create</x-button>
+                </form>
+
+                <h3 class="text-lg font-semibold mb-4 mt-8">Add Hardware Rental</h3>
+                <form method="POST" action="{{ route('dashboard.hardware-rental.store') }}">
+                    @csrf
+                    <div class="mb-4">
+                        <x-label for="hardware-name" value="Name" />
+                        <x-input id="hardware-name" name="name" class="w-full" />
+                    </div>
+                    <div class="mb-4">
+                        <x-label for="hardware-description" value="Description" />
+                        <textarea id="hardware-description" name="description" class="w-full rounded"></textarea>
+                    </div>
+                    <x-button>Create</x-button>
+                </form>
+
+                <h3 class="text-lg font-semibold mb-4 mt-8">Add Price Item</h3>
+                <form method="POST" action="{{ route('dashboard.price.store') }}">
+                    @csrf
+                    <div class="mb-4">
+                        <x-label for="price-name" value="Name" />
+                        <x-input id="price-name" name="name" class="w-full" />
+                    </div>
+                    <div class="mb-4">
+                        <x-label for="price-value" value="Price" />
+                        <x-input id="price-value" name="price" class="w-full" />
+                    </div>
+                    <div class="mb-4">
+                        <x-label for="price-description" value="Description" />
+                        <textarea id="price-description" name="description" class="w-full rounded"></textarea>
+                    </div>
+                    <x-button>Create</x-button>
                 </form>
             </div>
         </div>

@@ -256,12 +256,21 @@
         >
           Support
         </a>
-        <a 
-          href="{{ route('login') }}" 
+        @auth
+        <a
+          href="{{ route('dashboard') }}"
+          class="text-gray-800 hover:text-green-600 font-medium text-sm transition-colors duration-200"
+        >
+          Dashboard
+        </a>
+        @else
+        <a
+          href="{{ route('login') }}"
           class="text-gray-800 hover:text-green-600 font-medium text-sm transition-colors duration-200"
         >
           Login
         </a>
+        @endauth
       </div>
 
       <!-- Mobile Menu Button -->

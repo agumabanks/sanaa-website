@@ -234,8 +234,14 @@
         >
           Services
         </a>
-        <a 
-          href="{{ route('prices') }}" 
+        <a
+          href="{{ route('bulk-sms') }}"
+          class="font-medium text-sm transition-colors duration-200 {{ request()->routeIs('bulk-sms') ? 'text-green-600' : 'text-gray-800 hover:text-green-600' }}"
+        >
+          Bulk SMS
+        </a>
+        <a
+          href="{{ route('prices') }}"
           class="text-gray-800 hover:text-green-600 font-medium text-sm transition-colors duration-200"
         >
           Sanaa &lt;18

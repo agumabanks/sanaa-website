@@ -9,6 +9,17 @@ It is built with [Laravel](https://laravel.com/) and uses Jetstream for authenti
 - Dynamic product listing pulled from Soko 24
 - Placeholder pages for company information, services and more
 
+## Upcoming Menu Items
+
+- [ ] Ai branding
+- [ ] Customer care automation
+- [ ] Wa services
+- [ ] Prices
+- [ ] Print on damand
+- [ ] Saas /softwares
+- [ ] Soko 24 shop now
+- [ ] Buy a Sanaa card
+
 ## Setup
 
 1. Install PHP dependencies:

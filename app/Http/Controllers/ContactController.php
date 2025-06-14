@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactMessage;
 
 class ContactController extends Controller
 {
@@ -21,6 +23,13 @@ class ContactController extends Controller
             'message' => 'nullable',
         ]);
         Contact::create($data);
+        Mail::to('agumabanksibrahim@gmail.com')->send(
+            new ContactMessage(
+                $data['name'],
+                $data['email'],
+                $data['message'] ?? null
+            )
+        );
         return back()->with('status', 'Message sent');
     }
 }

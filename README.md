@@ -45,5 +45,5 @@ It is built with [Laravel](https://laravel.com/) and uses Jetstream for authenti
 Run the automated test suite with:
 
 ```bash
-vendor/bin/phpunit
+composer test
 ```

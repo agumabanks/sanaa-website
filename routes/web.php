@@ -26,7 +26,7 @@ Route::get('/support', [PageController::class, 'support'])->name('support');
 Route::get('/products', [PageController::class, 'products'])->name('products');
 Route::get('/services', [PageController::class, 'services'])->name('services');
 Route::get('/bulk-sms', [PageController::class, 'bulkSms'])->name('bulk-sms');
-Route::get('/prices', [PageController::class, 'prices'])->name('prices');
+Route::get('/pricing', [PriceController::class, 'index'])->name('pricing');
 Route::get('/careers', [CareerController::class, 'index'])->name('careers');
 Route::get('/partners', [PartnerController::class, 'index'])->name('partners');
 Route::get('/developer-platforms', [DeveloperPlatformController::class, 'index'])->name('developer-platforms');

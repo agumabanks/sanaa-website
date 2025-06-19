@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - run: npm ci
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: php -S 127.0.0.1:8000 -t public >/dev/null 2>&1 & echo $! > server.pid
+      - run: vendor/bin/pest
+        env:
+          A11Y_THRESHOLD: '95'
+      - run: kill $(cat server.pid)
+        if: always()

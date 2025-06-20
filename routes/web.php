@@ -78,6 +78,7 @@ Route::middleware([
         $teamMembers = \App\Models\TeamMember::all();
         return view('dashboard.team', compact('teamMembers'));
     })->name('dashboard.team');
+    Route::get('/dashboard/team/{member}', [TeamController::class, 'edit'])->name('dashboard.team.edit');
 
     Route::get('/dashboard/careers', function () {
         return view('dashboard.careers');

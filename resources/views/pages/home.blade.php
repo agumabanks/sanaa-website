@@ -6,15 +6,15 @@
       <!-- Hero Section -->
       <section id="hero" class="bg-black text-white flex items-center justify-center min-h-[70vh] px-4">
         <div class="text-center space-y-6">
-          <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight">
+          <x-heading level="1" class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight">
             Building the future of African commerce
-          </h1>
+          </x-heading>
           <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
             Our mission is to empower businesses with modern digital infrastructure for payments, media and commerce.
           </p>
           <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#services" class="bg-white text-black font-semibold px-8 py-3 rounded-md hover:bg-gray-200 transition">Explore Sanaa</a>
-            <a href="https://soko.sanaa.co" target="_blank" class="border border-white px-8 py-3 rounded-md hover:bg-white hover:text-black transition">Shop on Soko 24</a>
+            <x-button href="#services" variant="secondary" class="px-8 py-3">Explore Sanaa</x-button>
+            <x-button href="https://soko.sanaa.co" target="_blank" variant="ghost" class="px-8 py-3">Shop on Soko 24</x-button>
           </div>
         </div>
       </section>
@@ -106,9 +106,9 @@
     </section>
 
     <!-- Team Section -->
-    <section class="py-16 bg-white">
-      <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-8 text-center">Meet the Team</h2>
+    <x-section class="bg-white py-16">
+      <div class="px-4 lg:col-span-12">
+        <x-heading level="2" class="text-3xl font-bold mb-8 text-center">Meet the Team</x-heading>
         <div class="grid md:grid-cols-3 gap-8">
           @foreach($teamMembers as $member)
           <div class="text-center">
@@ -123,7 +123,7 @@
           @endforeach
         </div>
       </div>
-    </section>
+    </x-section>
 
   
     
@@ -162,7 +162,7 @@
         @foreach(array_slice($sokoProducts['data'], 0, 8) as $product)
           <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="product-card" data-product-id="{{ $product['id'] }}" tabindex="0" role="button" aria-label="View details for {{ $product['name'] }}">
-              <div class="card h-100 border-0 shadow-sm rounded-lg overflow-hidden">
+              <x-card class="h-100 overflow-hidden">
                 <div class="position-relative">
                   <div class="product-image-container d-block overflow-hidden" style="height: 200px;">
                     <img src="{{ $product['thumbnail_image'] }}" class="card-img-top" alt="{{ $product['name'] }}" 
@@ -195,7 +195,7 @@
                     <i class="fas fa-eye mr-1"></i> Quick View
                   </button>
                 </div>
-              </div>
+              </x-card>
             </div>
           </div>
         @endforeach

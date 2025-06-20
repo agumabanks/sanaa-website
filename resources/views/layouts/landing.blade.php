@@ -479,6 +479,16 @@
 		}
 </style>
 
+<!-- Small‑screen button refinements -->
+<style>
+  /* Tailwind already handles responsive sizing; this tweak only reduces button font‑size on the very smallest screens */
+  @media (max-width: 360px) {
+    #services a[class*="bg-white"] {
+      font-size: 0.875rem; /* ~14px */
+      padding: 0.625rem 1rem; /* slightly tighter */
+    }
+  }
+</style>
         	<!-- Theme CSS -->
 		<link rel="stylesheet" href=" {{ asset('storage/css/theme.css') }}">
 		<link rel="stylesheet" href="{{ asset('storage/css/theme-elements.css') }}">

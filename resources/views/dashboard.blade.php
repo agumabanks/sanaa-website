@@ -137,7 +137,25 @@
                         <x-label for="price-description" value="Description" />
                         <textarea id="price-description" name="description" class="w-full rounded"></textarea>
                     </div>
-                    <x-button>Create</x-button>
+                <x-button>Create</x-button>
+                </form>
+
+                <h3 class="text-lg font-semibold mb-4 mt-8">Edit Terms &amp; Conditions</h3>
+                <form method="POST" action="{{ route('dashboard.policy.update', ['key' => 'terms']) }}">
+                    @csrf
+                    <div class="mb-4">
+                        <textarea id="terms-content" name="content" class="w-full rounded" rows="5">{{ $terms->content ?? '' }}</textarea>
+                    </div>
+                    <x-button>Save</x-button>
+                </form>
+
+                <h3 class="text-lg font-semibold mb-4 mt-8">Edit Seller Policies</h3>
+                <form method="POST" action="{{ route('dashboard.policy.update', ['key' => 'seller-policies']) }}">
+                    @csrf
+                    <div class="mb-4">
+                        <textarea id="seller-content" name="content" class="w-full rounded" rows="5">{{ $seller->content ?? '' }}</textarea>
+                    </div>
+                    <x-button>Save</x-button>
                 </form>
             </div>
         </div>

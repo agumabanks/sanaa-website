@@ -15,6 +15,8 @@ use App\Http\Controllers\HardwareRentalController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\PolicyController;
+use App\Models\Policy;
  
 
 // Landing Pages
@@ -29,6 +31,8 @@ Route::get('/bulk-sms', [PageController::class, 'bulkSms'])->name('bulk-sms');
 Route::get('/prices', [PageController::class, 'prices'])->name('prices');
 Route::get('/careers', [CareerController::class, 'index'])->name('careers');
 Route::get('/partners', [PartnerController::class, 'index'])->name('partners');
+Route::get('/terms', [PolicyController::class, 'show'])->defaults('key', 'terms')->name('terms');
+Route::get('/seller-policies', [PolicyController::class, 'show'])->defaults('key', 'seller-policies')->name('seller-policies');
 Route::get('/developer-platforms', [DeveloperPlatformController::class, 'index'])->name('developer-platforms');
 Route::get('/rent-hardware', [HardwareRentalController::class, 'index'])->name('rent-hardware');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
@@ -59,7 +63,9 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        $terms = Policy::where('key', 'terms')->first();
+        $seller = Policy::where('key', 'seller-policies')->first();
+        return view('dashboard', compact('terms', 'seller'));
     })->name('dashboard');
 
     Route::post('/dashboard/blog', [BlogController::class, 'store'])->name('dashboard.blog.store');
@@ -70,4 +76,5 @@ Route::middleware([
     Route::post('/dashboard/developer-platform', [DeveloperPlatformController::class, 'store'])->name('dashboard.developer-platform.store');
     Route::post('/dashboard/hardware-rental', [HardwareRentalController::class, 'store'])->name('dashboard.hardware-rental.store');
     Route::post('/dashboard/price', [PriceController::class, 'store'])->name('dashboard.price.store');
+    Route::post('/dashboard/policy/{key}', [PolicyController::class, 'update'])->name('dashboard.policy.update');
 });

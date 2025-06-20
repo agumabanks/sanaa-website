@@ -1,5 +1,7 @@
 @extends('layouts.landing')
 
+@section('title', 'About Us | ' . config('app.name'))
+
 @section('content')
 <section class="py-12 bg-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

@@ -1,5 +1,7 @@
 @extends('layouts.landing')
 
+@section('title', 'Company | ' . config('app.name'))
+
 @section('content')
 
 <div class="container mx-auto py-12 px-4">

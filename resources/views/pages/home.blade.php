@@ -1,5 +1,7 @@
 @extends('layouts.landing')
 
+@section('title', 'Home | ' . config('app.name'))
+
 @section('content')
   <div class="body">
     <div role="main" class="main">

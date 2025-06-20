@@ -1,5 +1,7 @@
 @extends('layouts.landing')
 
+@section('title', 'Blog | ' . config('app.name'))
+
 @section('content')
 <div class="container mx-auto py-12 px-4">
     <h1 class="text-3xl font-bold mb-8">Blog</h1>

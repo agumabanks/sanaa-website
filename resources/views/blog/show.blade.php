@@ -1,5 +1,7 @@
 @extends('layouts.landing')
 
+@section('title', $post->title . ' | ' . config('app.name'))
+
 @section('content')
 <div class="container mx-auto py-12 px-4 max-w-4xl">
     <article class="prose lg:prose-lg">

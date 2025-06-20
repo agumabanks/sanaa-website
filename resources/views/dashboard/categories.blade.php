@@ -1,4 +1,4 @@
-<x-dashboard-layout>
+<x-dashboard-layout title="Categories">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Categories

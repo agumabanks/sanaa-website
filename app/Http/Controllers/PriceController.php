@@ -21,6 +21,6 @@ class PriceController extends Controller
             'description' => 'nullable',
         ]);
         Price::create($data);
-        return redirect()->route('dashboard')->with('status', 'Price created');
+        return redirect()->route('dashboard.prices')->with('status', 'Price created');
     }
 }

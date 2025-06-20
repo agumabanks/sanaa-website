@@ -20,6 +20,6 @@ class HardwareRentalController extends Controller
             'description' => 'nullable',
         ]);
         HardwareRental::create($data);
-        return redirect()->route('dashboard')->with('status', 'Hardware rental created');
+        return redirect()->route('dashboard.hardware-rentals')->with('status', 'Hardware rental created');
     }
 }

@@ -24,6 +24,6 @@ class PolicyController extends Controller
             ['title' => ucwords(str_replace('-', ' ', $key)), 'content' => $data['content']]
         );
 
-        return redirect()->route('dashboard')->with('status', 'Policy updated');
+        return redirect()->route('dashboard.policies')->with('status', 'Policy updated');
     }
 }

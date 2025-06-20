@@ -29,7 +29,7 @@ class TeamController extends Controller
 
         TeamMember::create($data);
 
-        return redirect()->route('dashboard')->with('status', 'Team member created');
+        return redirect()->route('dashboard.team')->with('status', 'Team member created');
     }
 
     public function update(Request $request, TeamMember $member)
@@ -47,7 +47,7 @@ class TeamController extends Controller
 
         $member->update($data);
 
-        return redirect()->route('dashboard')->with('status', 'Team member updated');
+        return redirect()->route('dashboard.team')->with('status', 'Team member updated');
     }
 
     public function destroy(TeamMember $member)
@@ -56,6 +56,6 @@ class TeamController extends Controller
             Storage::disk('public')->delete($member->photo);
         }
         $member->delete();
-        return redirect()->route('dashboard')->with('status', 'Team member deleted');
+        return redirect()->route('dashboard.team')->with('status', 'Team member deleted');
     }
 }

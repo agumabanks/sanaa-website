@@ -64,7 +64,7 @@
             <div>
               <h4 class="font-semibold mb-4 text-gray-500">Resources</h4>
               <ul>
-                <li class="mb-2"><a href="{{ route('prices') }}" class="hover:underline">Pricing</a></li>
+                <li class="mb-2"><a href="{{ route('pricing') }}" class="hover:underline">Pricing</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">Why Sanaa?</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">Testimonials</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">The Bottom Line</a></li>

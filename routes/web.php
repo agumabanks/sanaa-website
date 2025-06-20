@@ -65,12 +65,15 @@ Route::middleware([
     Route::get('/dashboard', function () {
         $terms = Policy::where('key', 'terms')->first();
         $seller = Policy::where('key', 'seller-policies')->first();
-        return view('dashboard', compact('terms', 'seller'));
+        $teamMembers = \App\Models\TeamMember::all();
+        return view('dashboard', compact('terms', 'seller', 'teamMembers'));
     })->name('dashboard');
 
     Route::post('/dashboard/blog', [BlogController::class, 'store'])->name('dashboard.blog.store');
     Route::post('/dashboard/category', [\App\Http\Controllers\BusinessCategoryController::class, 'store'])->name('dashboard.category.store');
     Route::post('/dashboard/team', [TeamController::class, 'store'])->name('dashboard.team.store');
+    Route::put('/dashboard/team/{member}', [TeamController::class, 'update'])->name('dashboard.team.update');
+    Route::delete('/dashboard/team/{member}', [TeamController::class, 'destroy'])->name('dashboard.team.destroy');
     Route::post('/dashboard/career', [CareerController::class, 'store'])->name('dashboard.career.store');
     Route::post('/dashboard/partner', [PartnerController::class, 'store'])->name('dashboard.partner.store');
     Route::post('/dashboard/developer-platform', [DeveloperPlatformController::class, 'store'])->name('dashboard.developer-platform.store');

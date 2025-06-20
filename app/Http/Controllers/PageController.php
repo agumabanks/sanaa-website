@@ -15,9 +15,11 @@ class PageController extends Controller
     public function home()
     {
         $sokoProducts = Http::get('https://soko.sanaa.co/api/v2/products')->json();
-        // return view('your-view', );
-        // dd($sokoProducts);
-        return view('pages.home',['sokoProducts' => $sokoProducts]);
+        $teamMembers = \App\Models\TeamMember::all();
+        return view('pages.home', [
+            'sokoProducts' => $sokoProducts,
+            'teamMembers' => $teamMembers,
+        ]);
     }
 
     /**

@@ -39,6 +39,6 @@ class BlogController extends Controller
 
         Blog::create($data);
 
-        return redirect()->route('dashboard')->with('status', 'Blog post created');
+        return redirect()->route('dashboard.blog')->with('status', 'Blog post created');
     } 
 }

@@ -20,6 +20,6 @@ class PartnerController extends Controller
             'description' => 'nullable',
         ]);
         Partner::create($data);
-        return redirect()->route('dashboard')->with('status', 'Partner created');
+        return redirect()->route('dashboard.partners')->with('status', 'Partner created');
     }
 }

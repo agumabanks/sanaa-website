@@ -20,6 +20,6 @@ class CareerController extends Controller
             'description' => 'nullable',
         ]);
         Career::create($data);
-        return redirect()->route('dashboard')->with('status', 'Career created');
+        return redirect()->route('dashboard.careers')->with('status', 'Career created');
     }
 }

@@ -20,6 +20,6 @@ class DeveloperPlatformController extends Controller
             'description' => 'nullable',
         ]);
         DeveloperPlatform::create($data);
-        return redirect()->route('dashboard')->with('status', 'Developer platform created');
+        return redirect()->route('dashboard.developer-platforms')->with('status', 'Developer platform created');
     }
 }

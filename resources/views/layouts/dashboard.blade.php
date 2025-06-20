@@ -30,8 +30,16 @@
                 </div>
                 <nav class="p-6 space-y-2">
                     <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Dashboard</a>
-                    <a href="{{ route('blog.index') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Blog</a>
-                    <a href="{{ route('team.index') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Team</a>
+                    <a href="{{ route('dashboard.blog') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Blog</a>
+                    <a href="{{ route('dashboard.categories') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Categories</a>
+                    <a href="{{ route('dashboard.team') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Team</a>
+                    <a href="{{ route('dashboard.careers') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Careers</a>
+                    <a href="{{ route('dashboard.partners') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Partners</a>
+                    <a href="{{ route('dashboard.developer-platforms') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Developers</a>
+                    <a href="{{ route('dashboard.hardware-rentals') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Hardware Rentals</a>
+                    <a href="{{ route('dashboard.prices') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Prices</a>
+                    <a href="{{ route('dashboard.policies') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Policies</a>
+                    <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700">Suppliers</a>
                 </nav>
             </aside>
 

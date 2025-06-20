@@ -63,11 +63,47 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
+        return view('dashboard.index');
+    })->name('dashboard');
+
+    Route::get('/dashboard/blog', function () {
+        return view('dashboard.blog');
+    })->name('dashboard.blog');
+
+    Route::get('/dashboard/categories', function () {
+        return view('dashboard.categories');
+    })->name('dashboard.categories');
+
+    Route::get('/dashboard/team', function () {
+        $teamMembers = \App\Models\TeamMember::all();
+        return view('dashboard.team', compact('teamMembers'));
+    })->name('dashboard.team');
+
+    Route::get('/dashboard/careers', function () {
+        return view('dashboard.careers');
+    })->name('dashboard.careers');
+
+    Route::get('/dashboard/partners', function () {
+        return view('dashboard.partners');
+    })->name('dashboard.partners');
+
+    Route::get('/dashboard/developer-platforms', function () {
+        return view('dashboard.developer-platforms');
+    })->name('dashboard.developer-platforms');
+
+    Route::get('/dashboard/hardware-rentals', function () {
+        return view('dashboard.hardware-rentals');
+    })->name('dashboard.hardware-rentals');
+
+    Route::get('/dashboard/prices', function () {
+        return view('dashboard.prices');
+    })->name('dashboard.prices');
+
+    Route::get('/dashboard/policies', function () {
         $terms = Policy::where('key', 'terms')->first();
         $seller = Policy::where('key', 'seller-policies')->first();
-        $teamMembers = \App\Models\TeamMember::all();
-        return view('dashboard', compact('terms', 'seller', 'teamMembers'));
-    })->name('dashboard');
+        return view('dashboard.policies', compact('terms', 'seller'));
+    })->name('dashboard.policies');
 
     Route::post('/dashboard/blog', [BlogController::class, 'store'])->name('dashboard.blog.store');
     Route::post('/dashboard/category', [\App\Http\Controllers\BusinessCategoryController::class, 'store'])->name('dashboard.category.store');

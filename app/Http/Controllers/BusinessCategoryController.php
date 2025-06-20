@@ -16,6 +16,6 @@ class BusinessCategoryController extends Controller
 
         BusinessCategory::create($data);
 
-        return redirect()->route('dashboard')->with('status', 'Category created');
+        return redirect()->route('dashboard.categories')->with('status', 'Category created');
     }
 }

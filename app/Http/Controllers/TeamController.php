@@ -14,6 +14,11 @@ class TeamController extends Controller
         return view('team.index', compact('members'));
     }
 
+    public function edit(TeamMember $member)
+    {
+        return view('dashboard.team-edit', compact('member'));
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([

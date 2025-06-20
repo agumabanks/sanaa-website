@@ -66,6 +66,49 @@
                 <x-button>Add Member</x-button>
                 </form>
 
+                @if(isset($teamMembers) && $teamMembers->count())
+                <h3 class="text-lg font-semibold mb-4 mt-8">Manage Team Members</h3>
+                <div class="space-y-6">
+                    @foreach($teamMembers as $member)
+                        <div class="border p-4 rounded">
+                            <form method="POST" action="{{ route('dashboard.team.update', $member) }}" enctype="multipart/form-data" class="space-y-4">
+                                @csrf
+                                @method('PUT')
+                                <div class="flex items-center space-x-4">
+                                    @if($member->photo)
+                                        <img src="{{ asset('storage/'.$member->photo) }}" class="w-16 h-16 rounded-full object-cover" alt="{{ $member->name }}">
+                                    @endif
+                                    <div class="flex-1">
+                                        <x-label for="name-{{ $member->id }}" value="Name" />
+                                        <x-input id="name-{{ $member->id }}" name="name" class="w-full" value="{{ $member->name }}" />
+                                    </div>
+                                    <div class="flex-1">
+                                        <x-label for="title-{{ $member->id }}" value="Title" />
+                                        <x-input id="title-{{ $member->id }}" name="title" class="w-full" value="{{ $member->title }}" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <x-label for="bio-{{ $member->id }}" value="Bio" />
+                                    <textarea id="bio-{{ $member->id }}" name="bio" class="w-full rounded">{{ $member->bio }}</textarea>
+                                </div>
+                                <div>
+                                    <x-label for="photo-{{ $member->id }}" value="Photo" />
+                                    <input type="file" name="photo" id="photo-{{ $member->id }}">
+                                </div>
+                                <div class="flex space-x-2">
+                                    <x-button>Update</x-button>
+                                </div>
+                            </form>
+                            <form method="POST" action="{{ route('dashboard.team.destroy', $member) }}" class="mt-2">
+                                @csrf
+                                @method('DELETE')
+                                <x-button class="bg-red-500 hover:bg-red-600">Delete</x-button>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+                @endif
+
                 <h3 class="text-lg font-semibold mb-4 mt-8">Add Career</h3>
                 <form method="POST" action="{{ route('dashboard.career.store') }}">
                     @csrf

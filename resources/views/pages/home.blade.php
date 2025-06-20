@@ -110,12 +110,17 @@
       <div class="container mx-auto px-4">
         <h2 class="text-3xl font-bold mb-8 text-center">Meet the Team</h2>
         <div class="grid md:grid-cols-3 gap-8">
+          @foreach($teamMembers as $member)
           <div class="text-center">
-            <img src="/img/placeholder-team.jpg" alt="Aguma I. Banks" class="w-32 h-32 rounded-full mx-auto mb-4">
-            <h3 class="text-xl font-semibold">Aguma I. Banks</h3>
-            <p class="text-gray-600">Founder &amp; CEO</p>
+            @if($member->photo)
+            <img src="{{ asset('storage/'.$member->photo) }}" alt="{{ $member->name }}" class="w-32 h-32 rounded-full mx-auto mb-4">
+            @endif
+            <h3 class="text-xl font-semibold">{{ $member->name }}</h3>
+            @if($member->title)
+            <p class="text-gray-600">{{ $member->title }}</p>
+            @endif
           </div>
-          <!-- Additional team members can be added here -->
+          @endforeach
         </div>
       </div>
     </section>

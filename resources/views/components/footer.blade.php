@@ -230,7 +230,8 @@
       <ul class="flex flex-col space-y-1 text-sm text-right">
         <li><a href="#" class="hover:underline">Privacy Notice</a></li>
         <li><a href="#" class="hover:underline">Security</a></li>
-        <li><a href="#" class="hover:underline">Terms of Service</a></li>
+        <li><a href="{{ route('terms') }}" class="hover:underline">Terms &amp; Conditions</a></li>
+        <li><a href="{{ route('seller-policies') }}" class="hover:underline">Seller Policies</a></li>
         <li><a href="#" class="hover:underline">Government</a></li>
         <li><a href="#" class="hover:underline">Licenses</a></li>
         <li><a href="#" class="hover:underline">Sanaa Brands Licenses</a></li>

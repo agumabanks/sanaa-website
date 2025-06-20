@@ -1,3 +1,4 @@
+@section('title', 'Verify Email | ' . config('app.name'))
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">

@@ -12,5 +12,7 @@ class Blog extends Model
         'excerpt',
         'body',
         'image',
+        'publish_at',
+        'hero_image',
     ];
 }

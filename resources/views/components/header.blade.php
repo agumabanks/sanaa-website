@@ -241,7 +241,7 @@
           Bulk SMS
         </a>
         <a
-          href="{{ route('prices') }}"
+          href="{{ route('pricing') }}"
           class="text-gray-800 hover:text-green-600 font-medium text-sm transition-colors duration-200"
         >
           Sanaa &lt;18

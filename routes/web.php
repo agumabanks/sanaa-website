@@ -30,7 +30,7 @@ Route::post('/support', [SupportController::class, 'send'])->name('support.send'
 Route::get('/products', [PageController::class, 'products'])->name('products');
 Route::get('/services', [PageController::class, 'services'])->name('services');
 Route::get('/bulk-sms', [PageController::class, 'bulkSms'])->name('bulk-sms');
-Route::get('/prices', [PageController::class, 'prices'])->name('prices');
+Route::get('/pricing', [PriceController::class, 'index'])->name('pricing');
 Route::get('/careers', [CareerController::class, 'index'])->name('careers');
 Route::get('/partners', [PartnerController::class, 'index'])->name('partners');
 Route::get('/terms', [PolicyController::class, 'show'])->defaults('key', 'terms')->name('terms');

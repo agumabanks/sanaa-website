@@ -302,6 +302,18 @@
         font-weight: 500;
         animation: slideInSuccess 0.5s ease-out;
     }
+
+    .error-message {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        padding: 20px 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        border: 2px solid #f5c6cb;
+        text-align: center;
+        font-weight: 500;
+        animation: slideInSuccess 0.5s ease-out;
+    }
     
     @keyframes slideInSuccess {
         from {
@@ -468,6 +480,7 @@
                 <br><small style="opacity: 0.8; margin-top: 8px; display: block;">You can send another message anytime.</small>
             </div>
         @endif
+        <div id="form-messages"></div>
         
         <div class="form-group">
             <label class="form-label" for="name">Your name</label>
@@ -544,43 +557,65 @@
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('contact-form');
         const submitButton = form.querySelector('.submit-button');
-        const originalButtonText = submitButton.textContent;
-        
-        // Check if there's a success message and clear form
-        const successMessage = document.querySelector('.success-message');
-        if (successMessage) {
-            // Clear form after successful submission
-            setTimeout(() => {
-                form.reset();
-                // Smooth scroll to success message
-                successMessage.scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'center'
-                });
-            }, 100);
-        }
-        
-        // Handle form submission with loading state
-        form.addEventListener('submit', function(e) {
-            // Only add loading state if form is valid
-            if (form.checkValidity()) {
-                // Add loading state
-                form.classList.add('form-sending');
-                submitButton.textContent = 'Sending message...';
-                submitButton.disabled = true;
+        const messages = document.getElementById('form-messages');
+
+        const showMessage = (text, type = 'success') => {
+            messages.className = type === 'success' ? 'success-message' : 'error-message';
+            messages.textContent = text;
+            messages.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        };
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
             }
-            
-            // The form will submit normally to Laravel
-            // Loading state will be visible until page reloads
+
+            form.classList.add('form-sending');
+            submitButton.textContent = 'Sending message...';
+            submitButton.disabled = true;
+
+            messages.textContent = '';
+            messages.className = '';
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': form.querySelector('input[name=_token]').value,
+                        'Accept': 'application/json'
+                    },
+                    body: new FormData(form)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage(`✅ ${data.status}`);
+                    form.reset();
+                } else {
+                    const errorText = data.message || (data.errors ? Object.values(data.errors)[0][0] : 'Failed to send support message');
+                    showMessage(errorText, 'error');
+                }
+            } catch (err) {
+                showMessage('Failed to send support message', 'error');
+            } finally {
+                form.classList.remove('form-sending');
+                submitButton.textContent = 'Send message';
+                submitButton.disabled = false;
+            }
         });
-        
+
         // Enhanced input interactions
         const inputs = form.querySelectorAll('.form-input, .form-textarea');
         inputs.forEach(input => {
             input.addEventListener('focus', function() {
                 this.parentElement.style.transform = 'translateY(-2px)';
             });
-            
+
             input.addEventListener('blur', function() {
                 this.parentElement.style.transform = 'translateY(0)';
             });

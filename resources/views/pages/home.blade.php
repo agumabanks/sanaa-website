@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="row gy-4">
-      @foreach(\App\Models\Offering::all() as $offering)
+      @forelse(\App\Models\Offering::latest()->take(3)->get() as $offering)
       <div class="col-12 col-lg-4 appear-animation" data-appear-animation="fadeInUpShorter">
         <div class="feature-box feature-box-style-2 h-100">
           <div class="feature-box-icon"></div>
@@ -44,7 +44,11 @@
           </div>
         </div>
       </div>
-      @endforeach
+      @empty
+      <div class="col-12 text-center">
+        <p class="text-color-black opacity-7">Offerings will be added soon.</p>
+      </div>
+      @endforelse
     </div>
   </div>
 </section>

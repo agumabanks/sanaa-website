@@ -238,7 +238,7 @@
         <li><a href="#" class="hover:underline">Sanaa finance Licenses</a></li>
         <li><a href="#" class="hover:underline">Consumer Health Privacy</a></li>
         <li><a href="#" class="hover:underline">Hardware Compliance Certifications</a></li>
-        <li><a href="https://opencorporates.com/companies/ug/80020002748293" class="hover:underline">Sanaa Co.</a></li>
+        <li><a href="https://opencorporates.com/companies/ug/80020002748293" class="hover:underline">Open Corporates.</a></li>
       </ul>
       
     </div>

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Database\Seeders\BlogSeeder;
 use Database\Seeders\TeamMemberSeeder;
+use Database\Seeders\OfferingSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             BlogSeeder::class,
             TeamMemberSeeder::class,
+            OfferingSeeder::class,
         ]);
     }
 }

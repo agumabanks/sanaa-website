@@ -21,114 +21,30 @@
         </div>
       </section>
 
-
-      
-
-    <!-- Sanaa OS/ERP Section (responsive improvements for small screens) -->
 <section id="services" class="section section-height-3 bg-primary border-0 m-0 appear-animation" data-appear-animation="fadeIn">
   <div class="container my-3">
-    <!-- Heading -->
     <div class="row mb-5">
       <div class="col text-center appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="200">
-        <h2 class="text-2xl font-weight-bold text-color-black mb-2">Sanaa OS/ERP</h2>
+        <h2 class="text-2xl font-weight-bold text-color-black mb-2">Sanaa Products & Services</h2>
       </div>
     </div>
-
-    <!-- First row -->
-    <div class="row mb-lg-4 gy-4"> <!-- gy-4 adds vertical gap on <lg screens -->
-
-      <!-- SOKO 24 -->
-      <div class="col-12 col-lg-4 appear-animation" data-appear-animation="fadeInLeftShorter" data-appear-animation-delay="300">
-        <div class="feature-box feature-box-style-2 h-100">
-          <div class="feature-box-icon"></div>
-          <div class="feature-box-info d-flex flex-column h-100">
-            <h4 class="font-weight-bold text-color-black text-4 mb-2">SOKO 24</h4>
-            <p class="text-color-black opacity-7 flex-grow-1">
-              Our online shopping destination features authentic brands, everyday essentials, beauty/personal care items, and cutting‑edge gadgets. Our e‑commerce platform strives to redefine the shopping experience by focusing on value addition and supply chain innovation.
-            </p>
-            <!-- FULL‑WIDTH ON XS, AUTO ON SM+ -->
-            <a href="https://soko.sanaa.co" target="_blank" class="block w-full text-center sm:inline-block sm:w-auto mt-3 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100 transition">
-              Visit Soko 24
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sanaa Fi. -->
-      <div class="col-12 col-lg-4 appear-animation" data-appear-animation="fadeInUpShorter">
-        <div class="feature-box feature-box-style-2 h-100">
-          <div class="feature-box-icon"></div>
-          <div class="feature-box-info d-flex flex-column h-100">
-            <h4 class="font-weight-bold text-color-black text-4 mb-2">SANAA Fi.</h4>
-            <p class="text-color-black opacity-7 flex-grow-1">
-              Provide the simplest and most reliable financial solution for businesses across Africa. From receiving payments to accessing credit, Sanaa Fi aims to simplify the way businesses manage their finances in Africa.
-            </p>
-            <a href="https://fin.sanaa.co" target="_blank" class="block w-full text-center sm:inline-block sm:w-auto mt-3 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100 transition">
-              Visit Sanaa Fin
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- SANAA MEDIA -->
-      <div class="col-12 col-lg-4 appear-animation" data-appear-animation="fadeInRightShorter" data-appear-animation-delay="300">
-        <div class="feature-box feature-box-style-2 h-100">
-          <div class="feature-box-icon"></div>
-          <div class="feature-box-info d-flex flex-column h-100">
-            <h4 class="font-weight-bold text-color-black text-4 mb-2">SANAA MEDIA</h4>
-            <p class="text-color-black opacity-7 flex-grow-1">
-              Serving African content creators by enabling them to build fully digital media brands ready to bridge the gap between the world's youngest continent, still primarily served by traditional media.
-            </p>
-            <a href="https://media.sanaa.co" target="_blank" class="block w-full text-center sm:inline-block sm:w-auto mt-3 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100 transition">
-              Visit Sanaa Media
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Second row -->
     <div class="row gy-4">
-      <!-- Oyes -->
-      <div class="col-12 col-lg-4 appear-animation" data-appear-animation="fadeInLeftShorter" data-appear-animation-delay="300">
-        <div class="feature-box feature-box-style-2 h-100">
-          <div class="feature-box-icon"></div>
-          <div class="feature-box-info d-flex flex-column h-100">
-            <h4 class="font-weight-bold text-color-black text-4 mb-2">Oyes</h4>
-            <p class="text-color-black opacity-7 flex-grow-1">
-              Logistics service for the delivery of goods from and through a network of local partners and suppliers on our various marketplaces, solving one of the biggest logistical hurdles hindering the e‑commerce industry on the continent.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- WOO + -->
+      @foreach(\App\Models\Offering::all() as $offering)
       <div class="col-12 col-lg-4 appear-animation" data-appear-animation="fadeInUpShorter">
         <div class="feature-box feature-box-style-2 h-100">
           <div class="feature-box-icon"></div>
           <div class="feature-box-info d-flex flex-column h-100">
-            <h4 class="font-weight-bold text-color-black text-4 mb-2">WOO +</h4>
-            <p class="text-color-black opacity-7 flex-grow-1">
-              WOO+ is a line of digital media player software programs developed by Sanaa aimed at subscription‑based streaming services that allow members to watch high‑quality, original African TV shows and movies, ad‑free, on Internet‑connected devices.
-            </p>
+            <h4 class="font-weight-bold text-color-black text-4 mb-2">{{ $offering->title }}</h4>
+            <p class="text-color-black opacity-7 flex-grow-1">{{ $offering->description }}</p>
+            @if($offering->link)
+              <a href="{{ $offering->link }}" target="_blank" class="block w-full text-center sm:inline-block sm:w-auto mt-3 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100 transition">
+                Visit {{ $offering->title }}
+              </a>
+            @endif
           </div>
         </div>
       </div>
-
-      <!-- ilé -->
-      <div class="col-12 col-lg-4 appear-animation" data-appear-animation="fadeInRightShorter" data-appear-animation-delay="300">
-        <div class="feature-box feature-box-style-2 h-100">
-          <div class="feature-box-icon">
-            <i class="icons icon-screen-paypal text-color-black"></i>
-          </div>
-          <div class="feature-box-info d-flex flex-column h-100">
-            <h4 class="font-weight-bold text-color-black text-4 mb-2">ilé</h4>
-            <p class="text-color-black opacity-7 flex-grow-1">
-              Online real estate marketplace where tenants & owners meet to find properties for sale or rent: houses, apartments, building plots, garages, offices, shops and industrial premises—from new constructions to exceptional historical buildings—all across Africa.
-            </p>
-          </div>
-        </div>
-      </div>
+      @endforeach
     </div>
   </div>
 </section>

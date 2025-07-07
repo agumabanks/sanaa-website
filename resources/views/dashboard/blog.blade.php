@@ -29,6 +29,43 @@
                     </div>
                     <x-button>Create</x-button>
                 </form>
+
+                @php($posts = \App\Models\Blog::orderByDesc('created_at')->get())
+                @if($posts->count())
+                    <h3 class="text-lg font-semibold mb-4">Manage Posts</h3>
+                    <div class="space-y-6">
+                        @foreach($posts as $post)
+                            <div class="border p-4 rounded">
+                                <form method="POST" action="{{ route('dashboard.blog.update', $post) }}" enctype="multipart/form-data" class="space-y-4">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="mb-4">
+                                        <x-label for="title-{{ $post->id }}" value="Title" />
+                                        <x-input id="title-{{ $post->id }}" name="title" class="w-full" value="{{ $post->title }}" />
+                                    </div>
+                                    <div class="mb-4">
+                                        <x-label for="excerpt-{{ $post->id }}" value="Excerpt" />
+                                        <textarea id="excerpt-{{ $post->id }}" name="excerpt" class="w-full rounded">{{ $post->excerpt }}</textarea>
+                                    </div>
+                                    <div class="mb-4">
+                                        <x-label for="body-{{ $post->id }}" value="Body" />
+                                        <textarea id="body-{{ $post->id }}" name="body" class="w-full rounded" rows="5">{{ $post->body }}</textarea>
+                                    </div>
+                                    <div class="mb-4">
+                                        <x-label for="image-{{ $post->id }}" value="Image" />
+                                        <input type="file" name="image" id="image-{{ $post->id }}">
+                                    </div>
+                                    <x-button>Update</x-button>
+                                </form>
+                                <form method="POST" action="{{ route('dashboard.blog.destroy', $post) }}" class="mt-2">
+                                    @csrf
+                                    @method('DELETE')
+                                    <x-button class="bg-red-500 hover:bg-red-600">Delete</x-button>
+                                </form>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
     </div>

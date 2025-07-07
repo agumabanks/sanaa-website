@@ -35,6 +35,7 @@
                     <a href="{{ route('dashboard.team') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Team</a>
                     <a href="{{ route('dashboard.careers') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Careers</a>
                     <a href="{{ route('dashboard.partners') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Partners</a>
+                    <a href="{{ route('dashboard.offerings') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Offerings</a>
                     <a href="{{ route('dashboard.developer-platforms') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Developers</a>
                     <a href="{{ route('dashboard.hardware-rentals') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Hardware Rentals</a>
                     <a href="{{ route('dashboard.prices') }}" class="block px-3 py-2 rounded hover:bg-gray-700">Prices</a>

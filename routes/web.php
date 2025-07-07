@@ -27,8 +27,8 @@ Route::get('/policy', [PageController::class, 'policy'])->name('policy');
 Route::get('/company', [PageController::class, 'company'])->name('company');
 Route::get('/support', [PageController::class, 'support'])->name('support');
 Route::post('/support', [SupportController::class, 'send'])->name('support.send');
-Route::get('/products', [PageController::class, 'products'])->name('products');
-Route::get('/services', [PageController::class, 'services'])->name('services');
+Route::get('/products', [\App\Http\Controllers\OfferingController::class, 'index'])->defaults('type', 'product')->name('products');
+Route::get('/services', [\App\Http\Controllers\OfferingController::class, 'index'])->defaults('type', 'service')->name('services');
 Route::get('/bulk-sms', [PageController::class, 'bulkSms'])->name('bulk-sms');
 Route::get('/prices', [PageController::class, 'prices'])->name('prices');
 Route::get('/careers', [CareerController::class, 'index'])->name('careers');
@@ -102,6 +102,11 @@ Route::middleware([
         return view('dashboard.prices');
     })->name('dashboard.prices');
 
+    Route::get('/dashboard/offerings', function () {
+        $items = \App\Models\Offering::all();
+        return view('dashboard.offerings', compact('items'));
+    })->name('dashboard.offerings');
+
     Route::get('/dashboard/policies', function () {
         $terms = Policy::where('key', 'terms')->first();
         $seller = Policy::where('key', 'seller-policies')->first();
@@ -109,6 +114,8 @@ Route::middleware([
     })->name('dashboard.policies');
 
     Route::post('/dashboard/blog', [BlogController::class, 'store'])->name('dashboard.blog.store');
+    Route::put('/dashboard/blog/{blog}', [BlogController::class, 'update'])->name('dashboard.blog.update');
+    Route::delete('/dashboard/blog/{blog}', [BlogController::class, 'destroy'])->name('dashboard.blog.destroy');
     Route::post('/dashboard/category', [\App\Http\Controllers\BusinessCategoryController::class, 'store'])->name('dashboard.category.store');
     Route::post('/dashboard/team', [TeamController::class, 'store'])->name('dashboard.team.store');
     Route::put('/dashboard/team/{member}', [TeamController::class, 'update'])->name('dashboard.team.update');
@@ -119,4 +126,8 @@ Route::middleware([
     Route::post('/dashboard/hardware-rental', [HardwareRentalController::class, 'store'])->name('dashboard.hardware-rental.store');
     Route::post('/dashboard/price', [PriceController::class, 'store'])->name('dashboard.price.store');
     Route::post('/dashboard/policy/{key}', [PolicyController::class, 'update'])->name('dashboard.policy.update');
+
+    Route::post('/dashboard/offering', [\App\Http\Controllers\OfferingController::class, 'store'])->name('dashboard.offering.store');
+    Route::put('/dashboard/offering/{offering}', [\App\Http\Controllers\OfferingController::class, 'update'])->name('dashboard.offering.update');
+    Route::delete('/dashboard/offering/{offering}', [\App\Http\Controllers\OfferingController::class, 'destroy'])->name('dashboard.offering.destroy');
 });

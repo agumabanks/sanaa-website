@@ -479,6 +479,7 @@
 		}
 </style>
 
+
 <!-- Small‑screen button refinements -->
 <style>
   /* Tailwind already handles responsive sizing; this tweak only reduces button font‑size on the very smallest screens */
@@ -1006,6 +1007,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     <script src="{{ asset('js/app.js') }}"></script>
+
+<!-- THIS IS THE GOOGLE TAG LINK -->
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyB69FGalbnIiQhtTsuaGPkCODLcKut2xAY",
+    authDomain: "sanaaos.firebaseapp.com",
+    projectId: "sanaaos",
+    storageBucket: "sanaaos.firebasestorage.app",
+    messagingSenderId: "957614256068",
+    appId: "1:957614256068:web:0f801e646284f29a707e91",
+    measurementId: "G-GRDX5S3V1B"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+
+
     @stack('scripts')
 </body>
 </html>

@@ -545,7 +545,7 @@
     }
   </style> --}}
     </head>
- <body class="font-sans antialiased"> 
+<body class="font-sans antialiased bg-white text-black dark:bg-black dark:text-white">
     <!-- <body id="body" class="one-page alternative-font-5" data-plugin-scroll-spy data-plugin-options="{'target': '#header'}"> -->
 
     <!-- Header -->

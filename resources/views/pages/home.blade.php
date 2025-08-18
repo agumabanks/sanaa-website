@@ -6,48 +6,42 @@
   <div class="body">
     <div role="main" class="main">
       <!-- Hero Section -->
-      <section id="hero" class="bg-black text-white flex items-center justify-center min-h-[70vh] px-4">
-        <div class="text-center space-y-6">
-          <h1 class="text-4xl text-white opacity-75  sm:text-5xl md:text-6xl font-extrabold tracking-tight">
+      <section id="hero" class="relative flex items-center justify-center min-h-[70vh] overflow-hidden px-4">
+        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover">
+          <source src="https://cdn.coverr.co/videos/coverr-black-and-white-business-people-1630/1080p.mp4" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 bg-black/50"></div>
+        <div class="relative z-10 text-center space-y-6">
+          <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white">
             Building the future we want
           </h1>
-          <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+          <p class="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto">
             Our mission is to empower businesses with modern digital infrastructure for payments, media and commerce.
           </p>
           <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#services" class="bg-white text-black font-semibold px-8 py-3 rounded-md hover:bg-gray-200 transition">Explore Sanaa</a>
-            <a href="https://soko.sanaa.co" target="_blank" class="border border-white px-8 py-3 rounded-md hover:bg-white hover:text-black transition">Shop on Soko 24</a>
+            <a href="#services" class="btn-cta">Explore Sanaa</a>
+            <a href="https://soko.sanaa.co" target="_blank" class="btn-cta bg-transparent border border-white text-white hover:bg-white hover:text-black">Shop on Soko 24</a>
           </div>
         </div>
       </section>
 
-<section id="services" class="section section-height-3 bg-primary border-0 m-0 appear-animation" data-appear-animation="fadeIn">
-  <div class="container my-3">
-    <div class="row mb-5">
-      <div class="col text-center appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="200">
-        <h2 class="text-2xl font-weight-bold text-color-black mb-2">Sanaa Products & Services</h2>
-      </div>
-    </div>
-    <div class="row gy-4">
+<section id="services" class="py-16 bg-gray-100 dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <h2 class="text-2xl font-bold text-center mb-10">Sanaa Products & Services</h2>
+    <div class="grid gap-8 md:grid-cols-3">
       @forelse(\App\Models\Offering::latest()->take(3)->get() as $offering)
-      <div class="col-12 col-lg-4 appear-animation" data-appear-animation="fadeInUpShorter">
-        <div class="feature-box feature-box-style-2 h-100">
-          <div class="feature-box-icon"></div>
-          <div class="feature-box-info d-flex flex-column h-100">
-            <h4 class="font-weight-bold text-color-black text-4 mb-2">{{ $offering->title }}</h4>
-            <p class="text-color-black opacity-7 flex-grow-1">{{ $offering->description }}</p>
-            @if($offering->link)
-              <a href="{{ $offering->link }}" target="_blank" class="block w-full text-center sm:inline-block sm:w-auto mt-3 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100 transition">
-                Visit {{ $offering->title }}
-              </a>
-            @endif
+        <div class="group relative bg-white dark:bg-gray-800 rounded-lg p-8 shadow-sm hover:shadow-lg transition overflow-hidden">
+          <div class="mb-4 text-green-600 text-4xl">
+            <i class="fas fa-cube"></i>
           </div>
+          <h4 class="font-bold text-lg mb-2">{{ $offering->title }}</h4>
+          <p class="text-sm opacity-70">{{ $offering->description }}</p>
+          @if($offering->link)
+            <a href="{{ $offering->link }}" target="_blank" class="absolute inset-0 flex items-center justify-center bg-black/80 text-white opacity-0 group-hover:opacity-100 transition">Learn More</a>
+          @endif
         </div>
-      </div>
       @empty
-      <div class="col-12 text-center">
-        <p class="text-color-black opacity-7">Offerings will be added soon.</p>
-      </div>
+        <div class="text-center col-span-3 text-gray-600 dark:text-gray-300">Offerings will be added soon.</div>
       @endforelse
     </div>
   </div>
@@ -57,19 +51,27 @@
 
 
     <!-- Team Section -->
-    <section class="py-16 bg-white">
+    <section class="py-16 bg-white dark:bg-gray-800">
       <div class="container mx-auto px-4">
         <h2 class="text-3xl font-bold mb-8 text-center">Meet the Team</h2>
         <div class="grid md:grid-cols-3 gap-8">
           @foreach($teamMembers as $member)
-          <div class="text-center">
+          <div class="relative text-center group" tabindex="0" aria-label="More about {{ $member->name }}">
             @if($member->photo)
-            <img src="{{ asset('storage/'.$member->photo) }}" alt="{{ $member->name }}" class="w-32 h-32 rounded-full mx-auto mb-4">
+            <img src="{{ asset('storage/'.$member->photo) }}" alt="{{ $member->name }}" class="w-32 h-32 rounded-full mx-auto mb-4 grayscale group-hover:grayscale-0 group-focus:grayscale-0 transition" loading="lazy">
             @endif
             <h3 class="text-xl font-semibold">{{ $member->name }}</h3>
             @if($member->title)
-            <p class="text-gray-600">{{ $member->title }}</p>
+            <p class="text-gray-600 dark:text-gray-300">{{ $member->title }}</p>
             @endif
+            <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-white text-sm rounded-full opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition">
+              @if($member->title)
+              <span class="font-semibold">{{ $member->title }}</span>
+              @endif
+              @if($member->bio)
+              <p class="px-4 mt-1">{{ $member->bio }}</p>
+              @endif
+            </div>
           </div>
           @endforeach
         </div>

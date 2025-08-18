@@ -268,21 +268,29 @@
     <section class="py-16 bg-gray-100">
       <div class="container mx-auto px-4">
         <h2 class="text-3xl font-bold mb-8 text-center">Latest from our blog</h2>
-        <div class="grid md:grid-cols-3 gap-8">
-          @foreach(\App\Models\Blog::orderByDesc('created_at')->take(3)->get() as $blog)
-          <div class="bg-white rounded-lg shadow hover:shadow-md transition">
-            @if($blog->image)
-            <img src="{{ asset('storage/'.$blog->image) }}" alt="{{ $blog->title }}" class="w-full h-48 object-cover rounded-t-lg">
-            @endif
-            <div class="p-4">
-              <h3 class="text-xl font-semibold mb-2">
-                <a href="{{ route('blog.show', $blog->slug) }}" class="hover:underline">{{ $blog->title }}</a>
-              </h3>
-              <p class="text-sm text-gray-700">{{ $blog->excerpt }}</p>
-              <a href="{{ route('blog.show', $blog->slug) }}" class="text-primary hover:underline mt-2 inline-block">Read More</a>
+        <div class="relative">
+          <div class="swiper blog-swiper">
+            <div class="swiper-wrapper">
+              @foreach(\App\Models\Blog::orderByDesc('created_at')->take(6)->get() as $blog)
+              <div class="swiper-slide h-auto">
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-transform duration-300 hover:-translate-y-1 flex flex-col h-full">
+                  @if($blog->image)
+                  <img src="{{ asset('storage/'.$blog->image) }}" alt="{{ $blog->title }}" class="h-48 w-full object-cover">
+                  @endif
+                  <div class="p-4 flex flex-col flex-1">
+                    <h3 class="text-xl font-semibold mb-2">
+                      <a href="{{ route('blog.show', $blog->slug) }}" class="hover:underline">{{ $blog->title }}</a>
+                    </h3>
+                    <p class="text-sm text-gray-600 flex-1">{{ $blog->excerpt }}</p>
+                    <a href="{{ route('blog.show', $blog->slug) }}" class="text-primary hover:underline mt-4">Read More</a>
+                  </div>
+                </div>
+              </div>
+              @endforeach
             </div>
+            <div class="swiper-button-next blog-swiper-button-next"></div>
+            <div class="swiper-button-prev blog-swiper-button-prev"></div>
           </div>
-          @endforeach
         </div>
         <div class="text-center mt-8">
           <a href="{{ route('blog.index') }}" class="btn btn-primary">View all posts</a>
@@ -499,6 +507,25 @@ document.addEventListener('DOMContentLoaded', function() {
       const productId = this.getAttribute('data-product-id');
       openProductModal(productId);
     });
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  new Swiper('.blog-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 24,
+    breakpoints: {
+      768: { slidesPerView: 2 },
+      1024: { slidesPerView: 3 }
+    },
+    navigation: {
+      nextEl: '.blog-swiper-button-next',
+      prevEl: '.blog-swiper-button-prev'
+    },
+    keyboard: {
+      enabled: true
+    },
+    a11y: true
   });
 });
 </script>

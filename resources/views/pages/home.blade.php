@@ -279,6 +279,7 @@
                 <a href="{{ route('blog.show', $blog->slug) }}" class="hover:underline">{{ $blog->title }}</a>
               </h3>
               <p class="text-sm text-gray-700">{{ $blog->excerpt }}</p>
+              <a href="{{ route('blog.show', $blog->slug) }}" class="text-primary hover:underline mt-2 inline-block">Read More</a>
             </div>
           </div>
           @endforeach

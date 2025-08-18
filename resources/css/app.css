@@ -16,4 +16,7 @@
     .btn-cta {
         @apply px-8 py-3 rounded-md font-semibold bg-white text-black dark:bg-green-600 dark:text-white transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500;
     }
+    .btn-cta-outline {
+        @apply px-8 py-3 rounded-md font-semibold border border-white text-white bg-transparent hover:bg-white hover:text-black transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500;
+    }
 }

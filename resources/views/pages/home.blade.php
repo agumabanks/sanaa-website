@@ -20,7 +20,7 @@
           </p>
           <div class="flex flex-col sm:flex-row justify-center gap-4">
             <a href="#services" class="btn-cta">Explore Sanaa</a>
-            <a href="https://soko.sanaa.co" target="_blank" class="btn-cta bg-transparent border border-white text-white hover:bg-white hover:text-black">Shop on Soko 24</a>
+            <a href="https://soko.sanaa.co" target="_blank" class="btn-cta-outline">Shop on Soko 24</a>
           </div>
         </div>
       </section>

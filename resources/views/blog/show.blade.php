@@ -9,7 +9,7 @@
         @if($post->image)
             <img src="{{ asset('storage/'.$post->image) }}" alt="{{ $post->title }}" class="rounded-lg mb-6">
         @endif
-        {!! nl2br(e($post->body)) !!}
+        {!! Illuminate\Support\Str::markdown($post->body) !!}
     </article>
 </div>
 @endsection

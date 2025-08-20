@@ -1,69 +1,114 @@
 <?php
+// app/Http/Controllers/BlogController.php (Enhanced)
 
-// app/Http/Controllers/BlogController.php
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\BlogCategory;
+use App\Models\BlogTag;
 use App\Models\BlogAnalytics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
 
 class BlogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Blog::with(['author', 'tags', 'analytics'])
+        $query = Blog::with(['author', 'category', 'tags'])
             ->published()
             ->orderByDesc('featured')
             ->orderByDesc('published_at');
 
+        // Handle category filtering
+        if ($request->has('category') && $request->category) {
+            $query->whereHas('category', function($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        // Handle tag filtering
+        if ($request->has('tag') && $request->tag) {
+            $query->whereHas('tags', function($q) use ($request) {
+                $q->where('slug', $request->tag);
+            });
+        }
+
         // Handle infinite scroll AJAX requests
         if ($request->ajax()) {
             $blogs = $query->paginate(6);
+            
+            $articlesData = $blogs->map(function($blog) {
+                return [
+                    'id' => $blog->id,
+                    'title' => $blog->title,
+                    'slug' => $blog->slug,
+                    'excerpt' => $blog->excerpt,
+                    'featured_image_url' => $blog->featured_image_url,
+                    'author' => $blog->author ? $blog->author->name : 'Sanaa Team',
+                    'category' => $blog->category ? $blog->category->name : null,
+                    'formatted_date' => $blog->formatted_date,
+                    'relative_date' => $blog->relative_date,
+                    'reading_time' => $blog->reading_time,
+                    'views' => number_format($blog->views),
+                    'likes' => $blog->likes,
+                    'url' => $blog->url,
+                    'featured' => $blog->featured
+                ];
+            });
+            
             return response()->json([
-                'articles' => $blogs->items(),
+                'articles' => $articlesData,
                 'has_more' => $blogs->hasMorePages(),
-                'next_page' => $blogs->nextPageUrl()
+                'next_page' => $blogs->nextPageUrl(),
+                'current_page' => $blogs->currentPage()
             ]);
         }
 
         $blogs = $query->paginate(12);
-        $trending = $this->getTrendingPosts();
-        $topics = $this->getPopularTopics();
+        $featuredPost = Blog::published()->featured()->first();
+        $trendingPosts = $this->getTrendingPosts();
+        $categories = $this->getPopularCategories();
+        $tags = $this->getPopularTags();
 
-        return view('blog.index', compact('blogs', 'trending', 'topics'));
+        return view('blog.index', compact('blogs', 'featuredPost', 'trendingPosts', 'categories', 'tags'));
     }
 
     public function show(Blog $blog, Request $request)
     {
-        // Track page view
-        $blog->increment('views');
-        
-        // Track detailed analytics
-        BlogAnalytics::create([
-            'blog_id' => $blog->id,
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'referrer' => $request->header('referer'),
-            'event_type' => 'page_view'
-        ]);
+        // Check if blog is published
+        if ($blog->status !== 'published' || ($blog->published_at && $blog->published_at > now())) {
+            abort(404);
+        }
+
+        // Track page view (with session-based duplicate prevention)
+        $viewKey = "blog_viewed_{$blog->id}_" . $request->ip();
+        if (!Session::has($viewKey)) {
+            $blog->incrementViews();
+            Session::put($viewKey, true);
+        }
 
         $relatedPosts = $this->getRelatedPosts($blog);
-        $readingTime = $this->calculateReadingTime($blog->body);
+        $readingTime = $blog->reading_time;
 
-        // SEO optimizations
+        // Check user engagement status
+        $userEngagement = $this->getUserEngagement($blog, $request);
+
+        // SEO data
         $seoData = [
-            'title' => $blog->title . ' | Sanaa Blog',
-            'description' => $blog->excerpt,
-            'image' => $blog->featured_image ? asset('storage/' . $blog->featured_image) : null,
-            'url' => route('blog.show', $blog->slug),
-            'published_time' => $blog->published_at->toISOString(),
+            'title' => $blog->meta_title ?: ($blog->title . ' | Sanaa Blog'),
+            'description' => $blog->meta_description ?: $blog->excerpt,
+            'keywords' => $blog->keywords,
+            'image' => $blog->featured_image_url,
+            'url' => $blog->url,
+            'published_time' => $blog->published_at ? $blog->published_at->toISOString() : $blog->created_at->toISOString(),
             'modified_time' => $blog->updated_at->toISOString(),
-            'author' => $blog->author->name ?? 'Sanaa Team',
-            'reading_time' => $readingTime
+            'author' => $blog->author ? $blog->author->name : 'Sanaa Team',
+            'reading_time' => $readingTime,
+            'category' => $blog->category ? $blog->category->name : null
         ];
 
-        return view('blog.show', compact('blog', 'relatedPosts', 'seoData', 'readingTime'));
+        return view('blog.show', compact('blog', 'relatedPosts', 'seoData', 'readingTime', 'userEngagement'));
     }
 
     public function like(Blog $blog, Request $request)
@@ -71,21 +116,32 @@ class BlogController extends Controller
         $ip = $request->ip();
         $sessionKey = "blog_liked_{$blog->id}_{$ip}";
         
-        if (!session($sessionKey)) {
+        if (!Session::has($sessionKey)) {
             $blog->increment('likes');
-            session([$sessionKey => true]);
+            Session::put($sessionKey, true);
             
-            // Track engagement
+            // Track engagement analytics
             BlogAnalytics::create([
                 'blog_id' => $blog->id,
                 'ip_address' => $ip,
-                'event_type' => 'like'
+                'user_agent' => $request->userAgent(),
+                'event_type' => 'like',
+                'metadata' => ['timestamp' => now()->timestamp]
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'likes' => $blog->fresh()->likes,
+                'liked' => true,
+                'message' => 'Article liked!'
             ]);
         }
 
         return response()->json([
-            'likes' => $blog->fresh()->likes,
-            'liked' => true
+            'success' => false,
+            'likes' => $blog->likes,
+            'liked' => true,
+            'message' => 'Already liked!'
         ]);
     }
 
@@ -94,20 +150,31 @@ class BlogController extends Controller
         $ip = $request->ip();
         $sessionKey = "blog_bookmarked_{$blog->id}_{$ip}";
         
-        if (!session($sessionKey)) {
+        if (!Session::has($sessionKey)) {
             $blog->increment('bookmarks');
-            session([$sessionKey => true]);
+            Session::put($sessionKey, true);
             
             BlogAnalytics::create([
                 'blog_id' => $blog->id,
                 'ip_address' => $ip,
-                'event_type' => 'bookmark'
+                'user_agent' => $request->userAgent(),
+                'event_type' => 'bookmark',
+                'metadata' => ['timestamp' => now()->timestamp]
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'bookmarks' => $blog->fresh()->bookmarks,
+                'bookmarked' => true,
+                'message' => 'Article bookmarked!'
             ]);
         }
 
         return response()->json([
-            'bookmarks' => $blog->fresh()->bookmarks,
-            'bookmarked' => true
+            'success' => false,
+            'bookmarks' => $blog->bookmarks,
+            'bookmarked' => true,
+            'message' => 'Already bookmarked!'
         ]);
     }
 
@@ -118,263 +185,116 @@ class BlogController extends Controller
         BlogAnalytics::create([
             'blog_id' => $blog->id,
             'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
             'event_type' => 'share',
-            'metadata' => $request->only(['platform', 'referrer'])
+            'metadata' => [
+                'platform' => $request->input('platform', 'unknown'),
+                'referrer' => $request->header('referer'),
+                'timestamp' => now()->timestamp
+            ]
         ]);
 
         return response()->json([
-            'shares' => $blog->fresh()->shares
+            'success' => true,
+            'shares' => $blog->fresh()->shares,
+            'message' => 'Share tracked!'
         ]);
     }
 
     public function trackAnalytics(Request $request)
     {
         $validated = $request->validate([
-            'event' => 'required|string',
-            'data' => 'array',
-            'blog_id' => 'sometimes|exists:blogs,id',
-            'timestamp' => 'required|integer'
+            'blog_id' => 'required|exists:blogs,id',
+            'event_type' => 'required|string|in:scroll_depth,reading_time,text_selection,font_change,speed_read',
+            'value' => 'nullable|numeric',
+            'metadata' => 'nullable|array'
         ]);
 
         BlogAnalytics::create([
-            'blog_id' => $validated['blog_id'] ?? null,
+            'blog_id' => $validated['blog_id'],
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
-            'event_type' => $validated['event'],
-            'metadata' => $validated['data'] ?? []
+            'event_type' => $validated['event_type'],
+            'value' => $validated['value'] ?? null,
+            'metadata' => $validated['metadata'] ?? []
         ]);
 
-        return response()->json(['status' => 'tracked']);
+        return response()->json(['success' => true]);
     }
 
-    private function getTrendingPosts()
+    // Helper methods
+    protected function getTrendingPosts()
     {
         return Cache::remember('trending_posts', 3600, function () {
-            return Blog::published()
-                ->where('published_at', '>=', now()->subDays(7))
-                ->orderBy('views', 'desc')
-                ->orderBy('likes', 'desc')
-                ->take(5)
+            return Blog::trending()
+                ->with(['author', 'category'])
+                ->limit(5)
                 ->get();
         });
     }
 
-    private function getPopularTopics()
+    protected function getRelatedPosts(Blog $blog)
     {
-        return Cache::remember('popular_topics', 3600, function () {
-            // This would depend on your tag/category implementation
-            return ['Technology', 'Finance', 'Innovation', 'Africa', 'Startups'];
-        });
-    }
+        return Cache::remember("related_posts_{$blog->id}", 1800, function () use ($blog) {
+            $query = Blog::published()
+                ->where('id', '!=', $blog->id)
+                ->with(['author', 'category']);
 
-    private function getRelatedPosts(Blog $blog)
-    {
-        return Blog::published()
-            ->where('id', '!=', $blog->id)
-            ->where(function($query) use ($blog) {
-                // Simple related posts based on tags or category
-                if ($blog->tags) {
-                    $query->whereHas('tags', function($q) use ($blog) {
-                        $q->whereIn('name', $blog->tags->pluck('name'));
-                    });
+            // First try to find posts in the same category
+            if ($blog->category_id) {
+                $related = $query->where('category_id', $blog->category_id)->limit(3)->get();
+                if ($related->count() >= 3) {
+                    return $related;
                 }
-            })
-            ->orderBy('views', 'desc')
-            ->take(3)
-            ->get();
+            }
+
+            // Then try posts with similar tags
+            if ($blog->tags->count() > 0) {
+                $tagIds = $blog->tags->pluck('id');
+                $related = $query->whereHas('tags', function($q) use ($tagIds) {
+                    $q->whereIn('blog_tag_id', $tagIds);
+                })->limit(3)->get();
+                if ($related->count() >= 3) {
+                    return $related;
+                }
+            }
+
+            // Fallback to recent popular posts
+            return $query->popular()->limit(3)->get();
+        });
     }
 
-    private function calculateReadingTime($content)
+    protected function getPopularCategories()
     {
-        $wordCount = str_word_count(strip_tags($content));
-        $wordsPerMinute = 200; // Average reading speed
-        return ceil($wordCount / $wordsPerMinute);
-    }
-}
-
-// app/Models/Blog.php (Enhanced)
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
-
-class Blog extends Model
-{
-    use HasFactory;
-
-    protected $fillable = [
-        'title',
-        'slug',
-        'excerpt',
-        'body',
-        'featured_image',
-        'author_id',
-        'status',
-        'featured',
-        'published_at',
-        'reading_time',
-        'views',
-        'likes',
-        'shares',
-        'bookmarks'
-    ];
-
-    protected $casts = [
-        'published_at' => 'datetime',
-        'featured' => 'boolean',
-        'views' => 'integer',
-        'likes' => 'integer',
-        'shares' => 'integer',
-        'bookmarks' => 'integer'
-    ];
-
-    // Scopes
-    public function scopePublished($query)
-    {
-        return $query->where('status', 'published')
-                    ->where('published_at', '<=', now());
+        return Cache::remember('popular_categories', 3600, function () {
+            return BlogCategory::active()
+                ->withCount('blogs')
+                ->having('blogs_count', '>', 0)
+                ->orderByDesc('blogs_count')
+                ->limit(8)
+                ->get();
+        });
     }
 
-    public function scopeFeatured($query)
+    protected function getPopularTags()
     {
-        return $query->where('featured', true);
+        return Cache::remember('popular_tags', 3600, function () {
+            return BlogTag::withCount('blogs')
+                ->having('blogs_count', '>', 0)
+                ->orderByDesc('blogs_count')
+                ->limit(10)
+                ->get();
+        });
     }
 
-    // Relationships
-    public function author()
+    protected function getUserEngagement(Blog $blog, Request $request)
     {
-        return $this->belongsTo(User::class, 'author_id');
-    }
-
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class);
-    }
-
-    public function analytics()
-    {
-        return $this->hasMany(BlogAnalytics::class);
-    }
-
-    // Mutators
-    public function setTitleAttribute($value)
-    {
-        $this->attributes['title'] = $value;
-        $this->attributes['slug'] = Str::slug($value);
-    }
-
-    // Accessors
-    public function getReadingTimeAttribute()
-    {
-        if ($this->attributes['reading_time']) {
-            return $this->attributes['reading_time'];
-        }
+        $ip = $request->ip();
         
-        $wordCount = str_word_count(strip_tags($this->body));
-        return ceil($wordCount / 200);
-    }
-
-    public function getFormattedDateAttribute()
-    {
-        return $this->published_at ? $this->published_at->format('M d, Y') : null;
-    }
-
-    public function getUrlAttribute()
-    {
-        return route('blog.show', $this->slug);
-    }
-}
-
-// app/Models/BlogAnalytics.php (New)
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class BlogAnalytics extends Model
-{
-    protected $fillable = [
-        'blog_id',
-        'ip_address',
-        'user_agent',
-        'referrer',
-        'event_type',
-        'metadata'
-    ];
-
-    protected $casts = [
-        'metadata' => 'array'
-    ];
-
-    public function blog()
-    {
-        return $this->belongsTo(Blog::class);
-    }
-}
-
-// database/migrations/xxxx_enhance_blogs_table.php
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
-class EnhanceBlogsTable extends Migration
-{
-    public function up()
-    {
-        Schema::table('blogs', function (Blueprint $table) {
-            $table->string('featured_image')->nullable()->after('body');
-            $table->unsignedBigInteger('author_id')->nullable()->after('featured_image');
-            $table->enum('status', ['draft', 'published', 'archived'])->default('draft')->after('author_id');
-            $table->boolean('featured')->default(false)->after('status');
-            $table->timestamp('published_at')->nullable()->after('featured');
-            $table->integer('reading_time')->nullable()->after('published_at');
-            $table->integer('views')->default(0)->after('reading_time');
-            $table->integer('likes')->default(0)->after('views');
-            $table->integer('shares')->default(0)->after('likes');
-            $table->integer('bookmarks')->default(0)->after('shares');
-            
-            $table->foreign('author_id')->references('id')->on('users')->onDelete('set null');
-            $table->index(['status', 'published_at']);
-            $table->index(['featured', 'published_at']);
-        });
-    }
-
-    public function down()
-    {
-        Schema::table('blogs', function (Blueprint $table) {
-            $table->dropForeign(['author_id']);
-            $table->dropColumn([
-                'featured_image', 'author_id', 'status', 'featured',
-                'published_at', 'reading_time', 'views', 'likes',
-                'shares', 'bookmarks'
-            ]);
-        });
-    }
-}
-
-// database/migrations/xxxx_create_blog_analytics_table.php
-class CreateBlogAnalyticsTable extends Migration
-{
-    public function up()
-    {
-        Schema::create('blog_analytics', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('blog_id')->nullable();
-            $table->string('ip_address', 45);
-            $table->text('user_agent')->nullable();
-            $table->string('referrer')->nullable();
-            $table->string('event_type');
-            $table->json('metadata')->nullable();
-            $table->timestamps();
-
-            $table->foreign('blog_id')->references('id')->on('blogs')->onDelete('cascade');
-            $table->index(['blog_id', 'event_type']);
-            $table->index(['created_at']);
-        });
-    }
-
-    public function down()
-    {
-        Schema::dropIfExists('blog_analytics');
+        return [
+            'liked' => Session::has("blog_liked_{$blog->id}_{$ip}"),
+            'bookmarked' => Session::has("blog_bookmarked_{$blog->id}_{$ip}"),
+            'viewed' => Session::has("blog_viewed_{$blog->id}_{$ip}")
+        ];
     }
 }

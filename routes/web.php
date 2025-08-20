@@ -44,6 +44,58 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
+
+
+// Blog routes
+Route::prefix('blog')->name('blog.')->group(function () {
+    Route::get('/', [BlogController::class, 'index'])->name('index');
+    Route::get('/{blog:slug}', [BlogController::class, 'show'])->name('show');
+    Route::post('/{blog}/like', [BlogController::class, 'like'])->name('like');
+    Route::post('/{blog}/bookmark', [BlogController::class, 'bookmark'])->name('bookmark');
+    Route::post('/{blog}/share', [BlogController::class, 'share'])->name('share');
+});
+
+// API routes for AJAX functionality
+Route::prefix('api')->name('api.')->group(function () {
+    Route::post('analytics/track', [BlogController::class, 'trackAnalytics'])->name('analytics.track');
+    Route::get('blogs', [BlogController::class, 'index'])->name('blogs.index');
+    Route::post('blogs/{blog}/like', [BlogController::class, 'like'])->name('blogs.like');
+    Route::post('blogs/{blog}/bookmark', [BlogController::class, 'bookmark'])->name('blogs.bookmark');
+    Route::post('blogs/{blog}/share', [BlogController::class, 'share'])->name('blogs.share');
+});
+
+// Newsletter subscription
+Route::post('newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+
+// Admin blog management routes (if needed)
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('blogs', AdminBlogController::class);
+    Route::get('analytics', [AdminBlogController::class, 'analytics'])->name('analytics');
+});
+
+// Author pages
+Route::get('author/{author:slug}', [AuthorController::class, 'show'])->name('author.show');
+
+// RSS Feed
+Route::get('blog/feed', [BlogController::class, 'feed'])->name('blog.feed');
+
+// Sitemap
+Route::get('sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('sitemap/blogs.xml', [SitemapController::class, 'blogs'])->name('sitemap.blogs');
+
+// Search
+Route::get('search', [SearchController::class, 'index'])->name('search');
+Route::post('search', [SearchController::class, 'search'])->name('search.post');
+
+// Category and tag routes
+Route::get('category/{category:slug}', [BlogController::class, 'category'])->name('blog.category');
+Route::get('tag/{tag:slug}', [BlogController::class, 'tag'])->name('blog.tag');
+
+// Archive routes
+Route::get('archive/{year}', [BlogController::class, 'archive'])->name('blog.archive.year');
+Route::get('archive/{year}/{month}', [BlogController::class, 'archive'])->name('blog.archive.month');
+
+
 // Team
 Route::get('/team', [TeamController::class, 'index'])->name('team.index');
 

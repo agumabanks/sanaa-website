@@ -410,8 +410,6 @@
 }
 </style>
 
-<script src="https://cdn.tailwindcss.com"></script>
-
 <style>
         /* Dropdown animations */
         .dropdown-content {
@@ -511,30 +509,21 @@
        
        	<link id="skinCSS" rel="stylesheet" href="{{ asset('storage/css/skins/default.css') }}">
 
-        <link rel="stylesheet" href="{{ asset('storage/css/css/custom.css') }}">
+        <!-- Mobile Metas -->
+                <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
 
-
-
-		<!-- Mobile Metas -->
-		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
-
-		<!-- Web Fonts  -->
-		<link id="googleFonts" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800%7CShadows+Into+Light&display=swap" rel="stylesheet" type="text/css">
-
-             <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
+                <!-- Web Fonts  -->
+                <link id="googleFonts" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800%7CShadows+Into+Light&display=swap" rel="stylesheet" type="text/css">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
 
 
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @else
-             <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
-
         @endif
 
 
@@ -949,14 +938,14 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', (e) => {
                 e.stopPropagation();
                 content.classList.toggle('hidden');
-                overlay.classList.toggle('active');
+                if (overlay) overlay.classList.toggle('active');
                 button.setAttribute('aria-expanded', content.classList.contains('hidden') ? 'false' : 'true');
             });
 
             // Close dropdown when clicking outside
             document.addEventListener('click', () => {
                 content.classList.add('hidden');
-                overlay.classList.remove('active');
+                if (overlay) overlay.classList.remove('active');
                 button.setAttribute('aria-expanded', 'false');
             });
         });
@@ -965,9 +954,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
 
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('active');
-        });
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+        }
     </script>
 
     <!-- Scripts -->
@@ -1006,7 +997,6 @@ document.addEventListener('DOMContentLoaded', function() {
 						<script src="{{ asset('storage/js/examples/examples.portfolio.js') }}"></script>
 
 
-    <script src="{{ asset('js/app.js') }}"></script>
 
 <!-- THIS IS THE GOOGLE TAG LINK -->
 <script type="module">

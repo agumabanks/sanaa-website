@@ -61,41 +61,53 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const likeBtn = document.getElementById('like-button');
-    likeBtn.addEventListener('click', async () => {
-        likeBtn.disabled = true;
-        try {
-            const data = await post('/api/blogs/{{ $post->id }}/like');
-            document.getElementById('likes-count').innerText = data.likes;
-            animate(likeBtn);
-        } finally {
-            likeBtn.disabled = false;
-        }
-    });
+    if (likeBtn) {
+        likeBtn.addEventListener('click', async () => {
+            likeBtn.disabled = true;
+            try {
+                const data = await post('/api/blogs/{{ $post->id }}/like');
+                document.getElementById('likes-count').innerText = data.likes;
+                animate(likeBtn);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                likeBtn.disabled = false;
+            }
+        });
+    }
 
     const shareBtn = document.getElementById('share-button');
-    shareBtn.addEventListener('click', async () => {
-        shareBtn.disabled = true;
-        try {
-            const data = await post('/api/blogs/{{ $post->id }}/share');
-            document.getElementById('shares-count').innerText = data.shares;
-            animate(shareBtn);
-        } finally {
-            shareBtn.disabled = false;
-        }
-    });
+    if (shareBtn) {
+        shareBtn.addEventListener('click', async () => {
+            shareBtn.disabled = true;
+            try {
+                const data = await post('/api/blogs/{{ $post->id }}/share');
+                document.getElementById('shares-count').innerText = data.shares;
+                animate(shareBtn);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                shareBtn.disabled = false;
+            }
+        });
+    }
 
     const saveBtn = document.getElementById('save-button');
-    saveBtn.addEventListener('click', async () => {
-        saveBtn.disabled = true;
-        try {
-            const data = await post('/api/blogs/{{ $post->id }}/save');
-            document.getElementById('saves-count').innerText = data.saves;
-            saveBtn.textContent = 'Saved';
-            animate(saveBtn);
-        } finally {
-            saveBtn.disabled = false;
-        }
-    });
+    if (saveBtn) {
+        saveBtn.addEventListener('click', async () => {
+            saveBtn.disabled = true;
+            try {
+                const data = await post('/api/blogs/{{ $post->id }}/save');
+                document.getElementById('saves-count').innerText = data.saves;
+                saveBtn.textContent = 'Saved';
+                animate(saveBtn);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                saveBtn.disabled = false;
+            }
+        });
+    }
 
     const moreBtn = document.getElementById('more-button');
     const moreMenu = document.getElementById('more-menu');

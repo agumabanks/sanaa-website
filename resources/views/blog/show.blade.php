@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         likeBtn.addEventListener('click', async () => {
             likeBtn.disabled = true;
             try {
-                const data = await post('/api/blogs/{{ $post->id }}/like');
+                const data = await post('/api/blogs/{{ $post->slug }}/like');
                 document.getElementById('likes-count').innerText = data.likes;
                 animate(likeBtn);
             } catch (err) {
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         shareBtn.addEventListener('click', async () => {
             shareBtn.disabled = true;
             try {
-                const data = await post('/api/blogs/{{ $post->id }}/share');
+                const data = await post('/api/blogs/{{ $post->slug }}/share');
                 document.getElementById('shares-count').innerText = data.shares;
                 animate(shareBtn);
             } catch (err) {
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveBtn.addEventListener('click', async () => {
             saveBtn.disabled = true;
             try {
-                const data = await post('/api/blogs/{{ $post->id }}/save');
+                const data = await post('/api/blogs/{{ $post->slug }}/save');
                 document.getElementById('saves-count').innerText = data.saves;
                 saveBtn.textContent = 'Saved';
                 animate(saveBtn);

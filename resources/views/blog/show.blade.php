@@ -14,13 +14,15 @@
             <span><span id="likes-count">{{ $post->likes }}</span> likes</span>
             <span>•</span>
             <span><span id="shares-count">{{ $post->shares }}</span> shares</span>
+            <span>•</span>
+            <span><span id="saves-count">{{ $post->saves }}</span> saves</span>
         </div>
         <div class="flex items-center space-x-4 mb-6">
-            <button id="like-button" class="text-primary">Like</button>
-            <button id="share-button" class="text-primary">Share</button>
-            <button id="save-button" class="text-primary">Save</button>
+            <button id="like-button" class="text-primary transition transform">Like</button>
+            <button id="share-button" class="text-primary transition transform">Share</button>
+            <button id="save-button" class="text-primary transition transform">Save</button>
             <div class="relative">
-                <button id="more-button" class="text-primary">More</button>
+                <button id="more-button" class="text-primary transition">More</button>
                 <div id="more-menu" class="hidden absolute right-0 mt-2 bg-white border rounded shadow-lg text-sm">
                     <a href="#" class="block px-4 py-2">Follow author</a>
                     <a href="#" class="block px-4 py-2">Follow publication</a>
@@ -40,27 +42,71 @@
 
 @push('scripts')
 <script>
-async function post(path) {
-    const res = await fetch(path, {method: 'POST', headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'}});
-    return res.json();
-}
+document.addEventListener('DOMContentLoaded', () => {
+    async function post(path) {
+        const res = await fetch(path, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            }
+        });
+        if (!res.ok) throw new Error('Request failed');
+        return res.json();
+    }
 
-document.getElementById('like-button').addEventListener('click', async () => {
-    const data = await post('/api/blogs/{{ $post->id }}/like');
-    document.getElementById('likes-count').innerText = data.likes;
-});
+    const animate = el => {
+        el.classList.add('scale-110');
+        setTimeout(() => el.classList.remove('scale-110'), 150);
+    };
 
-document.getElementById('share-button').addEventListener('click', async () => {
-    const data = await post('/api/blogs/{{ $post->id }}/share');
-    document.getElementById('shares-count').innerText = data.shares;
-});
+    const likeBtn = document.getElementById('like-button');
+    likeBtn.addEventListener('click', async () => {
+        likeBtn.disabled = true;
+        try {
+            const data = await post('/api/blogs/{{ $post->id }}/like');
+            document.getElementById('likes-count').innerText = data.likes;
+            animate(likeBtn);
+        } finally {
+            likeBtn.disabled = false;
+        }
+    });
 
-document.getElementById('save-button').addEventListener('click', async () => {
-    await post('/api/blogs/{{ $post->id }}/save');
-});
+    const shareBtn = document.getElementById('share-button');
+    shareBtn.addEventListener('click', async () => {
+        shareBtn.disabled = true;
+        try {
+            const data = await post('/api/blogs/{{ $post->id }}/share');
+            document.getElementById('shares-count').innerText = data.shares;
+            animate(shareBtn);
+        } finally {
+            shareBtn.disabled = false;
+        }
+    });
 
-document.getElementById('more-button').addEventListener('click', () => {
-    document.getElementById('more-menu').classList.toggle('hidden');
+    const saveBtn = document.getElementById('save-button');
+    saveBtn.addEventListener('click', async () => {
+        saveBtn.disabled = true;
+        try {
+            const data = await post('/api/blogs/{{ $post->id }}/save');
+            document.getElementById('saves-count').innerText = data.saves;
+            saveBtn.textContent = 'Saved';
+            animate(saveBtn);
+        } finally {
+            saveBtn.disabled = false;
+        }
+    });
+
+    const moreBtn = document.getElementById('more-button');
+    const moreMenu = document.getElementById('more-menu');
+    moreBtn.addEventListener('click', () => {
+        moreMenu.classList.toggle('hidden');
+    });
+    document.addEventListener('click', (e) => {
+        if (!moreMenu.contains(e.target) && e.target !== moreBtn) {
+            moreMenu.classList.add('hidden');
+        }
+    });
 });
 </script>
 @endpush

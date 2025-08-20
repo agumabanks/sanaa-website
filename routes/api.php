@@ -10,6 +10,6 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/blogs', [BlogController::class, 'index']);
 Route::get('/blogs/{blog:slug}', [BlogController::class, 'show']);
-Route::post('/blogs/{blog}/like', [BlogController::class, 'like']);
-Route::post('/blogs/{blog}/share', [BlogController::class, 'share']);
-Route::post('/blogs/{blog}/save', [BlogController::class, 'save']);
+Route::post('/blogs/{blog:slug}/like', [BlogController::class, 'like']);
+Route::post('/blogs/{blog:slug}/share', [BlogController::class, 'share']);
+Route::post('/blogs/{blog:slug}/save', [BlogController::class, 'save']);

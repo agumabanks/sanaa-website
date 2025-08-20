@@ -23,7 +23,7 @@ class BlogApiTest extends TestCase
     {
         $post = Blog::factory()->create();
 
-        $this->postJson("/api/blogs/{$post->id}/like")->assertOk()->assertJson(['likes' => 1]);
+        $this->postJson("/api/blogs/{$post->slug}/like")->assertOk()->assertJson(['likes' => 1]);
 
         $this->assertEquals(1, $post->fresh()->likes);
     }

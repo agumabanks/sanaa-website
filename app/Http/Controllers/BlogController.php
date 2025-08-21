@@ -18,7 +18,8 @@ class BlogController extends Controller
         $query = Blog::with(['author', 'category', 'tags'])
             ->published()
             ->orderByDesc('featured')
-            ->orderByDesc('published_at');
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at');
 
         // Handle category filtering
         if ($request->has('category') && $request->category) {

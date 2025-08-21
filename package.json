@@ -20,6 +20,7 @@
         "vite": "^6.0"
     },
     "dependencies": {
-        "swiper": "^11.2.0"
+        "swiper": "^11.2.0",
+        "web-vitals": "^5.1.0"
     }
 }

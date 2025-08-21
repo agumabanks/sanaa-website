@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {{-- SEO Meta Tags --}}
-    <title>{{ $seoData['title'] ?? 'Sanaa Blog - Minimalist Thoughts' }}</title>
+    <title>{{ $seoData['title'] ?? 'Sanaa Co. Blog - Minimalist Thoughts' }}</title>
     <meta name="description" content="{{ $seoData['description'] ?? 'Discover minimalist insights and profound thoughts on technology, design, and innovation.' }}">
     <meta name="keywords" content="{{ $seoData['keywords'] ?? 'sanaa, blog, minimalism, technology, design, innovation' }}">
     <meta name="author" content="{{ $seoData['author'] ?? 'Sanaa Team' }}">

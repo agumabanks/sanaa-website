@@ -45,9 +45,9 @@ class SupportController extends Controller
 
         try {
             $response = Http::get('https://custom.trustsmsuganda.com/text_api/', [
-                'api_key' => 'ZCH6QK',
+                'api_key' => env('TRUSTSMS_API_KEY', 'ZCH6QK'),
                 'sender' => '',
-                'contacts' => '256706272481',
+                'contacts' => env('SUPPORT_PHONE', '256706272481'),
                 'text' => $text,
             ]);
             $success = $response->successful();

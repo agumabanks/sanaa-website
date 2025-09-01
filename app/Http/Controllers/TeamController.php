@@ -22,10 +22,10 @@ class TeamController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required',
-            'title' => 'nullable',
-            'bio' => 'nullable',
-            'photo' => 'nullable|image',
+            'name' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
+            'bio' => 'nullable|string|max:1000',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('photo')) {
@@ -40,10 +40,10 @@ class TeamController extends Controller
     public function update(Request $request, TeamMember $member)
     {
         $data = $request->validate([
-            'name' => 'required',
-            'title' => 'nullable',
-            'bio' => 'nullable',
-            'photo' => 'nullable|image',
+            'name' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
+            'bio' => 'nullable|string|max:1000',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('photo')) {

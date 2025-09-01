@@ -1216,9 +1216,9 @@ input:focus {
                alt="{{ $blog->author->name ?? 'Anonymous' }}" 
                class="author-avatar">
           <div class="author-details">
-            <a href="{{ route('author.show', $blog->author->slug ?? '#') }}" class="author-name">
+            <span class="author-name">
               {{ $blog->author->name ?? 'Anonymous' }}
-            </a>
+            </span>
           </div>
         </div>
         
@@ -1261,7 +1261,7 @@ input:focus {
     
     <!-- Article Content -->
     <div class="article-content" id="articleContent">
-      {!! $blog->content !!}
+      {{ $blog->content }}
     </div>
     
     <!-- Tags -->
@@ -1339,9 +1339,9 @@ input:focus {
         {{ $blog->author->bio }}
       </div>
       
-      <a href="{{ route('author.show', $blog->author->slug) }}" class="follow-author-btn">
+      <button class="follow-author-btn" disabled>
         Follow Author
-      </a>
+      </button>
     </section>
     @endif
     
@@ -1760,21 +1760,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function sendAnalytics() {
       timeSpent = Math.round((Date.now() - startTime) / 1000);
       
-      fetch('{{ route("blog.analytics", $blog->id) }}', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-        },
-        body: JSON.stringify({
-          time_spent: timeSpent,
-          scroll_depth: maxScrollDepth,
-          liked: isLiked,
-          bookmarked: isBookmarked,
-          completed_reading: maxScrollDepth >= 90
-        })
-      }).catch(error => {
-        console.error('Analytics tracking error:', error);
+      // Analytics tracking - route doesn't exist, so we'll just log to console
+      console.log('Analytics:', {
+        time_spent: timeSpent,
+        scroll_depth: maxScrollDepth,
+        liked: isLiked,
+        bookmarked: isBookmarked,
+        completed_reading: maxScrollDepth >= 90
       });
     }
     
@@ -1788,9 +1780,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }, 30000);
   }
-  
+
   trackAnalytics();
-  
+
   // Smooth scroll for anchor links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
@@ -1801,7 +1793,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
-  
+
   // Lazy loading for images
   if ('IntersectionObserver' in window) {
     const imageObserver = new IntersectionObserver((entries, observer) => {
@@ -1814,10 +1806,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     });
-    
+
     document.querySelectorAll('img[loading="lazy"]').forEach(img => {
       imageObserver.observe(img);
     });
+  }
+});
+
+// Performance monitoring
+window.addEventListener('load', () => {
+  // Log performance metrics
+  if (window.performance && window.performance.timing) {
+    const timing = window.performance.timing;
+    const pageLoadTime = timing.loadEventEnd - timing.navigationStart;
+
+    // Note: Performance tracking route doesn't exist, so we'll skip this
+    console.log('Page load time:', pageLoadTime + 'ms');
   }
 });
 

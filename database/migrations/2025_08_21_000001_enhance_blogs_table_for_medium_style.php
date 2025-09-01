@@ -164,23 +164,40 @@ return new class extends Migration
 
     private function foreignExists(string $table, string $fkName): bool
     {
-        $db = DB::getDatabaseName();
-        $exists = DB::selectOne(
-            "SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS
-             WHERE CONSTRAINT_SCHEMA = ? AND TABLE_NAME = ? AND CONSTRAINT_NAME = ? AND CONSTRAINT_TYPE = 'FOREIGN KEY'",
-            [$db, $table, $fkName]
-        );
-        return (bool) $exists;
+        try {
+            $exists = DB::selectOne(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                [$table]
+            );
+
+            if (!$exists) {
+                return false;
+            }
+
+            // For SQLite, check if the foreign key constraint exists by trying to get table info
+            $pragma = DB::select("PRAGMA foreign_key_list({$table})");
+            foreach ($pragma as $fk) {
+                if (isset($fk->id) && $fk->id === $fkName) {
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     private function indexExists(string $table, string $indexName): bool
     {
-        $db = DB::getDatabaseName();
-        $exists = DB::selectOne(
-            "SELECT INDEX_NAME FROM information_schema.STATISTICS
-             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND INDEX_NAME = ?",
-            [$db, $table, $indexName]
-        );
-        return (bool) $exists;
+        try {
+            $exists = DB::selectOne(
+                "SELECT name FROM sqlite_master WHERE type='index' AND name=?",
+                [$indexName]
+            );
+            return (bool) $exists;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 };

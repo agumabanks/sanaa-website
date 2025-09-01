@@ -17,6 +17,9 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\OfferingController;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\SitemapController;
 use App\Models\Policy;
  
 
@@ -27,8 +30,8 @@ Route::get('/policy', [PageController::class, 'policy'])->name('policy');
 Route::get('/company', [PageController::class, 'company'])->name('company');
 Route::get('/support', [PageController::class, 'support'])->name('support');
 Route::post('/support', [SupportController::class, 'send'])->name('support.send');
-Route::get('/products', [\App\Http\Controllers\OfferingController::class, 'index'])->defaults('type', 'product')->name('products');
-Route::get('/services', [\App\Http\Controllers\OfferingController::class, 'index'])->defaults('type', 'service')->name('services');
+Route::get('/products', [OfferingController::class, 'index'])->defaults('type', 'product')->name('products');
+Route::get('/services', [OfferingController::class, 'index'])->defaults('type', 'service')->name('services');
 Route::get('/bulk-sms', [PageController::class, 'bulkSms'])->name('bulk-sms');
 Route::get('/prices', [PageController::class, 'prices'])->name('prices');
 Route::get('/careers', [CareerController::class, 'index'])->name('careers');
@@ -40,12 +43,6 @@ Route::get('/rent-hardware', [HardwareRentalController::class, 'index'])->name('
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
-// Blog
-Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
-Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
-
-
-
 // Blog routes
 Route::prefix('blog')->name('blog.')->group(function () {
     Route::get('/', [BlogController::class, 'index'])->name('index');
@@ -56,7 +53,7 @@ Route::prefix('blog')->name('blog.')->group(function () {
 });
 
 // API routes for AJAX functionality
-Route::prefix('api')->name('api.')->group(function () {
+Route::prefix('api')->name('api.')->middleware('throttle:60,1')->group(function () {
     Route::post('analytics/track', [BlogController::class, 'trackAnalytics'])->name('analytics.track');
     Route::get('blogs', [BlogController::class, 'index'])->name('blogs.index');
     Route::post('blogs/{blog}/like', [BlogController::class, 'like'])->name('blogs.like');
@@ -65,35 +62,35 @@ Route::prefix('api')->name('api.')->group(function () {
 });
 
 // Newsletter subscription
-Route::post('newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::post('newsletter/subscribe', [NewsletterController::class, 'subscribe'])->middleware('throttle:10,1')->name('newsletter.subscribe');
 
 // Admin blog management routes (if needed)
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('blogs', AdminBlogController::class);
-    Route::get('analytics', [AdminBlogController::class, 'analytics'])->name('analytics');
-});
+// Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+//     Route::resource('blogs', AdminBlogController::class);
+//     Route::get('analytics', [AdminBlogController::class, 'analytics'])->name('analytics');
+// });
 
 // Author pages
-Route::get('author/{author:slug}', [AuthorController::class, 'show'])->name('author.show');
+// Route::get('author/{author:slug}', [AuthorController::class, 'show'])->name('author.show');
 
 // RSS Feed
-Route::get('blog/feed', [BlogController::class, 'feed'])->name('blog.feed');
+// Route::get('blog/feed', [BlogController::class, 'feed'])->name('blog.feed');
 
 // Sitemap
 Route::get('sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('sitemap/blogs.xml', [SitemapController::class, 'blogs'])->name('sitemap.blogs');
 
 // Search
-Route::get('search', [SearchController::class, 'index'])->name('search');
-Route::post('search', [SearchController::class, 'search'])->name('search.post');
+// Route::get('search', [SearchController::class, 'index'])->name('search');
+// Route::post('search', [SearchController::class, 'search'])->name('search.post');
 
 // Category and tag routes
-Route::get('category/{category:slug}', [BlogController::class, 'category'])->name('blog.category');
-Route::get('tag/{tag:slug}', [BlogController::class, 'tag'])->name('blog.tag');
+// Route::get('category/{category:slug}', [BlogController::class, 'category'])->name('blog.category');
+// Route::get('tag/{tag:slug}', [BlogController::class, 'tag'])->name('blog.tag');
 
 // Archive routes
-Route::get('archive/{year}', [BlogController::class, 'archive'])->name('blog.archive.year');
-Route::get('archive/{year}/{month}', [BlogController::class, 'archive'])->name('blog.archive.month');
+// Route::get('archive/{year}', [BlogController::class, 'archive'])->name('blog.archive.year');
+// Route::get('archive/{year}/{month}', [BlogController::class, 'archive'])->name('blog.archive.month');
 
 
 // Team
@@ -168,7 +165,7 @@ Route::middleware([
     Route::post('/dashboard/blog', [BlogController::class, 'store'])->name('dashboard.blog.store');
     Route::put('/dashboard/blog/{blog}', [BlogController::class, 'update'])->name('dashboard.blog.update');
     Route::delete('/dashboard/blog/{blog}', [BlogController::class, 'destroy'])->name('dashboard.blog.destroy');
-    Route::post('/dashboard/category', [\App\Http\Controllers\BusinessCategoryController::class, 'store'])->name('dashboard.category.store');
+    Route::post('/dashboard/category', [BusinessCategoryController::class, 'store'])->name('dashboard.category.store');
     Route::post('/dashboard/team', [TeamController::class, 'store'])->name('dashboard.team.store');
     Route::put('/dashboard/team/{member}', [TeamController::class, 'update'])->name('dashboard.team.update');
     Route::delete('/dashboard/team/{member}', [TeamController::class, 'destroy'])->name('dashboard.team.destroy');
@@ -179,7 +176,7 @@ Route::middleware([
     Route::post('/dashboard/price', [PriceController::class, 'store'])->name('dashboard.price.store');
     Route::post('/dashboard/policy/{key}', [PolicyController::class, 'update'])->name('dashboard.policy.update');
 
-    Route::post('/dashboard/offering', [\App\Http\Controllers\OfferingController::class, 'store'])->name('dashboard.offering.store');
-    Route::put('/dashboard/offering/{offering}', [\App\Http\Controllers\OfferingController::class, 'update'])->name('dashboard.offering.update');
-    Route::delete('/dashboard/offering/{offering}', [\App\Http\Controllers\OfferingController::class, 'destroy'])->name('dashboard.offering.destroy');
+    Route::post('/dashboard/offering', [OfferingController::class, 'store'])->name('dashboard.offering.store');
+    Route::put('/dashboard/offering/{offering}', [OfferingController::class, 'update'])->name('dashboard.offering.update');
+    Route::delete('/dashboard/offering/{offering}', [OfferingController::class, 'destroy'])->name('dashboard.offering.destroy');
 });

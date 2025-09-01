@@ -1009,13 +1009,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
-    apiKey: "AIzaSyB69FGalbnIiQhtTsuaGPkCODLcKut2xAY",
-    authDomain: "sanaaos.firebaseapp.com",
-    projectId: "sanaaos",
-    storageBucket: "sanaaos.firebasestorage.app",
-    messagingSenderId: "957614256068",
-    appId: "1:957614256068:web:0f801e646284f29a707e91",
-    measurementId: "G-GRDX5S3V1B"
+    apiKey: "{{ config('services.firebase.api_key') }}",
+    authDomain: "{{ config('services.firebase.auth_domain') }}",
+    projectId: "{{ config('services.firebase.project_id') }}",
+    storageBucket: "{{ config('services.firebase.storage_bucket') }}",
+    messagingSenderId: "{{ config('services.firebase.messaging_sender_id') }}",
+    appId: "{{ config('services.firebase.app_id') }}",
+    measurementId: "{{ config('services.firebase.measurement_id') }}"
   };
 
   // Initialize Firebase

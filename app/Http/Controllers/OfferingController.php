@@ -18,11 +18,11 @@ class OfferingController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title' => 'required',
-            'type' => 'required',
-            'description' => 'nullable',
-            'link' => 'nullable|url',
-            'image' => 'nullable|image',
+            'title' => 'required|string|max:255',
+            'type' => 'required|in:product,service',
+            'description' => 'nullable|string|max:1000',
+            'link' => 'nullable|url|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
@@ -37,11 +37,11 @@ class OfferingController extends Controller
     public function update(Request $request, Offering $offering)
     {
         $data = $request->validate([
-            'title' => 'required',
-            'type' => 'required',
-            'description' => 'nullable',
-            'link' => 'nullable|url',
-            'image' => 'nullable|image',
+            'title' => 'required|string|max:255',
+            'type' => 'required|in:product,service',
+            'description' => 'nullable|string|max:1000',
+            'link' => 'nullable|url|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('image')) {

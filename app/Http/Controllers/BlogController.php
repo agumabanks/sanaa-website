@@ -10,6 +10,7 @@ use App\Models\BlogAnalytics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 class BlogController extends Controller
 {
@@ -291,11 +292,81 @@ class BlogController extends Controller
     protected function getUserEngagement(Blog $blog, Request $request)
     {
         $ip = $request->ip();
-        
+
         return [
             'liked' => Session::has("blog_liked_{$blog->id}_{$ip}"),
             'bookmarked' => Session::has("blog_bookmarked_{$blog->id}_{$ip}"),
             'viewed' => Session::has("blog_viewed_{$blog->id}_{$ip}")
         ];
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:blogs,slug',
+            'excerpt' => 'nullable|string|max:500',
+            'body' => 'required|string',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'author_id' => 'nullable|exists:users,id',
+            'category_id' => 'nullable|exists:blog_categories,id',
+            'status' => 'required|in:draft,published',
+            'featured' => 'boolean',
+            'published_at' => 'nullable|date',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:160',
+            'keywords' => 'nullable|string|max:255',
+        ]);
+
+        if ($request->hasFile('featured_image')) {
+            $validated['featured_image'] = $request->file('featured_image')->store('blogs', 'public');
+        }
+
+        $blog = Blog::create($validated);
+
+        return redirect()->route('dashboard.blog')->with('success', 'Blog post created successfully');
+    }
+
+    public function update(Request $request, Blog $blog)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:blogs,slug,' . $blog->id,
+            'excerpt' => 'nullable|string|max:500',
+            'body' => 'required|string',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'author_id' => 'nullable|exists:users,id',
+            'category_id' => 'nullable|exists:blog_categories,id',
+            'status' => 'required|in:draft,published',
+            'featured' => 'boolean',
+            'published_at' => 'nullable|date',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:160',
+            'keywords' => 'nullable|string|max:255',
+        ]);
+
+        if ($request->hasFile('featured_image')) {
+            // Delete old image if exists
+            if ($blog->featured_image) {
+                Storage::disk('public')->delete($blog->featured_image);
+            }
+            $validated['featured_image'] = $request->file('featured_image')->store('blogs', 'public');
+        }
+
+        $blog->update($validated);
+
+        return redirect()->route('dashboard.blog')->with('success', 'Blog post updated successfully');
+    }
+
+    public function destroy(Blog $blog)
+    {
+        // Delete featured image if exists
+        if ($blog->featured_image) {
+            Storage::disk('public')->delete($blog->featured_image);
+        }
+
+        $blog->delete();
+
+        return redirect()->route('dashboard.blog')->with('success', 'Blog post deleted successfully');
     }
 }

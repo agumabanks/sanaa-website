@@ -1,10 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.blog')
 
 @section('title', $blog->title . ' - ' . config('app.name'))
-@section('description', Str::limit(strip_tags($blog->content), 160))
+@section('description', Str::limit(strip_tags($blog->body ?? ''), 160))
 
 @push('meta')
 <!-- SEO Meta Tags -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="keywords" content="{{ $blog->tags->pluck('name')->implode(', ') }}">
 <meta name="author" content="{{ $blog->author->name ?? 'Anonymous' }}">
 <meta name="robots" content="index, follow">
@@ -12,7 +13,7 @@
 
 <!-- Open Graph -->
 <meta property="og:title" content="{{ $blog->title }}">
-<meta property="og:description" content="{{ Str::limit(strip_tags($blog->content), 160) }}">
+<meta property="og:description" content="{{ Str::limit(strip_tags($blog->body ?? ''), 160) }}">
 <meta property="og:image" content="{{ $blog->featured_image ? asset('storage/' . $blog->featured_image) : asset('images/default-blog-og.jpg') }}">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:type" content="article">
@@ -27,7 +28,7 @@
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ $blog->title }}">
-<meta name="twitter:description" content="{{ Str::limit(strip_tags($blog->content), 160) }}">
+<meta name="twitter:description" content="{{ Str::limit(strip_tags($blog->body ?? ''), 160) }}">
 <meta name="twitter:image" content="{{ $blog->featured_image ? asset('storage/' . $blog->featured_image) : asset('images/default-blog-twitter.jpg') }}">
 <meta name="twitter:creator" content="{{ $blog->author->twitter_handle ?? '@' . str_replace(' ', '', $blog->author->name ?? 'anonymous') }}">
 
@@ -37,7 +38,7 @@
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "{{ $blog->title }}",
-  "description": "{{ Str::limit(strip_tags($blog->content), 160) }}",
+  "description": "{{ Str::limit(strip_tags($blog->body ?? ''), 160) }}",
   "image": "{{ $blog->featured_image ? asset('storage/' . $blog->featured_image) : asset('images/default-blog-schema.jpg') }}",
   "author": {
     "@type": "Person",
@@ -459,6 +460,31 @@ body {
   height: 1px;
   background: var(--border-visible);
   margin: 3rem 0;
+}
+
+/* Article Content Tables */
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border-subtle);
+  margin: 2rem 0;
+  background: var(--bg-elevated);
+}
+
+.article-content th,
+.article-content td {
+  border: 1px solid var(--border-subtle);
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.article-content thead th {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.article-content tbody tr:nth-child(even) {
+  background: #0c0c0c;
 }
 
 /* Tags */
@@ -1212,12 +1238,12 @@ input:focus {
       
       <div class="article-meta">
         <div class="author-info">
-          <img src="{{ $blog->author->avatar ? asset('storage/' . $blog->author->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($blog->author->name ?? 'Anonymous') . '&background=00ff88&color=000000' }}" 
-               alt="{{ $blog->author->name ?? 'Anonymous' }}" 
+          <img src="{{ $blog->author && $blog->author->avatar ? asset('storage/' . $blog->author->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(($blog->author ? $blog->author->name : 'Anonymous')) . '&background=00ff88&color=000000' }}"
+               alt="{{ $blog->author ? $blog->author->name : 'Anonymous' }}"
                class="author-avatar">
           <div class="author-details">
             <span class="author-name">
-              {{ $blog->author->name ?? 'Anonymous' }}
+              {{ $blog->author ? $blog->author->name : 'Anonymous' }}
             </span>
           </div>
         </div>
@@ -1234,15 +1260,15 @@ input:focus {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M15,1H9V3H15M21,3H3C1.89,3 1,3.89 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V5C23,3.89 22.1,3 21,3M21,19H3V5H21"/>
             </svg>
-            {{ ceil(str_word_count(strip_tags($blog->content)) / 200) }} min read
+            {{ ceil(str_word_count(strip_tags($blog->body ?? '')) / 200) }} min read
           </div>
           
-          @if($blog->views_count)
+          @if($blog->views)
           <div class="meta-item">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z"/>
             </svg>
-            {{ number_format($blog->views_count) }} views
+            {{ number_format($blog->views) }} views
           </div>
           @endif
         </div>
@@ -1261,7 +1287,19 @@ input:focus {
     
     <!-- Article Content -->
     <div class="article-content" id="articleContent">
-      {{ $blog->content }}
+      @php
+        $rawContent = $blog->body ?? '';
+        $plainText = trim(strip_tags($rawContent));
+        $looksLikeHtml = \Illuminate\Support\Str::of($rawContent)->contains(['<p', '<br', '<h', '<ul', '<ol', '<img', '<a ', '<div', '<span', '<code', '<pre', '<blockquote', '<table']);
+      @endphp
+
+      @if($plainText === '')
+        <p style="color: var(--text-secondary)">This article has no content yet.</p>
+      @elseif($looksLikeHtml)
+        {!! $rawContent !!}
+      @else
+        {!! nl2br(e($rawContent)) !!}
+      @endif
     </div>
     
     <!-- Tags -->
@@ -1282,7 +1320,7 @@ input:focus {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5 2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.04L12,21.35Z"/>
           </svg>
-          <span id="likeCount">{{ $blog->likes_count ?? 0 }}</span>
+          <span id="likeCount">{{ $blog->likes ?? 0 }}</span>
         </button>
         
         <button class="engagement-btn" id="shareBtn">
@@ -1402,21 +1440,21 @@ input:focus {
           @endif
           
           <div class="related-post-content">
-            @if($relatedPost->category)
+          @if($relatedPost->category)
             <div class="related-post-category">{{ $relatedPost->category->name }}</div>
-            @endif
-            
-            <h3 class="related-post-title">{{ $relatedPost->title }}</h3>
-            
-            <p class="related-post-excerpt">
-              {{ Str::limit(strip_tags($relatedPost->content), 120) }}
-            </p>
-            
-            <div class="related-post-meta">
-              <span>{{ $relatedPost->published_at ? $relatedPost->published_at->format('M d, Y') : $relatedPost->created_at->format('M d, Y') }}</span>
-              <span>•</span>
-              <span>{{ ceil(str_word_count(strip_tags($relatedPost->content)) / 200) }} min read</span>
-            </div>
+          @endif
+          
+          <h3 class="related-post-title">{{ $relatedPost->title }}</h3>
+          
+          <p class="related-post-excerpt">
+              {{ Str::limit(strip_tags($relatedPost->body ?? ''), 120) }}
+          </p>
+          
+          <div class="related-post-meta">
+            <span>{{ $relatedPost->published_at ? $relatedPost->published_at->format('M d, Y') : $relatedPost->created_at->format('M d, Y') }}</span>
+            <span>•</span>
+            <span>{{ ceil(str_word_count(strip_tags($relatedPost->body ?? '')) / 200) }} min read</span>
+          </div>
           </div>
         </a>
         @endforeach
@@ -1566,7 +1604,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Like Functionality
   let isLiked = localStorage.getItem('liked_{{ $blog->id }}') === 'true';
-  let likeCount = {{ $blog->likes_count ?? 0 }};
+  let likeCount = {{ $blog->likes ?? 0 }};
   
   function updateLikeButtons() {
     const likeBtns = [document.getElementById('likeBtn'), document.getElementById('likeBtnFloat')];
@@ -1595,7 +1633,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateLikeButtons();
     
     // Send AJAX request to server
-    fetch('{{ route("blog.like", $blog->id) }}', {
+    fetch('{{ route("blog.like", $blog->slug) }}', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1638,7 +1676,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateBookmarkButtons();
     
     // Send AJAX request to server
-    fetch('{{ route("blog.bookmark", $blog->id) }}', {
+    fetch('{{ route("blog.bookmark", $blog->slug) }}', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1986,20 +2024,8 @@ window.addEventListener('load', () => {
     const timing = window.performance.timing;
     const pageLoadTime = timing.loadEventEnd - timing.navigationStart;
     
-    fetch('{{ route("blog.performance", $blog->id) }}', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-      },
-      body: JSON.stringify({
-        page_load_time: pageLoadTime,
-        dom_content_loaded: timing.domContentLoadedEventEnd - timing.navigationStart,
-        first_paint: performance.getEntriesByType('paint')[0]?.startTime || 0
-      })
-    }).catch(error => {
-      console.error('Performance tracking error:', error);
-    });
+    // Performance tracking route doesn't exist, so we'll skip this
+    console.log('Performance tracking skipped - route not defined');
   }
 });
 

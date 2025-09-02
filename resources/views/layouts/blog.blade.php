@@ -37,6 +37,8 @@
     <meta name="twitter:image" content="{{ $seoData['image'] ?? asset('images/sanaa-blog-og.jpg') }}">
     <meta name="twitter:site" content="@sanaa_co">
 
+    @stack('meta')
+
     {{-- Structured Data --}}
     @isset($blog)
     <script type="application/ld+json">
@@ -75,6 +77,7 @@
 
     {{-- Styles --}}
     @vite(['resources/css/app.css', 'resources/css/blog.css'])
+    @stack('styles')
 
     {{-- PWA Meta --}}
     <meta name="theme-color" content="#000000">
@@ -164,7 +167,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center space-x-8">
-                    <a href="{{ route('blog.index') }}" class="text-xl font-bold text-white hover:text-green-400 transition-colors">
+                    <a href="https://sanaa.co/" class="text-xl font-bold text-white hover:text-green-400 transition-colors">
                         Sanaa
                     </a>
                     <div class="hidden md:flex space-x-6">

@@ -76,6 +76,20 @@ class BlogController extends Controller
         return view('blog.index', compact('blogs', 'featuredPost', 'trendingPosts', 'categories', 'tags'));
     }
 
+    public function category(BlogCategory $category, Request $request)
+    {
+        // Reuse index() with category filter
+        $request->merge(['category' => $category->slug]);
+        return $this->index($request);
+    }
+
+    public function tag(BlogTag $tag, Request $request)
+    {
+        // Reuse index() with tag filter
+        $request->merge(['tag' => $tag->slug]);
+        return $this->index($request);
+    }
+
     public function show(Blog $blog, Request $request)
     {
         // Check if blog is published

@@ -8,7 +8,9 @@
       <!-- Hero Section -->
       <section id="hero" class="relative flex items-center justify-center min-h-[70vh] overflow-hidden px-4">
         <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover">
-          <source src="https://cdn.coverr.co/videos/coverr-black-and-white-business-people-1630/1080p.mp4" type="video/mp4">
+          <source src="/videos/hero-video.mp4" type="video/mp4">
+          <!-- Fallback for when video fails to load -->
+          <div class="absolute inset-0 bg-gradient-to-br from-green-900 via-gray-900 to-black"></div>
         </video>
         <div class="absolute inset-0 bg-black/50"></div>
         <div class="relative z-10 text-center space-y-6">
@@ -266,39 +268,176 @@
 </div>
 
 
-    <!-- Latest Blog Posts -->
-    <section class="py-16 bg-gray-100">
-      <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-8 text-center">Latest from our blog</h2>
-        <div class="relative">
-          <div class="swiper blog-swiper">
-            <div class="swiper-wrapper">
-              @foreach(\App\Models\Blog::orderByDesc('created_at')->take(6)->get() as $blog)
-              <div class="swiper-slide h-auto">
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-transform duration-300 hover:-translate-y-1 flex flex-col h-full">
-                  @if($blog->image)
-                  <img src="{{ asset('storage/'.$blog->image) }}" alt="{{ $blog->title }}" class="h-48 w-full object-cover">
-                  @endif
-                  <div class="p-4 flex flex-col flex-1">
-                    <h3 class="text-xl font-semibold mb-2">
-                      <a href="{{ route('blog.show', $blog->slug) }}" class="hover:underline">{{ $blog->title }}</a>
-                    </h3>
-                    <p class="text-sm text-gray-600 flex-1">{{ $blog->excerpt }}</p>
-                    <a href="{{ route('blog.show', $blog->slug) }}" class="text-primary hover:underline mt-4">Read More</a>
+    <!-- Latest Blog Posts (Premium) -->
+<!-- Latest Blog Posts (Ultra-Premium MacBook Pro Inspired) -->
+<section id="latest-blog-premium" class="relative py-40 bg-black overflow-hidden">
+  <!-- Ambient lighting (standard utilities only) -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+    <!-- Primary light source -->
+    <div
+      class="absolute -top-80 left-1/2 -translate-x-1/2 w-full max-w-7xl aspect-square rounded-full blur-3xl opacity-10
+             bg-gradient-conic from-emerald-400 via-cyan-400 to-lime-300">
+    </div>
+
+    <!-- Secondary accent lights -->
+    <div
+      class="absolute top-1/4 -left-40 w-full max-w-xl aspect-square rounded-full blur-3xl opacity-10
+             bg-gradient-radial from-emerald-400/20 to-transparent">
+    </div>
+    <div
+      class="absolute bottom-1/4 -right-40 w-full max-w-xl aspect-square rounded-full blur-3xl opacity-10
+             bg-gradient-radial from-cyan-400/20 to-transparent">
+    </div>
+
+    <!-- Subtle texture overlay (removed data-URI noise; keep blend for softness) -->
+    <div class="absolute inset-0 opacity-5 mix-blend-soft-light"></div>
+  </div>
+
+  <div class="container mx-auto px-6 pt-8 relative">
+    <!-- Header -->
+    <div class="text-center max-w-5xl mx-auto mb-24">
+      <div class="inline-flex items-center px-5 py-2.5 rounded-full text-xs font-semibold tracking-widest uppercase
+                  bg-white/5 text-gray-300 border border-white/10 backdrop-blur-xl mb-8
+                  hover:bg-white/10 hover:border-white/20 transition-all duration-500 shadow-lg">
+        <span class="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full mr-4 animate-pulse"></span>
+        Latest Stories
+      </div>
+
+      <h2 class="text-6xl md:text-7xl font-semibold tracking-tight text-white mb-8 leading-none"
+          style="font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+        From our blog
+      </h2>
+
+      <p class="text-xl text-gray-400 font-medium leading-relaxed max-w-3xl mx-auto tracking-tight"
+         style="font-family: 'SF Pro Text', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+        Thoughtful stories on building, design and technology that shape tomorrow's digital landscape.
+      </p>
+    </div>
+
+    <!-- Blog carousel -->
+    <div class="relative">
+      <div class="swiper blog-swiper">
+        <div class="swiper-wrapper pb-4 pt-4">
+          @foreach(\App\Models\Blog::published()->orderByDesc('published_at')->orderByDesc('created_at')->take(6)->get() as $blog)
+          <div class="swiper-slide h-auto ">
+            <article
+              class="group relative p-4 overflow-hidden rounded-3xl bg-white/5 backdrop-blur-2xl border border-white/10
+                     shadow-2xl flex flex-col h-full
+                     hover:bg-white/10 hover:border-white/20 hover:shadow-2xl transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-2">
+
+              <!-- Glass overlays -->
+              <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/10 via-white/5 to-white/10 pointer-events-none opacity-60"></div>
+              <div class="absolute inset-0 rounded-3xl bg-gradient-to-t from-black/5 via-transparent to-white/5 pointer-events-none"></div>
+
+              <!-- Edge highlight -->
+              <div class="absolute inset-px rounded-3xl bg-gradient-to-b from-white/10 via-transparent to-transparent pointer-events-none opacity-40"></div>
+
+              <!-- Image -->
+              <div class="relative aspect-video overflow-hidden rounded-t-3xl">
+                <div class="absolute inset-0 bg-gradient-to-br from-green-500/10 via-transparent to-cyan-500/10 z-10"></div>
+
+                <!-- <img src="{{ $blog->featured_image_url }}" alt="{{ $blog->title }}" loading="lazy"
+                     class="absolute inset-0 h-full w-full object-cover transition-all duration-1000 ease-out
+                            group-hover:scale-110 group-hover:brightness-110 group-hover:contrast-125 group-hover:saturate-150"/> -->
+
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-20"></div>
+
+                @if($blog->category)
+                <a href="{{ route('blog.category', $blog->category->slug) }}"
+                   class="absolute left-7 bottom-7 inline-flex items-center px-4 py-2 rounded-full text-xs font-semibold tracking-wide
+                          bg-white/20 text-white border border-white/30 backdrop-blur-2xl
+                          hover:bg-white/30 hover:border-white/40 transition-all duration-300 z-30 shadow-md hover:shadow-lg hover:scale-105 hover:-translate-y-0.5">
+                  <span class="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full mr-3"></span>
+                  {{ $blog->category->name }}
+                </a>
+                @endif
+              </div>
+
+              <!-- Content -->
+              <div class="p-9 flex flex-col flex-1 relative z-10">
+                <h3 class="text-2xl md:text-3xl font-semibold text-white leading-snug mb-5 group-hover:text-emerald-400 transition-colors duration-300 tracking-tight"
+                    style="font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+                  <a href="{{ $blog->url }}" class="focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60 rounded-2xl block -m-2 p-2">
+                    {{ $blog->title }}
+                  </a>
+                </h3>
+
+                <p class="text-gray-400 line-clamp-3 leading-relaxed mb-8 flex-1 font-medium tracking-tight"
+                   style="font-family: 'SF Pro Text', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+                  {{ $blog->excerpt }}
+                </p>
+
+                <div class="flex items-center justify-between pt-6 border-t border-white/10">
+                  <div class="flex items-center gap-4 pr-2 text-xs text-gray-500">
+                    <!-- <div class="flex items-center gap-3">
+                      <div class="w-7 h-7 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-[11px] font-bold text-black">
+                        {{ strtoupper(substr($blog->author->name ?? 'S', 0, 1)) }}
+                      </div>
+                      <span class="font-medium text-gray-400">{{ $blog->author->name ?? 'Sanaa Team' }}</span>
+                    </div> -->
+                    <!-- <span aria-hidden="true" class="text-gray-600/60">•</span> -->
+                    <time datetime="{{ ($blog->published_at ?? $blog->created_at)->toDateString() }}" class="font-medium text-gray-500">
+                      {{ $blog->formatted_date }}
+                    </time>
+                    <!-- <span aria-hidden="true" class="text-gray-600/60">•</span>
+                    <span class="font-medium text-gray-500">{{ $blog->reading_time }} min</span> -->
                   </div>
+
+                  <a href="{{ $blog->url }}"
+                     class="inline-flex items-center gap-2.5 px-3 py-2.5 rounded-md bg-white/5 hover:bg-emerald-500/20 text-gray-300 hover:text-emerald-400
+                            border border-white/10 hover:border-emerald-500/30 transition-all duration-300 text-xs font-semibold
+                            backdrop-blur-xl hover:shadow-lg group tracking-wide hover:scale-105 hover:-translate-y-0.5">
+                    Read story
+                    <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 opacity-80" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M13.172 12 8.222 7.05l1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"/>
+                    </svg>
+                  </a>
                 </div>
               </div>
-              @endforeach
-            </div>
-            <div class="swiper-button-next blog-swiper-button-next"></div>
-            <div class="swiper-button-prev blog-swiper-button-prev"></div>
+            </article>
           </div>
+          @endforeach
         </div>
-        <div class="text-center mt-8">
-          <a href="{{ route('blog.index') }}" class="btn btn-primary">View all posts</a>
-        </div>
+
+        <!-- Navigation -->
+        <button
+          class="blog-swiper-button-prev absolute left-6 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-full bg-black/40 backdrop-blur-2xl
+                 border border-white/10 text-white/70 hover:text-white hover:bg-black/60 hover:border-white/20 hover:shadow-xl
+                 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:-translate-x-1"
+          aria-label="Previous">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="m10.828 12 4.95 4.95-1.414 1.414L8 12l6.364-6.364 1.414 1.414z"/>
+          </svg>
+        </button>
+        <button
+          class="blog-swiper-button-next absolute right-6 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-full bg-black/40 backdrop-blur-2xl
+                 border border-white/10 text-white/70 hover:text-white hover:bg-black/60 hover:border-white/20 hover:shadow-xl
+                 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:translate-x-1"
+          aria-label="Next">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M13.172 12 8.222 7.05l1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"/>
+          </svg>
+        </button>
       </div>
-    </section>
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center mt-24">
+      <a href="{{ route('blog.index') }}"
+         class="inline-flex items-center justify-center px-10 py-5 rounded-md bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-600
+                hover:from-emerald-400 hover:via-emerald-400 hover:to-emerald-500 text-black font-semibold shadow-2xl
+                hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-500 text-base
+                backdrop-blur-sm border border-emerald-400/30 hover:border-emerald-300/50 relative overflow-hidden group tracking-tight">
+        <span class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></span>
+        <span class="relative. test-white">View all stories</span>
+        <svg class="h-5 w-5 ml-3 relative transition-transform duration-300 group-hover:translate-x-2 opacity-90" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M13.172 12 8.222 7.05l1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
 
 
     <!-- Join Section -->
@@ -512,30 +651,18 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-  new Swiper('.blog-swiper', {
-    slidesPerView: 1,
-    spaceBetween: 24,
-    breakpoints: {
-      768: { slidesPerView: 2 },
-      1024: { slidesPerView: 3 }
-    },
-    navigation: {
-      nextEl: '.blog-swiper-button-next',
-      prevEl: '.blog-swiper-button-prev'
-    },
-    keyboard: {
-      enabled: true
-    },
-    a11y: true
-  });
-});
+// Duplicate Swiper initialization removed - using the premium one in the blog section instead
 </script>
 @endpush
 
 @push('styles')
 <!-- Swiper CSS -->
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+<!-- SF Pro Fonts for Premium Blog Section -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;650;700&display=swap" rel="stylesheet">
 
 <style>
   /* Product card hover effect */
@@ -605,6 +732,24 @@ document.addEventListener('DOMContentLoaded', function() {
     #modalSliderContainer, #modalThumbnail {
       max-height: 300px;
     }
+  }
+  /* Line clamp helper if Tailwind plugin not available */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Ensure premium blog section styles take precedence */
+  #latest-blog-premium .swiper-slide {
+    height: auto !important;
+  }
+  
+  /* Fix any potential z-index conflicts */
+  #latest-blog-premium {
+    position: relative;
+    z-index: 1;
   }
 </style>
 @endpush

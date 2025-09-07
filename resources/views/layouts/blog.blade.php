@@ -8,16 +8,16 @@
 
     {{-- SEO Meta Tags --}}
     <title>{{ $seoData['title'] ?? 'Sanaa Co. Blog - Minimalist Thoughts' }}</title>
-    <meta name="description" content="{{ $seoData['description'] ?? 'Discover minimalist insights and profound thoughts on technology, design, and innovation.' }}">
+    <meta name="description" content="{{ $seoData['description'] ?? 'Sanaa Blog shares practical, minimalist insights on African digital infrastructure—BNPL, POS, EdTech, logistics, and finance. Powered by Sanaa Media, Sanaa Finance, and Soko 24.' }}">
     <meta name="keywords" content="{{ $seoData['keywords'] ?? 'sanaa, blog, minimalism, technology, design, innovation' }}">
     <meta name="author" content="{{ $seoData['author'] ?? 'Sanaa Team' }}">
     <link rel="canonical" href="{{ $seoData['url'] ?? url()->current() }}">
 
     {{-- Open Graph / Facebook --}}
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="{{ $seoData['title'] ?? 'Sanaa Blog' }}">
-    <meta property="og:description" content="{{ $seoData['description'] ?? '' }}">
-    <meta property="og:image" content="{{ $seoData['image'] ?? asset('images/sanaa-blog-og.jpg') }}">
+    <meta property="og:type" content="{{ isset($blog) ? 'article' : 'website' }}">
+    <meta property="og:title" content="{{ $seoData['title'] ?? 'Sanaa Co. Blog - Minimalist Thoughts' }}">
+    <meta property="og:description" content="{{ $seoData['description'] ?? ($blog->excerpt ?? 'Sanaa Blog shares practical, minimalist insights on African digital infrastructure—BNPL, POS, EdTech, logistics, and finance. Powered by Sanaa Media, Sanaa Finance, and Soko 24.') }}">
+    <meta property="og:image" content="{{ $seoData['image'] ?? cdn_asset('storage/images/sanaa.png') }}">
     <meta property="og:url" content="{{ $seoData['url'] ?? url()->current() }}">
     <meta property="og:site_name" content="Sanaa Blog">
     @isset($seoData['published_time'])
@@ -32,9 +32,9 @@
 
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $seoData['title'] ?? 'Sanaa Blog' }}">
-    <meta name="twitter:description" content="{{ $seoData['description'] ?? '' }}">
-    <meta name="twitter:image" content="{{ $seoData['image'] ?? asset('images/sanaa-blog-og.jpg') }}">
+    <meta name="twitter:title" content="{{ $seoData['title'] ?? 'Sanaa Co. Blog - Minimalist Thoughts' }}">
+    <meta name="twitter:description" content="{{ $seoData['description'] ?? ($blog->excerpt ?? 'Discover minimalist insights and profound thoughts on technology, design, and innovation.') }}">
+    <meta name="twitter:image" content="{{ $seoData['image'] ?? cdn_asset('storage/images/sanaa.png') }}">
     <meta name="twitter:site" content="@sanaa_co">
 
     @stack('meta')
@@ -57,7 +57,7 @@
             "name": "Sanaa",
             "logo": {
                 "@type": "ImageObject",
-                "url": "{{ asset('images/sanaa-logo.png') }}"
+                "url": "{{ cdn_asset('images/sanaa-logo.png') }}"
             }
         },
         "datePublished": "{{ $blog->published_at ? $blog->published_at->toISOString() : $blog->created_at->toISOString() }}",
@@ -81,14 +81,19 @@
 
     {{-- PWA Meta --}}
     <meta name="theme-color" content="#000000">
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="manifest" href="{{ cdn_asset('manifest.json') }}">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Sanaa Blog">
 
     {{-- Favicon --}}
-    <link rel="icon" href="{{ asset('favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
+    <link rel="icon" href="{{ cdn_asset('storage/images/sanaa.png') }}">
+    <link rel="apple-touch-icon" href="{{ cdn_asset('storage/images/sanaa.png') }}">
+
+
+    <!-- Favicon -->
+		<!-- <link rel="shortcut icon" href="{{ asset('storage/images/sanaa.png') }}" type="image/x-icon" />
+		<link rel="apple-touch-icon" href="{{ asset('storage/images/sanaa.png') }}"> -->
 
     <style>
         /* Critical CSS for immediate load */
@@ -172,6 +177,10 @@
                     </a>
                     <div class="hidden md:flex space-x-6">
                         <a href="{{ route('blog.index') }}" class="text-gray-300 hover:text-white transition-colors">All Posts</a>
+                        @auth
+                        <a href="{{ route('blog.for-you') }}" class="text-gray-300 hover:text-white transition-colors">For You</a>
+                        @endauth
+                        <a href="{{ route('blog.index', ['featured' => 1]) }}" class="text-gray-300 hover:text-white transition-colors">Featured</a>
                         <a href="{{ route('blog.index', ['category' => 'technology']) }}" class="text-gray-300 hover:text-white transition-colors">Technology</a>
                         <a href="{{ route('blog.index', ['category' => 'design']) }}" class="text-gray-300 hover:text-white transition-colors">Design</a>
                         <a href="{{ route('blog.index', ['category' => 'business']) }}" class="text-gray-300 hover:text-white transition-colors">Business</a>

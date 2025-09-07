@@ -122,4 +122,13 @@ class PageController extends Controller
     {
         return view('pages.prices');
     }
+
+    /**
+     * Display the Why Sanaa marketing page.
+     */
+    public function whySanaa()
+    {
+        $content = include resource_path('content/why-sanaa.php');
+        return view('pages.why-sanaa', ['c' => $content]);
+    }
 }

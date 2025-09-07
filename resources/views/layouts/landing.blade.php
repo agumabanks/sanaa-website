@@ -11,18 +11,23 @@
         <meta name="facebook-domain-verification" content="9sz4w1uhc1h5znmxytx5h8d9ub838m" />
 
  
-		<meta name="keywords" content="Sanaa Co.,Sanaa Brands, soko.ug, soko 24, soko ug,kampala,nasser road, museveni, sanaa, sanaa media, oyes, aguma banks, sanaa finance, sanaa pay, uganda, east africa entreprenuers, jumia, jiji, bank of ugada, aguma ibrahim, aguma banks, king Ceasor" />
-		<meta name="description" content="Sanaa Co. building digital infrastructure solutions, Value addition and supply chain for small, medium and large busineses in Africa.">
+        <meta name="keywords" content="Sanaa Co.,Sanaa Brands, soko.ug, soko 24, soko ug,kampala,nasser road, museveni, sanaa, sanaa media, oyes, aguma banks, sanaa finance, sanaa pay, uganda, east africa entreprenuers, jumia, jiji, bank of ugada, aguma ibrahim, aguma banks, king Ceasor" />
+        <meta name="description" content="Sanaa Co. building digital infrastructure solutions, Value addition and supply chain for small, medium and large busineses in Africa.">
         <meta name="author" content="Aguma Banks">
         <link rel="canonical" href="{{ url()->current() }}" />
         <meta property="og:title" content="Sanaa" />
         <meta property="og:description" content="Sanaa is building digital infrastructure across Africa." />
         <meta property="og:url" content="{{ url()->current() }}" />
         <meta property="og:type" content="website" />
+
+        <!-- Performance hints for YouTube background -->
+        <link rel="preconnect" href="https://www.youtube.com">
+        <link rel="preconnect" href="https://i.ytimg.com">
+        <link rel="preconnect" href="https://www.google.com">
 		
 		   <!-- Subcompany Links for SEO -->
             <link rel="alternate" hreflang="en" href="https://soko.sanaa.co/">
-            <link rel="alternate" hreflang="en" href="https://sanaamedia.com">
+            <link rel="alternate" hreflang="en" href="https://media.sanaa.co">
             <link rel="alternate" hreflang="en" href="https://fi.sanaa.co">
 
 		<!-- Favicon -->
@@ -35,6 +40,87 @@
             }
         </style>
 
+ <style>
+    /* Ultra-premium Swiper customizations */
+    .blog-swiper {
+      padding: 0 80px;
+      overflow: visible;
+    }
+    
+    .blog-swiper .swiper-slide {
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(0.92) translateY(12px);
+      opacity: 0.6;
+    }
+    
+    .blog-swiper .swiper-slide-active {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    
+    .blog-swiper .swiper-slide-next,
+    .blog-swiper .swiper-slide-prev {
+      transform: scale(0.96) translateY(6px);
+      opacity: 0.8;
+    }
+    
+    /* Perfect line clamp */
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    /* Ultra-smooth scrolling */
+    .swiper-wrapper {
+      transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .swiper-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* Premium focus states with perfect radius */
+    *:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+      border-radius: 16px;
+    }
+    
+    /* Perfect responsive behavior */
+    @media (max-width: 1024px) {
+      .blog-swiper {
+        padding: 0 60px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .blog-swiper {
+        padding: 0 24px;
+      }
+      
+      .blog-swiper-button-prev,
+      .blog-swiper-button-next {
+        width: 48px;
+        height: 48px;
+        left: 12px;
+        right: 12px;
+      }
+      
+      .blog-swiper-button-next {
+        right: 12px;
+        left: auto;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .blog-swiper-button-prev,
+      .blog-swiper-button-next {
+        display: none;
+      }
+    }
+  </style>
 
 
 
@@ -1023,6 +1109,66 @@ document.addEventListener('DOMContentLoaded', function() {
   const analytics = getAnalytics(app);
 </script>
 
+
+
+  <script>
+    // Ultra-premium Swiper initialization
+    document.addEventListener('DOMContentLoaded', function() {
+      const swiper = new Swiper('.blog-swiper', {
+        slidesPerView: 1.1,
+        spaceBetween: 28,
+        centeredSlides: true,
+        loop: true,
+        autoplay: {
+          delay: 6000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        },
+        navigation: {
+          nextEl: '.blog-swiper-button-next',
+          prevEl: '.blog-swiper-button-prev',
+        },
+        breakpoints: {
+          640: {
+            slidesPerView: 1.4,
+            spaceBetween: 32,
+          },
+          768: {
+            slidesPerView: 2.1,
+            spaceBetween: 36,
+          },
+          1024: {
+            slidesPerView: 2.4,
+            spaceBetween: 40,
+          },
+          1280: {
+            slidesPerView: 2.8,
+            spaceBetween: 44,
+          },
+          1536: {
+            slidesPerView: 3,
+            spaceBetween: 48,
+          }
+        },
+        effect: 'slide',
+        speed: 1000,
+        grabCursor: true,
+        preventClicks: false,
+        preventClicksPropagation: false,
+        touchEventsTarget: 'container',
+        watchSlidesProgress: true,
+        parallax: true,
+      });
+
+      // Enhanced smooth scrolling behavior
+      swiper.on('slideChange', function() {
+        const activeSlide = document.querySelector('.swiper-slide-active');
+        if (activeSlide) {
+          activeSlide.style.transform = 'scale(1) translateY(0)';
+        }
+      });
+    });
+  </script>
 
     @stack('scripts')
 </body>

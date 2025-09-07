@@ -12,6 +12,51 @@ class Blog extends Model
 {
     use HasFactory;
 
+    protected static function booted()
+    {
+        // Ensure slug is always present and unique when creating
+        static::creating(function (Blog $blog) {
+            $base = $blog->slug ?: $blog->title;
+            $blog->slug = static::generateUniqueSlug($base);
+        });
+
+        // On update, respect manual slug changes; keep stable otherwise
+        static::updating(function (Blog $blog) {
+            // If slug field was changed or cleared, (re)generate a unique, slugified value
+            if ($blog->isDirty('slug')) {
+                $base = $blog->slug ?: $blog->title;
+                $blog->slug = static::generateUniqueSlug($base, $blog->id);
+            }
+
+            // If slug is still empty for any reason, backfill from title
+            if (empty($blog->slug)) {
+                $blog->slug = static::generateUniqueSlug($blog->title, $blog->id);
+            }
+        });
+    }
+
+    /**
+     * Build a URL-safe, unique slug from the given value.
+     */
+    public static function generateUniqueSlug(string $value = null, $ignoreId = null): string
+    {
+        $slug = Str::slug((string) $value);
+        if ($slug === '') {
+            $slug = 'post';
+        }
+
+        $original = $slug;
+        $i = 1;
+        while (static::where('slug', $slug)
+                ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+                ->exists()) {
+            $i++;
+            $slug = $original . '-' . $i;
+        }
+
+        return $slug;
+    }
+
     /**
      * Get the route key for the model.
      */
@@ -103,6 +148,16 @@ class Blog extends Model
         return $this->hasMany(BlogAnalytics::class);
     }
 
+    public function savers()
+    {
+        return $this->belongsToMany(User::class, 'blog_user_saves')->withTimestamps();
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(BlogComment::class)->where('status', 'approved');
+    }
+
     // Mutators
     public function setTitleAttribute($value)
     {
@@ -151,10 +206,10 @@ class Blog extends Model
     public function getFeaturedImageUrlAttribute()
     {
         if ($this->featured_image) {
-            return asset('storage/' . $this->featured_image);
+            return \cdn_storage($this->featured_image);
         }
         // Return a default image or placeholder
-        return asset('images/blog-default.jpg');
+        return \cdn_asset('images/blog-default.jpg');
     }
 
     public function getExcerptAttribute($value)

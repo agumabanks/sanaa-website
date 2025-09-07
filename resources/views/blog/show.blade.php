@@ -917,9 +917,213 @@ body {
   white-space: nowrap;
 }
 
-.newsletter-btn:hover {
+  .newsletter-btn:hover {
   background: var(--accent-green-bright);
   transform: translateY(-2px);
+}
+
+/* Comments */
+.article-comments {
+  margin: 3rem 0;
+}
+
+.comments-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-visible);
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+.comments-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 1rem;
+}
+
+.comments-title {
+  font-family: var(--font-secondary);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.comments-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 .5rem;
+  border-radius: 999px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-visible);
+  color: var(--text-secondary);
+  font-family: var(--font-secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.alert-success {
+  background: rgba(0, 255, 136, 0.08);
+  color: #b6ffd9;
+  border: 1px solid rgba(0, 255, 136, 0.25);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0 1rem;
+  font-family: var(--font-secondary);
+  font-size: 0.9rem;
+}
+
+.alert-error {
+  background: rgba(255, 0, 0, 0.06);
+  color: #ffb3b3;
+  border: 1px solid rgba(255, 64, 64, 0.25);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0 1rem;
+  font-family: var(--font-secondary);
+  font-size: 0.9rem;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.comment-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.comment-input,
+.comment-textarea {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-visible);
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-secondary);
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.comment-input::placeholder,
+.comment-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.comment-input:focus,
+.comment-textarea:focus {
+  outline: none;
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 2px rgba(0,255,136,0.15);
+}
+
+.comment-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.comment-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.comment-hint {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-family: var(--font-secondary);
+  font-size: 0.9rem;
+}
+
+.comment-hint:hover {
+  color: var(--accent-green);
+}
+
+.btn-primary {
+  background: var(--accent-green);
+  color: var(--bg-primary);
+  border: 1px solid var(--accent-green);
+  padding: 0.6rem 1.1rem;
+  border-radius: 12px;
+  font-family: var(--font-secondary);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  background: var(--accent-green-bright);
+  box-shadow: 0 6px 24px rgba(0,255,136,0.16);
+}
+
+.comment-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-family: var(--font-secondary);
+  padding-top: 0.25rem;
+}
+
+.comment-empty .empty-icon {
+  color: var(--accent-green);
+}
+
+.comment-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+
+.comment-item {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 0.75rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.comment-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: block;
+  border: 1px solid var(--border-visible);
+}
+
+.comment-content {
+  min-width: 0;
+}
+
+.comment-header-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-secondary);
+}
+
+.comment-author {
+  font-weight: 700;
+}
+
+.comment-time {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.comment-body {
+  color: var(--text-primary);
+  margin-top: 0.25rem;
 }
 
 /* Font Controls */
@@ -1041,6 +1245,10 @@ body {
   }
 
   .related-posts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comment-row {
     grid-template-columns: 1fr;
   }
 }
@@ -1211,11 +1419,43 @@ input:focus {
       </svg>
     </button>
     
-    <button class="header-btn" id="bookmarkBtn" data-tooltip="Save">
+    <button class="header-btn" id="bookmarkBtn" data-tooltip="Bookmark">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
         <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
       </svg>
     </button>
+
+    <div class="relative inline-block">
+      <button class="header-btn" id="moreMenuBtn" data-tooltip="More">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z"/></svg>
+      </button>
+      <div id="moreMenu" class="hidden absolute right-0 mt-2 w-56 bg-black/90 border border-white/10 rounded-lg shadow-lg z-50">
+        @auth
+          @if($blog->author)
+          <form method="POST" action="{{ route('dashboard.follow', $blog->author) }}" class="border-b border-white/10">
+            @csrf
+            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10">Follow Author — {{ $blog->author->name }}</button>
+          </form>
+          @endif
+          @if($blog->category)
+          <form method="POST" action="{{ route('dashboard.follow.category', $blog->category) }}" class="border-b border-white/10">
+            @csrf
+            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10">Follow Publication — {{ $blog->category->name }}</button>
+          </form>
+          @endif
+          @if($blog->tags && $blog->tags->count())
+            @foreach($blog->tags as $t)
+            <form method="POST" action="{{ route('dashboard.follow.tag', $t) }}" class="border-b border-white/10">
+              @csrf
+              <button type="submit" class="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10">Follow Topic — {{ $t->name }}</button>
+            </form>
+            @endforeach
+          @endif
+        @else
+          <a href="{{ route('login') }}" class="block px-4 py-2 text-sm text-white hover:bg-white/10">Sign in to follow</a>
+        @endauth
+      </div>
+    </div>
   </div>
 </header>
 
@@ -1301,7 +1541,81 @@ input:focus {
         {!! nl2br(e($rawContent)) !!}
       @endif
     </div>
-    
+
+    <!-- Comments -->
+    <section class="article-comments" id="comments">
+      @php($comments = $blog->comments()->latest()->get())
+
+      <div class="comments-card">
+        <div class="comments-header">
+          <h2 class="comments-title">Comments</h2>
+          <span class="comments-count">{{ $comments->count() }}</span>
+        </div>
+
+        @if(session('success'))
+          <div class="alert-success">
+            {{ session('success') }}
+          </div>
+        @endif
+
+        @if ($errors->any())
+          <div class="alert-error">
+            {{ $errors->first() }}
+          </div>
+        @endif
+
+        <form method="POST" action="{{ route('blog.comment', $blog->slug) }}" class="comment-form">
+          @csrf
+          @guest
+            <div class="comment-row">
+              <input class="comment-input" type="text" name="name" placeholder="Your name (optional)">
+              <input class="comment-input" type="email" name="email" placeholder="Your email (optional)">
+            </div>
+          @endguest
+          <textarea class="comment-textarea" name="body" rows="4" required placeholder="Write a thoughtful, kind comment…"></textarea>
+
+          <div class="comment-actions">
+            @guest
+              @if (Route::has('login'))
+                <a href="{{ route('login') }}" class="comment-hint">Sign in for a quicker experience</a>
+              @endif
+            @endguest
+            <button type="submit" class="btn-primary">Post comment</button>
+          </div>
+        </form>
+
+        @if($comments->count() === 0)
+          <div class="comment-empty">
+            <div class="empty-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 17.17V4H4v13.17L5.17 16H20m1-14a1 1 0 0 1 1 1v18l-4-4H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h17z"/></svg>
+            </div>
+            <p>Be the first to comment.</p>
+          </div>
+        @else
+          <ul class="comment-list">
+            @foreach($comments as $c)
+              <li class="comment-item">
+                <div class="comment-avatar">
+                  <img alt="avatar"
+                       src="{{ $c->user && $c->user->avatar
+                              ? asset('storage/' . $c->user->avatar)
+                              : 'https://ui-avatars.com/api/?name=' . urlencode(($c->name ?? ($c->user->name ?? 'Reader'))) . '&background=00ff88&color=000000' }}">
+                </div>
+                <div class="comment-content">
+                  <div class="comment-header-line">
+                    <span class="comment-author">{{ $c->name ?? ($c->user->name ?? 'Reader') }}</span>
+                    <span class="comment-dot">•</span>
+                    <time class="comment-time" datetime="{{ $c->created_at->toDateString() }}">{{ $c->created_at->diffForHumans() }}</time>
+                  </div>
+                  <div class="comment-body">{{ $c->body }}</div>
+                </div>
+              </li>
+            @endforeach
+          </ul>
+        @endif
+      </div>
+    </section>
+
     <!-- Tags -->
     @if($blog->tags && $blog->tags->count() > 0)
     <div class="article-tags">
@@ -1316,9 +1630,9 @@ input:focus {
     <!-- Engagement Section -->
     <div class="engagement-section">
       <div class="engagement-left">
-        <button class="engagement-btn" id="likeBtn" data-post-id="{{ $blog->id }}">
+        <button class="engagement-btn" id="likeBtn" data-post-id="{{ $blog->id }}" title="Star this story">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5 2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.04L12,21.35Z"/>
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
           </svg>
           <span id="likeCount">{{ $blog->likes ?? 0 }}</span>
         </button>
@@ -1472,9 +1786,9 @@ input:focus {
     </svg>
   </button>
   
-  <button class="floating-btn tooltip" id="likeBtnFloat" data-tooltip="Like Article">
+  <button class="floating-btn tooltip" id="likeBtnFloat" data-tooltip="Star">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5 2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.04L12,21.35Z"/>
+      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
     </svg>
   </button>
   
@@ -1601,6 +1915,17 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   document.getElementById('textToSpeechBtn').addEventListener('click', toggleTextToSpeech);
+
+  // More menu
+  const moreBtn = document.getElementById('moreMenuBtn');
+  const moreMenu = document.getElementById('moreMenu');
+  moreBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    moreMenu?.classList.toggle('hidden');
+  });
+  document.addEventListener('click', () => {
+    moreMenu?.classList.add('hidden');
+  });
   
   // Like Functionality
   let isLiked = localStorage.getItem('liked_{{ $blog->id }}') === 'true';

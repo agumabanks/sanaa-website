@@ -156,52 +156,128 @@
                 @endforeach
             </div>
 
-            {{-- Infinite Scroll Loading --}}
-            <div id="loading-indicator" class="hidden text-center py-8">
-                <div class="inline-flex items-center space-x-2">
-                    <div class="w-4 h-4 bg-green-600 rounded-full animate-pulse"></div>
-                    <div class="w-4 h-4 bg-green-600 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
-                    <div class="w-4 h-4 bg-green-600 rounded-full animate-pulse" style="animation-delay: 0.4s"></div>
+            {{-- Pagination Controls --}}
+            <div class="mt-12">
+                {{-- Pagination Mode Toggle --}}
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center space-x-4">
+                        <button id="infinite-scroll-btn" class="px-4 py-2 bg-green-600 text-black text-sm font-medium rounded-lg transition-colors">
+                            Infinite Scroll
+                        </button>
+                        <button id="pagination-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors">
+                            Page Numbers
+                        </button>
+                    </div>
+                    <div class="text-sm text-gray-400">
+                        Showing {{ $blogs->firstItem() }}-{{ $blogs->lastItem() }} of {{ $blogs->total() }} articles
+                    </div>
                 </div>
-                <p class="text-gray-400 text-sm mt-2">Loading more articles...</p>
-            </div>
 
-            {{-- Load More Button (fallback) --}}
-            @if($blogs->hasMorePages())
-                <div class="text-center mt-12">
+                {{-- Infinite Scroll Loading --}}
+                <div id="loading-indicator" class="hidden text-center py-8">
+                    <div class="inline-flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-green-600 rounded-full animate-pulse"></div>
+                        <div class="w-4 h-4 bg-green-600 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
+                        <div class="w-4 h-4 bg-green-600 rounded-full animate-pulse" style="animation-delay: 0.4s"></div>
+                    </div>
+                    <p class="text-gray-400 text-sm mt-2">Loading more articles...</p>
+                </div>
+
+                {{-- Load More Button (for infinite scroll) --}}
+                <div id="load-more-container" class="text-center {{ $blogs->hasMorePages() ? '' : 'hidden' }}">
                     <button id="load-more-btn" class="px-8 py-3 bg-green-600 hover:bg-green-700 text-black font-medium rounded-full transition-colors">
                         Load More Articles
                     </button>
                 </div>
-            @endif
+
+                {{-- Google-like Pagination --}}
+                <div id="pagination-container" class="hidden">
+                    <div class="flex items-center justify-between">
+                        {{-- Previous Button --}}
+                        @if($blogs->onFirstPage())
+                            <span class="px-4 py-2 text-gray-500 cursor-not-allowed">Previous</span>
+                        @else
+                            <a href="{{ $blogs->previousPageUrl() }}" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors">
+                                Previous
+                            </a>
+                        @endif
+
+                        {{-- Page Numbers --}}
+                        <div class="flex items-center space-x-2">
+                            {{-- First Page --}}
+                            @if($blogs->currentPage() > 3)
+                                <a href="{{ $blogs->url(1) }}" class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors">1</a>
+                                @if($blogs->currentPage() > 4)
+                                    <span class="px-2 py-2 text-gray-500">...</span>
+                                @endif
+                            @endif
+
+                            {{-- Page Numbers Around Current --}}
+                            @for($page = max(1, $blogs->currentPage() - 2); $page <= min($blogs->lastPage(), $blogs->currentPage() + 2); $page++)
+                                @if($page == $blogs->currentPage())
+                                    <span class="px-3 py-2 bg-green-600 text-black rounded-lg font-medium">{{ $page }}</span>
+                                @else
+                                    <a href="{{ $blogs->url($page) }}" class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors">{{ $page }}</a>
+                                @endif
+                            @endfor
+
+                            {{-- Last Page --}}
+                            @if($blogs->currentPage() < $blogs->lastPage() - 2)
+                                @if($blogs->currentPage() < $blogs->lastPage() - 3)
+                                    <span class="px-2 py-2 text-gray-500">...</span>
+                                @endif
+                                <a href="{{ $blogs->url($blogs->lastPage()) }}" class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors">{{ $blogs->lastPage() }}</a>
+                            @endif
+                        </div>
+
+                        {{-- Next Button --}}
+                        @if($blogs->hasMorePages())
+                            <a href="{{ $blogs->nextPageUrl() }}" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors">
+                                Next
+                            </a>
+                        @else
+                            <span class="px-4 py-2 text-gray-500 cursor-not-allowed">Next</span>
+                        @endif
+                    </div>
+
+                    {{-- Pagination Info --}}
+                    <div class="text-center mt-4 text-sm text-gray-400">
+                        Page {{ $blogs->currentPage() }} of {{ $blogs->lastPage() }}
+                    </div>
+                </div>
+            </div>
         </div>
 
-        {{-- Sidebar --}}
-        <div class="space-y-8">
+        {{-- Enhanced Sidebar --}}
+        <div class="space-y-6 lg:sticky lg:top-8">
             {{-- Trending Posts --}}
             @if($trendingPosts->count() > 0)
-                <div class="bg-gray-900/50 rounded-2xl p-6 border border-gray-800">
-                    <h3 class="text-lg font-bold mb-4 flex items-center">
-                        <svg class="w-5 h-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <div class="sidebar-card bg-gray-900/50 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group">
+                    <h3 class="text-lg font-bold mb-4 flex items-center group-hover:text-green-400 transition-colors">
+                        <svg class="w-5 h-5 text-green-400 mr-2 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"/>
                         </svg>
-                        Trending
+                        Trending Now
+                        <span class="ml-auto text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">Hot</span>
                     </h3>
-                    <div class="space-y-4">
+                    <div class="space-y-3">
                         @foreach($trendingPosts as $trending)
-                            <a href="{{ $trending->url }}" class="block group">
+                            <a href="{{ $trending->url }}" class="trending-item block group p-3 rounded-xl hover:bg-gray-800/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg">
                                 <div class="flex items-start space-x-3">
-                                    <span class="text-2xl font-bold text-green-400 flex-shrink-0">{{ $loop->iteration }}</span>
+                                    <span class="trending-number text-xl font-bold text-green-400 flex-shrink-0 group-hover:scale-110 transition-transform">{{ $loop->iteration }}</span>
                                     <div class="min-w-0 flex-1">
-                                        <h4 class="font-medium text-sm leading-tight group-hover:text-green-400 transition-colors">
+                                        <h4 class="font-medium text-sm leading-tight group-hover:text-green-400 transition-colors line-clamp-2">
                                             {{ Str::limit($trending->title, 60) }}
                                         </h4>
-                                        <div class="flex items-center space-x-2 mt-1 text-xs text-gray-500">
-                                            <span>{{ $trending->author->name ?? 'Sanaa Team' }}</span>
-                                            <span>•</span>
-                                            <span>{{ $trending->relative_date }}</span>
+                                        <div class="flex items-center space-x-2 mt-2 text-xs text-gray-500">
+                                            <span class="group-hover:text-gray-400 transition-colors">{{ $trending->author->name ?? 'Sanaa Team' }}</span>
+                                            <span class="text-gray-600">•</span>
+                                            <span class="group-hover:text-gray-400 transition-colors">{{ $trending->relative_date }}</span>
                                         </div>
                                     </div>
+                                    <svg class="w-4 h-4 text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity mt-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
                                 </div>
                             </a>
                         @endforeach
@@ -211,29 +287,43 @@
 
             {{-- Categories --}}
             @if($categories->count() > 0)
-                <div class="bg-gray-900/50 rounded-2xl p-6 border border-gray-800">
-                    <h3 class="text-lg font-bold mb-4">Topics</h3>
-                    <div class="flex flex-wrap gap-2">
+                <div class="sidebar-card bg-gray-900/50 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300">
+                    <h3 class="text-lg font-bold mb-4 flex items-center justify-between">
+                        <span>Explore Topics</span>
+                        <span class="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded-full">{{ $categories->count() }}</span>
+                    </h3>
+                    <div class="grid grid-cols-1 gap-2">
                         @foreach($categories as $category)
-                            <a href="{{ route('blog.index', ['category' => $category->slug]) }}" 
-                               class="inline-block px-3 py-1 bg-gray-800 hover:bg-green-600 hover:text-black text-sm rounded-full transition-colors">
-                                {{ $category->name }}
-                                <span class="text-xs opacity-75">({{ $category->blogs_count }})</span>
+                            <a href="{{ route('blog.index', ['category' => $category->slug]) }}"
+                               class="category-item group flex items-center justify-between p-3 rounded-xl bg-gray-800/50 hover:bg-green-600/20 hover:border-green-500/30 border border-transparent hover:border-current text-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md">
+                                <span class="group-hover:text-green-400 transition-colors">{{ $category->name }}</span>
+                                <span class="text-xs text-gray-500 group-hover:text-green-300 transition-colors bg-gray-700/50 px-2 py-1 rounded-full">{{ $category->blogs_count }}</span>
                             </a>
                         @endforeach
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-800">
+                        <a href="{{ route('blog.index') }}" class="text-xs text-gray-500 hover:text-green-400 transition-colors flex items-center">
+                            
+                            View all topics
+                        </a>
                     </div>
                 </div>
             @endif
 
             {{-- Popular Tags --}}
             @if($tags->count() > 0)
-                <div class="bg-gray-900/50 rounded-2xl p-6 border border-gray-800">
-                    <h3 class="text-lg font-bold mb-4">Popular Tags</h3>
+                <div class="sidebar-card bg-gray-900/50 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300">
+                    <h3 class="text-lg font-bold mb-4 flex items-center justify-between">
+                        <span>Popular Tags</span>
+                        <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                        </svg>
+                    </h3>
                     <div class="flex flex-wrap gap-2">
                         @foreach($tags as $tag)
-                            <a href="{{ route('blog.index', ['tag' => $tag->slug]) }}" 
-                               class="inline-block px-2 py-1 bg-gray-800 hover:bg-gray-700 text-xs rounded transition-colors">
-                                #{{ $tag->name }}
+                            <a href="{{ route('blog.index', ['tag' => $tag->slug]) }}"
+                               class="tag-item inline-flex items-center px-3 py-1.5 bg-gray-800/70 hover:bg-gray-700 text-xs rounded-full border border-gray-700 hover:border-gray-600 transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+                                <span class="text-gray-300 group-hover:text-white transition-colors">#{{ $tag->name }}</span>
                             </a>
                         @endforeach
                     </div>
@@ -241,31 +331,60 @@
             @endif
 
             {{-- Newsletter Signup --}}
-            <div class="bg-gradient-to-br from-green-600/20 to-green-800/20 rounded-2xl p-6 border border-green-500/30">
-                <h3 class="text-lg font-bold mb-2">Stay Updated</h3>
-                <p class="text-sm text-gray-400 mb-4">Get the latest insights delivered to your inbox.</p>
-                <form class="space-y-3" action="#" method="POST">
+            <div class="sidebar-card bg-gradient-to-br from-green-600/20 to-green-800/20 rounded-2xl p-6 border border-green-500/30 hover:border-green-400/50 transition-all duration-300 group">
+                <div class="text-center mb-4">
+                    <div class="w-12 h-12 bg-green-600/20 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold group-hover:text-green-400 transition-colors">Stay Updated</h3>
+                </div>
+                <p class="text-sm text-gray-400 mb-4 text-center">Get the latest insights delivered to your inbox.</p>
+                <form class="newsletter-form space-y-3" action="#" method="POST">
                     @csrf
-                    <input type="email" 
-                           placeholder="Enter your email" 
-                           class="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-green-500 text-sm">
-                    <button type="submit" 
-                            class="w-full bg-green-600 hover:bg-green-700 text-black font-medium py-2 rounded-lg transition-colors text-sm">
-                        Subscribe
+                    <div class="relative">
+                        <input type="email"
+                               placeholder="Enter your email"
+                               class="newsletter-input w-full px-4 py-3 bg-gray-900/80 border border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 text-sm transition-all duration-200">
+                        <svg class="w-4 h-4 text-gray-500 absolute right-3 top-1/2 -translate-y-1/2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                        </svg>
+                    </div>
+                    <button type="submit"
+                            class="newsletter-btn w-full bg-green-600 hover:bg-green-700 text-black font-medium py-3 rounded-lg transition-all duration-200 hover:scale-105 hover:shadow-lg flex items-center justify-center">
+                        <span>Subscribe</span>
+                        <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
                     </button>
                 </form>
-                <p class="text-xs text-gray-500 mt-2">No spam. Unsubscribe anytime.</p>
+                <p class="text-xs text-gray-500 mt-3 text-center">No spam. Unsubscribe anytime.</p>
             </div>
 
             {{-- About Sanaa --}}
-            <div class="bg-gray-900/50 rounded-2xl p-6 border border-gray-800">
-                <h3 class="text-lg font-bold mb-3">About Sanaa</h3>
-                <p class="text-sm text-gray-400 leading-relaxed">
+            <div class="sidebar-card bg-gray-900/50 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group">
+                <div class="text-center mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-600/20 to-green-800/20 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold group-hover:text-green-400 transition-colors">About Sanaa</h3>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed text-center mb-4">
                     Building digital infrastructure solutions across Africa. We believe in the power of minimalist design and profound simplicity.
                 </p>
-                <a href="#" class="inline-block mt-3 text-green-400 hover:text-green-300 text-sm transition-colors">
-                    Learn more →
-                </a>
+                <div class="text-center">
+                    <a href="#" class="inline-flex items-center text-green-400 hover:text-green-300 text-sm font-medium transition-all duration-200 hover:scale-105 group">
+                        <span>Learn more</span>
+                        <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -325,33 +444,266 @@
 </template>
 @endsection
 
+@push('styles')
+<style>
+/* Enhanced Sidebar Styles */
+.sidebar-card {
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.trending-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.trending-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.trending-item:hover::before {
+    left: 100%;
+}
+
+.trending-number {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.category-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 200, 136, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.category-item:hover::before {
+    opacity: 1;
+}
+
+.tag-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.tag-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 136, 0.15);
+}
+
+.newsletter-input {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(17, 24, 39, 0.8);
+}
+
+.newsletter-input:focus {
+    background: rgba(17, 24, 39, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 255, 136, 0.2);
+}
+
+.newsletter-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.newsletter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.newsletter-btn:hover::before {
+    left: 100%;
+}
+
+/* Mobile Enhancements */
+@media (max-width: 1024px) {
+    .sidebar-card {
+        margin-bottom: 1.5rem;
+    }
+
+    .trending-item {
+        padding: 0.75rem;
+    }
+
+    .category-item {
+        padding: 0.75rem;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .sidebar-card,
+    .trending-item,
+    .category-item,
+    .tag-item,
+    .newsletter-input,
+    .newsletter-btn {
+        transition: none;
+    }
+
+    .trending-item::before,
+    .category-item::before,
+    .newsletter-btn::before {
+        display: none;
+    }
+}
+
+/* Focus states for accessibility */
+.sidebar-card:focus-within,
+.trending-item:focus,
+.category-item:focus,
+.tag-item:focus {
+    outline: 2px solid rgba(0, 255, 136, 0.5);
+    outline-offset: 2px;
+}
+
+/* Loading states */
+.sidebar-loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.sidebar-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(0, 255, 136, 0.3);
+    border-top: 2px solid #00ff88;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+@endpush
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Infinite scroll implementation
-    let currentPage = 1;
+    // Pagination mode management
+    let paginationMode = localStorage.getItem('blogPaginationMode') || 'infinite';
+    let currentPage = {{ $blogs->currentPage() }};
     let isLoading = false;
     let hasMorePages = {{ $blogs->hasMorePages() ? 'true' : 'false' }};
-    
+
     const articlesContainer = document.getElementById('articles-container');
     const loadingIndicator = document.getElementById('loading-indicator');
     const loadMoreBtn = document.getElementById('load-more-btn');
+    const loadMoreContainer = document.getElementById('load-more-container');
+    const paginationContainer = document.getElementById('pagination-container');
+    const infiniteScrollBtn = document.getElementById('infinite-scroll-btn');
+    const paginationBtn = document.getElementById('pagination-btn');
     const articleTemplate = document.getElementById('article-template');
 
-    // Intersection Observer for infinite scroll
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && hasMorePages && !isLoading) {
-                loadMoreArticles();
-            }
-        });
-    }, {
-        rootMargin: '100px'
+    // Initialize pagination mode
+    updatePaginationMode();
+
+    // Pagination mode toggle
+    infiniteScrollBtn.addEventListener('click', () => {
+        setPaginationMode('infinite');
     });
 
-    // Observe the loading indicator
-    if (loadingIndicator) {
-        observer.observe(loadingIndicator);
+    paginationBtn.addEventListener('click', () => {
+        setPaginationMode('pagination');
+    });
+
+    function setPaginationMode(mode) {
+        paginationMode = mode;
+        localStorage.setItem('blogPaginationMode', mode);
+        updatePaginationMode();
+
+        // Track mode preference
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'pagination_mode_change', {
+                event_category: 'engagement',
+                event_label: mode
+            });
+        }
+    }
+
+    function updatePaginationMode() {
+        if (paginationMode === 'infinite') {
+            infiniteScrollBtn.classList.add('bg-green-600', 'text-black');
+            infiniteScrollBtn.classList.remove('bg-gray-700', 'hover:bg-gray-600');
+            paginationBtn.classList.remove('bg-green-600', 'text-black');
+            paginationBtn.classList.add('bg-gray-700', 'hover:bg-gray-600', 'text-white');
+
+            loadMoreContainer.classList.remove('hidden');
+            paginationContainer.classList.add('hidden');
+
+            // Initialize infinite scroll
+            initializeInfiniteScroll();
+        } else {
+            paginationBtn.classList.add('bg-green-600', 'text-black');
+            paginationBtn.classList.remove('bg-gray-700', 'hover:bg-gray-600');
+            infiniteScrollBtn.classList.remove('bg-green-600', 'text-black');
+            infiniteScrollBtn.classList.add('bg-gray-700', 'hover:bg-gray-600', 'text-white');
+
+            loadMoreContainer.classList.add('hidden');
+            paginationContainer.classList.remove('hidden');
+
+            // Disable infinite scroll
+            if (window.infiniteScrollObserver) {
+                window.infiniteScrollObserver.disconnect();
+            }
+        }
+    }
+
+    // Intersection Observer for infinite scroll
+    let observer;
+    function initializeInfiniteScroll() {
+        if (observer) {
+            observer.disconnect();
+        }
+
+        observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && hasMorePages && !isLoading && paginationMode === 'infinite') {
+                    loadMoreArticles();
+                }
+            });
+        }, {
+            rootMargin: '100px'
+        });
+
+        // Observe the loading indicator
+        if (loadingIndicator) {
+            observer.observe(loadingIndicator);
+        }
+
+        window.infiniteScrollObserver = observer;
     }
 
     // Load more button click handler
@@ -361,11 +713,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function loadMoreArticles() {
         if (isLoading || !hasMorePages) return;
-        
+
         isLoading = true;
         showLoading();
-        
-        fetch(`{{ route('blog.index') }}?page=${currentPage + 1}`, {
+
+        const url = new URL(window.location);
+        url.searchParams.set('page', currentPage + 1);
+
+        fetch(url.toString(), {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json'
@@ -377,23 +732,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 data.articles.forEach(article => {
                     const articleElement = createArticleElement(article);
                     articlesContainer.appendChild(articleElement);
-                    
+
                     // Trigger fade-in animation
                     setTimeout(() => {
                         articleElement.classList.add('fade-in');
                     }, 50);
                 });
-                
+
                 currentPage++;
                 hasMorePages = data.has_more;
-                
-                if (!hasMorePages && loadMoreBtn) {
-                    loadMoreBtn.style.display = 'none';
+
+                if (!hasMorePages) {
+                    loadMoreContainer.classList.add('hidden');
                 }
+            } else {
+                hasMorePages = false;
+                loadMoreContainer.classList.add('hidden');
             }
         })
         .catch(error => {
             console.error('Error loading articles:', error);
+            hasMorePages = false;
+            loadMoreContainer.classList.add('hidden');
         })
         .finally(() => {
             isLoading = false;
@@ -404,7 +764,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function createArticleElement(article) {
         const template = articleTemplate.content.cloneNode(true);
         const articleEl = template.querySelector('article');
-        
+
         // Set article data
         template.querySelector('.article-title').textContent = article.title;
         template.querySelector('.article-title').href = `/blog/${article.slug}`;
@@ -415,14 +775,14 @@ document.addEventListener('DOMContentLoaded', function() {
         template.querySelector('.article-reading-time').textContent = article.reading_time + ' min';
         template.querySelector('.article-views').textContent = article.views;
         template.querySelector('.article-likes').textContent = article.likes;
-        
+
         // Handle category
         if (article.category) {
             template.querySelector('.article-category').textContent = article.category;
         } else {
             template.querySelector('.article-category').style.display = 'none';
         }
-        
+
         // Handle featured image
         if (article.featured_image_url) {
             const imageContainer = template.querySelector('.article-image');
@@ -431,12 +791,12 @@ document.addEventListener('DOMContentLoaded', function() {
             img.alt = article.title;
             imageContainer.style.display = 'block';
         }
-        
+
         // Handle featured status
         if (article.featured) {
             template.querySelector('.article-featured').style.display = 'inline-block';
         }
-        
+
         return template;
     }
 
@@ -469,11 +829,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 t.classList.remove('active', 'border-green-500', 'text-green-400');
                 t.classList.add('text-gray-400');
             });
-            
+
             // Add active class to clicked tab
             this.classList.add('active', 'border-green-500', 'text-green-400');
             this.classList.remove('text-gray-400');
-            
+
             // TODO: Implement actual filtering logic based on filter type
             const filter = this.dataset.filter;
             console.log('Filter changed to:', filter);
@@ -483,12 +843,216 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mobile menu toggle
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
-    
+
     if (mobileMenuButton && mobileMenu) {
         mobileMenuButton.addEventListener('click', function() {
             mobileMenu.classList.toggle('hidden');
         });
     }
+
+    // Enhanced Sidebar Interactions
+    function initializeSidebar() {
+        // Smooth scroll for sidebar links
+        const sidebarLinks = document.querySelectorAll('.sidebar-card a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Add loading state
+                const card = this.closest('.sidebar-card');
+                if (card) {
+                    card.classList.add('sidebar-loading');
+                    setTimeout(() => {
+                        card.classList.remove('sidebar-loading');
+                    }, 1000);
+                }
+            });
+        });
+
+        // Enhanced hover effects for trending items
+        const trendingItems = document.querySelectorAll('.trending-item');
+        trendingItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                const number = this.querySelector('.trending-number');
+                if (number) {
+                    number.style.transform = 'scale(1.2) rotate(5deg)';
+                }
+            });
+
+            item.addEventListener('mouseleave', function() {
+                const number = this.querySelector('.trending-number');
+                if (number) {
+                    number.style.transform = 'scale(1) rotate(0deg)';
+                }
+            });
+        });
+
+        // Category items stagger animation
+        const categoryItems = document.querySelectorAll('.category-item');
+        categoryItems.forEach((item, index) => {
+            item.style.animationDelay = `${index * 50}ms`;
+            item.classList.add('animate-fade-in');
+        });
+
+        // Tag cloud animation
+        const tagItems = document.querySelectorAll('.tag-item');
+        tagItems.forEach((tag, index) => {
+            tag.style.animationDelay = `${index * 30}ms`;
+            tag.classList.add('animate-slide-up');
+        });
+
+        // Newsletter form enhancement
+        const newsletterForm = document.querySelector('.newsletter-form');
+        const newsletterInput = document.querySelector('.newsletter-input');
+        const newsletterBtn = document.querySelector('.newsletter-btn');
+
+        if (newsletterForm && newsletterInput && newsletterBtn) {
+            newsletterInput.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+
+            newsletterInput.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                newsletterBtn.innerHTML = '<div class="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full mx-auto"></div>';
+                newsletterBtn.disabled = true;
+
+                // Simulate form submission
+                setTimeout(() => {
+                    newsletterBtn.innerHTML = '✓ Subscribed!';
+                    newsletterBtn.classList.add('bg-green-700');
+                    newsletterInput.value = '';
+
+                    setTimeout(() => {
+                        newsletterBtn.innerHTML = 'Subscribe <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>';
+                        newsletterBtn.classList.remove('bg-green-700');
+                        newsletterBtn.disabled = false;
+                    }, 2000);
+                }, 1000);
+            });
+        }
+
+        // Mobile sidebar enhancements
+        function handleMobileSidebar() {
+            const sidebar = document.querySelector('.space-y-6.lg\\:sticky');
+            if (!sidebar) return;
+
+            if (window.innerWidth < 1024) {
+                // Add mobile-specific interactions
+                sidebar.classList.add('mobile-sidebar');
+
+                // Add touch feedback
+                const cards = sidebar.querySelectorAll('.sidebar-card');
+                cards.forEach(card => {
+                    card.addEventListener('touchstart', function() {
+                        this.style.transform = 'scale(0.98)';
+                    });
+
+                    card.addEventListener('touchend', function() {
+                        this.style.transform = 'scale(1)';
+                    });
+                });
+            } else {
+                sidebar.classList.remove('mobile-sidebar');
+            }
+        }
+
+        // Initialize mobile handling
+        handleMobileSidebar();
+        window.addEventListener('resize', handleMobileSidebar);
+
+        // Intersection Observer for sidebar animations
+        const sidebarObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '50px'
+        });
+
+        const sidebarCards = document.querySelectorAll('.sidebar-card');
+        sidebarCards.forEach(card => {
+            sidebarObserver.observe(card);
+        });
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .animate-fade-in {
+                animation: fadeInUp 0.6s ease-out forwards;
+                opacity: 0;
+            }
+
+            .animate-slide-up {
+                animation: fadeInUp 0.4s ease-out forwards;
+                opacity: 0;
+            }
+
+            .animate-in {
+                animation: fadeInUp 0.8s ease-out forwards;
+            }
+
+            .mobile-sidebar .sidebar-card {
+                margin-bottom: 1rem;
+                border-radius: 16px;
+            }
+
+            .mobile-sidebar .trending-item,
+            .mobile-sidebar .category-item {
+                padding: 0.75rem;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Initialize sidebar enhancements
+    initializeSidebar();
+
+    // Keyboard shortcuts for pagination
+    document.addEventListener('keydown', function(e) {
+        // Only trigger if not in input field
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        switch(e.key.toLowerCase()) {
+            case 'arrowleft':
+                e.preventDefault();
+                const prevLink = document.querySelector('a[href*="page="]:not([href*="page={{ $blogs->currentPage() + 1 }}"])');
+                if (prevLink) prevLink.click();
+                break;
+            case 'arrowright':
+                e.preventDefault();
+                const nextLink = document.querySelector('a[href*="page={{ $blogs->currentPage() + 1 }}"]');
+                if (nextLink) nextLink.click();
+                break;
+        }
+    });
+
+    // Performance monitoring for sidebar
+    if ('PerformanceObserver' in window) {
+        const observer = new PerformanceObserver((list) => {
+            list.getEntries().forEach((entry) => {
+                if (entry.entryType === 'largest-contentful-paint') {
+                    console.log('Sidebar LCP:', entry.startTime);
+                }
+            });
+        });
+        observer.observe({ entryTypes: ['largest-contentful-paint'] });
+    }
 });
 </script>
-@endpush 
+@endpush

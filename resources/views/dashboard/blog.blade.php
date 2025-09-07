@@ -248,11 +248,22 @@
                                         </div>
                                     </form>
 
-                                    <form method="POST" action="{{ route('dashboard.blog.destroy', $post) }}" class="mt-3">
+                                    <div class="flex items-center gap-3 mt-3">
+                                    <form method="POST" action="{{ route('dashboard.blog.toggle-status', $post) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        @if($post->status === 'published')
+                                            <button type="submit" onclick="return confirm('Unpublish this post? It will no longer be visible publicly.')" class="inline-flex items-center rounded-lg bg-yellow-500 text-black px-3 py-2 text-xs font-medium hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-300">Unpublish</button>
+                                        @else
+                                            <button type="submit" onclick="return confirm('Publish this post? It will be visible publicly.')" class="inline-flex items-center rounded-lg bg-emerald-600 text-white px-3 py-2 text-xs font-medium hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-300">Publish</button>
+                                        @endif
+                                    </form>
+                                    <form method="POST" action="{{ route('dashboard.blog.destroy', $post) }}">
                                         @csrf
                                         @method('DELETE')
                                         <button class="inline-flex items-center rounded-lg bg-red-600 text-white px-3 py-2 text-xs font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300">Delete</button>
                                     </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>

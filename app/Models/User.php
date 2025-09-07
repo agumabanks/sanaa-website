@@ -71,4 +71,48 @@ class User extends Authenticatable
     {
         return (bool) $this->is_admin;
     }
+
+    /**
+     * User-authored blog posts.
+     */
+    public function blogs()
+    {
+        return $this->hasMany(\App\Models\Blog::class, 'author_id');
+    }
+
+    /**
+     * Posts saved to the user's library.
+     */
+    public function savedBlogs()
+    {
+        return $this->belongsToMany(\App\Models\Blog::class, 'blog_user_saves')->withTimestamps();
+    }
+
+    /**
+     * Followers and following relationships.
+     */
+    public function followers()
+    {
+        return $this->belongsToMany(self::class, 'user_follows', 'following_id', 'follower_id')->withTimestamps();
+    }
+
+    public function following()
+    {
+        return $this->belongsToMany(self::class, 'user_follows', 'follower_id', 'following_id')->withTimestamps();
+    }
+
+    public function followedCategories()
+    {
+        return $this->belongsToMany(\App\Models\BlogCategory::class, 'user_follow_categories', 'user_id', 'category_id')->withTimestamps();
+    }
+
+    public function followedTags()
+    {
+        return $this->belongsToMany(\App\Models\BlogTag::class, 'user_follow_tags', 'user_id', 'tag_id')->withTimestamps();
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(\App\Models\BlogComment::class);
+    }
 }

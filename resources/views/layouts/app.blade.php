@@ -14,6 +14,11 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+         {{-- Favicon --}}
+    <link rel="icon" href="{{ cdn_asset('storage/images/sanaa.png') }}">
+    <link rel="apple-touch-icon" href="{{ cdn_asset('storage/images/sanaa.png') }}">
+
+
         <!-- Styles -->
         @livewireStyles
     </head>

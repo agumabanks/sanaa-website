@@ -14,13 +14,43 @@ use Illuminate\Support\Facades\Storage;
 
 class BlogController extends Controller
 {
+    /**
+     * Toggle publish status (admin only)
+     */
+    public function toggleStatus(\App\Models\Blog $blog)
+    {
+        // Route is protected by 'admin' middleware; additionally ensure capability
+        $this->authorize('update', $blog);
+
+        if ($blog->status === 'published') {
+            $blog->update([
+                'status' => 'draft',
+            ]);
+            return back()->with('success', 'Post unpublished');
+        }
+
+        $data = ['status' => 'published'];
+        if (!$blog->published_at) {
+            $data['published_at'] = now();
+        }
+        $blog->update($data);
+
+        return back()->with('success', 'Post published');
+    }
     public function index(Request $request)
     {
         $query = Blog::with(['author', 'category', 'tags'])
             ->published()
             ->orderByDesc('featured')
-            ->orderByDesc('published_at')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->orderByDesc('created_at');
+
+        // Blog index is public: always show published posts to everyone
+
+        // Featured filter
+        if ($request->boolean('featured')) {
+            $query->featured();
+        }
 
         // Handle category filtering
         if ($request->has('category') && $request->category) {
@@ -73,7 +103,15 @@ class BlogController extends Controller
         $categories = $this->getPopularCategories();
         $tags = $this->getPopularTags();
 
-        return view('blog.index', compact('blogs', 'featuredPost', 'trendingPosts', 'categories', 'tags'));
+        // SEO for index page
+        $seoData = [
+            'title' => 'Sanaa Co. Blog — Ideas on Technology, Design, and Innovation',
+            'description' => 'Discover minimalist insights and profound thoughts on technology, design, and innovation from the Sanaa team.',
+            'url' => route('blog.index'),
+            'image' => \cdn_asset('storage/images/sanaa.png'),
+        ];
+
+        return view('blog.index', compact('blogs', 'featuredPost', 'trendingPosts', 'categories', 'tags', 'seoData'));
     }
 
     public function category(BlogCategory $category, Request $request)
@@ -92,9 +130,12 @@ class BlogController extends Controller
 
     public function show(Blog $blog, Request $request)
     {
-        // Check if blog is published
-        if ($blog->status !== 'published' || ($blog->published_at && $blog->published_at > now())) {
-            abort(404);
+        // Only allow public access to published posts; admins can preview drafts/scheduled
+        $isPublishedNow = $blog->status === 'published' && (! $blog->published_at || $blog->published_at <= now());
+        if (! $isPublishedNow) {
+            if (!(auth()->check() && auth()->user()->isAdmin())) {
+                abort(404);
+            }
         }
 
         // Track page view (with session-based duplicate prevention)
@@ -129,6 +170,9 @@ class BlogController extends Controller
 
     public function like(Blog $blog, Request $request)
     {
+        // Block interactions on unpublished posts
+        $isPublishedNow = $blog->status === 'published' && (! $blog->published_at || $blog->published_at <= now());
+        abort_unless($isPublishedNow, 404);
         $ip = $request->ip();
         $sessionKey = "blog_liked_{$blog->id}_{$ip}";
         
@@ -163,6 +207,9 @@ class BlogController extends Controller
 
     public function bookmark(Blog $blog, Request $request)
     {
+        // Block interactions on unpublished posts
+        $isPublishedNow = $blog->status === 'published' && (! $blog->published_at || $blog->published_at <= now());
+        abort_unless($isPublishedNow, 404);
         $ip = $request->ip();
         $sessionKey = "blog_bookmarked_{$blog->id}_{$ip}";
         
@@ -177,6 +224,14 @@ class BlogController extends Controller
                 'event_type' => 'bookmark',
                 'metadata' => ['timestamp' => now()->timestamp]
             ]);
+
+            // If authenticated, add to user's library
+            if (auth()->check()) {
+                $user = auth()->user();
+                if (!$blog->savers()->where('user_id', $user->id)->exists()) {
+                    $blog->savers()->attach($user->id);
+                }
+            }
 
             return response()->json([
                 'success' => true,
@@ -196,6 +251,9 @@ class BlogController extends Controller
 
     public function share(Blog $blog, Request $request)
     {
+        // Block interactions on unpublished posts
+        $isPublishedNow = $blog->status === 'published' && (! $blog->published_at || $blog->published_at <= now());
+        abort_unless($isPublishedNow, 404);
         $blog->increment('shares');
         
         BlogAnalytics::create([
@@ -215,6 +273,79 @@ class BlogController extends Controller
             'shares' => $blog->fresh()->shares,
             'message' => 'Share tracked!'
         ]);
+    }
+
+    public function comment(Blog $blog, Request $request)
+    {
+        // Block interactions on unpublished posts
+        $isPublishedNow = $blog->status === 'published' && (! $blog->published_at || $blog->published_at <= now());
+        abort_unless($isPublishedNow, 404);
+        $validated = $request->validate([
+            'body' => 'required|string|min:3',
+            'parent_id' => 'nullable|exists:blog_comments,id'
+        ]);
+
+        $data = [
+            'blog_id' => $blog->id,
+            'body' => $validated['body'],
+            'parent_id' => $validated['parent_id'] ?? null,
+            'status' => 'approved',
+        ];
+
+        if (auth()->check()) {
+            $data['user_id'] = auth()->id();
+            $data['name'] = auth()->user()->name;
+            $data['email'] = auth()->user()->email;
+        } else {
+            $guest = $request->validate([
+                'name' => 'nullable|string|max:100',
+                'email' => 'nullable|email|max:150',
+            ]);
+            $data['name'] = $guest['name'] ?? null;
+            $data['email'] = $guest['email'] ?? null;
+        }
+
+        \App\Models\BlogComment::create($data);
+
+        return back()->with('success', 'Comment posted');
+    }
+
+    public function forYou(Request $request)
+    {
+        abort_unless(auth()->check(), 403);
+
+        $user = auth()->user();
+        $authorIds = $user->following()->pluck('users.id')->toArray();
+        $categoryIds = $user->followedCategories()->pluck('blog_categories.id')->toArray();
+        $tagIds = $user->followedTags()->pluck('blog_tags.id')->toArray();
+
+        $query = Blog::with(['author','category','tags'])
+            ->published()
+            ->when($authorIds, fn($q) => $q->whereIn('author_id', $authorIds))
+            ->orWhere(function($q) use ($categoryIds) {
+                if ($categoryIds) $q->whereIn('category_id', $categoryIds);
+            })
+            ->orWhere(function($q) use ($tagIds) {
+                if ($tagIds) {
+                    $q->whereHas('tags', fn($t) => $t->whereIn('blog_tag_id', $tagIds));
+                }
+            })
+            ->orderByRaw('COALESCE(published_at, created_at) DESC');
+
+        $blogs = $query->paginate(12);
+        $featuredPost = Blog::published()->featured()->first();
+        $trendingPosts = $this->getTrendingPosts();
+        $categories = $this->getPopularCategories();
+        $tags = $this->getPopularTags();
+
+        $seoData = [
+            'title' => 'For You — Personalized Stories',
+            'description' => 'Stories from authors, topics, and publications you follow.',
+            'url' => route('blog.for-you'),
+            'image' => \cdn_asset('storage/images/sanaa.png'),
+        ];
+
+        return view('blog.index', compact('blogs','featuredPost','trendingPosts','categories','tags','seoData'));
     }
 
     public function trackAnalytics(Request $request)
@@ -239,7 +370,7 @@ class BlogController extends Controller
     }
 
     // Helper methods
-    protected function getTrendingPosts()
+    public function getTrendingPosts()
     {
         return Cache::remember('trending_posts', 3600, function () {
             return Blog::trending()
@@ -316,6 +447,8 @@ class BlogController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', Blog::class);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:blogs,slug',
@@ -332,17 +465,27 @@ class BlogController extends Controller
             'keywords' => 'nullable|string|max:255',
         ]);
 
+        // Set author_id to current user if not provided
+        if (!isset($validated['author_id'])) {
+            $validated['author_id'] = auth()->id();
+        }
+
         if ($request->hasFile('featured_image')) {
             $validated['featured_image'] = $request->file('featured_image')->store('blogs', 'public');
         }
 
         $blog = Blog::create($validated);
 
-        return redirect()->route('dashboard.blog')->with('success', 'Blog post created successfully');
+        if (auth()->user()?->isAdmin()) {
+            return redirect()->route('dashboard.blog')->with('success', 'Blog post created successfully');
+        }
+        return redirect()->route('dashboard.my-posts')->with('success', 'Story created successfully');
     }
 
     public function update(Request $request, Blog $blog)
     {
+        $this->authorize('update', $blog);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:blogs,slug,' . $blog->id,
@@ -374,6 +517,8 @@ class BlogController extends Controller
 
     public function destroy(Blog $blog)
     {
+        $this->authorize('delete', $blog);
+
         // Delete featured image if exists
         if ($blog->featured_image) {
             Storage::disk('public')->delete($blog->featured_image);

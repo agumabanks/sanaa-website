@@ -126,6 +126,7 @@ return [
         'gzip_compression' => true,
         'browser_caching' => true,
         'cdn_url' => env('CDN_URL', ''),
+        'cdn_enabled' => env('CDN_ENABLED', true),
     ],
 ];
 

@@ -2,754 +2,1431 @@
 
 @section('title', 'Home | ' . config('app.name'))
 
+@section('hide_header', true)
+
+@push('styles')
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+@verbatim
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        cursor: none;
+    }
+
+    :root {
+        --pure-black: #000000;
+        --soft-black: #0a0a0a;
+        --dark-gray: #1a1a1a;
+        --medium-gray: #2a2a2a;
+        --light-gray: #8a8a8a;
+        --white: #ffffff;
+        --accent: #ffffff;
+        --emerald: #10b981;
+        --emerald-light: #34d399;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
+        background: var(--pure-black);
+        color: var(--white);
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        cursor: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Custom Cursor */
+    .cursor {
+        width: 20px;
+        height: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        transition: all 0.1s ease;
+        mix-blend-mode: difference;
+    }
+
+    .cursor-follower {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9998;
+        transition: all 0.3s ease;
+    }
+
+    .cursor.hover {
+        transform: scale(2);
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--emerald);
+    }
+
+    /* Premium Loading Screen */
+    .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: var(--pure-black);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .loader.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .loader-content {
+        text-align: center;
+        position: relative;
+    }
+
+    .loader-logo {
+        font-size: 5rem;
+        font-weight: 100;
+        letter-spacing: 0.8rem;
+        opacity: 0;
+        animation: fadeInUp 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        background: linear-gradient(90deg, var(--white), var(--emerald-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .progress-bar {
+        width: 300px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.05);
+        margin: 3rem auto 1rem;
+        overflow: hidden;
+        border-radius: 1px;
+    }
+
+    .progress {
+        height: 100%;
+        background: linear-gradient(90deg, var(--emerald), var(--emerald-light));
+        width: 0;
+        transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+
+    .loader-text {
+        font-size: 0.75rem;
+        font-weight: 200;
+        letter-spacing: 0.2rem;
+        color: var(--light-gray);
+        opacity: 0;
+        animation: fadeIn 0.5s ease 0.5s forwards;
+        text-transform: uppercase;
+    }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Premium Navigation */
+    nav.premium-nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 2rem 4rem;
+        z-index: 1000;
+        transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        mix-blend-mode: difference;
+    }
+
+    nav.premium-nav.scrolled {
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 1rem 4rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        mix-blend-mode: normal;
+    }
+
+    .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+        font-weight: 200;
+        letter-spacing: 0.3rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 3rem;
+        list-style: none;
+    }
+
+    .nav-link {
+        color: var(--white);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 300;
+        letter-spacing: 0.05rem;
+        transition: all 0.3s ease;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background: var(--emerald);
+        transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+        width: 100%;
+    }
+
+    /* Enhanced Hero Section */
+    .hero-premium {
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.4;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.9) 100%);
+    }
+
+    .hero-particles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .particle {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: rgba(16, 185, 129, 0.5);
+        border-radius: 50%;
+        animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+        from {
+            transform: translateY(100vh) translateX(0);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        to {
+            transform: translateY(-100vh) translateX(100px);
+            opacity: 0;
+        }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        max-width: 1200px;
+        padding: 0 2rem;
+    }
+
+    .hero-title {
+        font-size: clamp(3rem, 10vw, 7rem);
+        font-weight: 100;
+        letter-spacing: -0.02em;
+        line-height: 0.95;
+        margin-bottom: 2rem;
+        opacity: 0;
+        animation: revealText 1s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+    }
+
+    .hero-title-gradient {
+        background: linear-gradient(135deg, var(--white) 0%, var(--emerald-light) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    @keyframes revealText {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        font-weight: 200;
+        letter-spacing: 0.1rem;
+        color: var(--light-gray);
+        margin-bottom: 3rem;
+        opacity: 0;
+        animation: fadeInUp 1s ease 1s forwards;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        opacity: 0;
+        animation: fadeInUp 1s ease 1.5s forwards;
+    }
+
+    .btn-cta {
+        padding: 1rem 3rem;
+        background: var(--emerald);
+        color: var(--pure-black);
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+        letter-spacing: 0.05rem;
+        border-radius: 50px;
+        transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .btn-cta::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: var(--emerald-light);
+        transition: left 0.5s ease;
+    }
+
+    .btn-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-cta:hover::before {
+        left: 0;
+    }
+
+    .btn-cta span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-cta-outline {
+        padding: 1rem 3rem;
+        background: transparent;
+        color: var(--white);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 400;
+        letter-spacing: 0.05rem;
+        border-radius: 50px;
+        transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .btn-cta-outline:hover {
+        background: var(--white);
+        color: var(--pure-black);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        animation: fadeInUp 1s ease 2s forwards, bounce 2s ease-in-out 3s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateX(-50%) translateY(0);
+        }
+        50% {
+            transform: translateX(-50%) translateY(-10px);
+        }
+    }
+
+    .scroll-line {
+        width: 1px;
+        height: 60px;
+        background: linear-gradient(to bottom, var(--emerald), transparent);
+        margin: 0 auto;
+    }
+
+    /* Premium Services Section */
+    .services-premium {
+        padding: 8rem 2rem;
+        background: var(--pure-black);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .services-premium::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.3), transparent);
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 5rem;
+    }
+
+    .section-title {
+        font-size: 3rem;
+        font-weight: 300; /* increased for better readability */
+        letter-spacing: -0.02em;
+        margin-bottom: 1rem;
+        color: var(--white); /* ensure bright white */
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.05), 0 0 24px rgba(255, 255, 255, 0.08);
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    .section-title.visible {
+        animation: fadeInUp 1s ease forwards;
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .service-card {
+        padding: 3rem;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        position: relative;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(50px);
+        cursor: pointer;
+    }
+
+    .service-card.visible {
+        animation: fadeInUp 1s ease forwards;
+        animation-delay: calc(var(--delay) * 0.1s);
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at var(--x) var(--y), rgba(16, 185, 129, 0.1), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
+    .service-card:hover::before {
+        opacity: 1;
+    }
+
+    .service-card:hover {
+        transform: translateY(-10px);
+        border-color: rgba(16, 185, 129, 0.3);
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(255, 255, 255, 0.02));
+        box-shadow: 0 20px 40px rgba(16, 185, 129, 0.1);
+    }
+
+    .service-icon {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 2rem;
+        color: var(--emerald);
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
+
+    .service-card:hover .service-icon {
+        transform: scale(1.1) rotate(5deg);
+        opacity: 1;
+    }
+
+    .service-title {
+        font-size: 1.5rem;
+        font-weight: 400; /* clearer weight for readability */
+        margin-bottom: 1rem;
+        letter-spacing: -0.02em;
+        color: var(--white);
+        text-shadow: 0 1px 0 rgba(255,255,255,0.05), 0 0 16px rgba(255,255,255,0.08);
+    }
+
+    .service-description {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: var(--light-gray);
+        font-weight: 300;
+    }
+
+    .service-link {
+        display: inline-block;
+        margin-top: 1.5rem;
+        color: var(--emerald);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 400;
+        letter-spacing: 0.05rem;
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    .service-card:hover .service-link {
+        opacity: 1;
+        transform: translateX(5px);
+    }
+
+    /* Premium Team Section */
+    .team-premium {
+        padding: 8rem 2rem;
+        background: linear-gradient(180deg, var(--pure-black) 0%, var(--soft-black) 100%);
+        position: relative;
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 3rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .team-member {
+        text-align: center;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.5s ease;
+    }
+
+    .team-member.visible {
+        animation: fadeInUp 1s ease forwards;
+        animation-delay: calc(var(--delay) * 0.15s);
+    }
+
+    .member-image-container {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin: 0 auto 2rem;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid rgba(16, 185, 129, 0.2);
+        transition: all 0.5s ease;
+    }
+
+    .member-image-container:hover {
+        border-color: var(--emerald);
+        transform: scale(1.05);
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+    }
+
+    .member-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%);
+        transition: filter 0.5s ease;
+    }
+
+    .member-image-container:hover .member-image {
+        filter: grayscale(0%);
+    }
+
+    .member-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(16, 185, 129, 0.9);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        padding: 1rem;
+    }
+
+    .member-image-container:hover .member-overlay {
+        opacity: 1;
+    }
+
+    .member-name {
+        font-size: 1.5rem;
+        font-weight: 400; /* boost contrast */
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+        color: var(--white);
+        text-shadow: 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .member-title {
+        font-size: 0.9rem;
+        color: var(--light-gray);
+        font-weight: 300;
+        letter-spacing: 0.05rem;
+    }
+
+    .member-bio {
+        color: var(--white);
+        font-size: 0.85rem;
+        line-height: 1.4;
+        font-weight: 300;
+    }
+
+    /* Premium Products Section */
+    .products-premium {
+        padding: 8rem 2rem;
+        background: var(--pure-black);
+        position: relative;
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .product-card-premium {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    .product-card-premium.visible {
+        animation: fadeInUp 0.8s ease forwards;
+        animation-delay: calc(var(--delay) * 0.1s);
+    }
+
+    .product-card-premium:hover {
+        transform: translateY(-10px) scale(1.02);
+        border-color: rgba(16, 185, 129, 0.3);
+        box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
+    }
+
+    .product-image-wrapper {
+        position: relative;
+        height: 250px;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--dark-gray), var(--soft-black));
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .product-card-premium:hover .product-image {
+        transform: scale(1.1);
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        background: var(--emerald);
+        color: var(--pure-black);
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 50px;
+        letter-spacing: 0.05rem;
+    }
+
+    .product-info {
+        padding: 1.5rem;
+        background: #ffffff; /* ensure readability for black text */
+        color: var(--pure-black);
+        border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .product-name {
+        font-size: 1.1rem;
+        font-weight: 500; /* clearer */
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+        line-height: 1.3;
+        color: var(--pure-black); /* keep names black */
+        /* Clamp to 2 lines for consistent cards */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-word;
+        min-height: calc(1.3em * 2);
+    }
+
+    .product-price {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* center prices horizontally */
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .price-current {
+        font-size: 1.5rem;
+        font-weight: 300;
+        color: var(--emerald);
+    }
+
+    .price-original {
+        font-size: 1rem;
+        color: var(--light-gray);
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+
+    .product-action {
+        padding: 0.75rem 1.5rem;
+        background: transparent;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: var(--emerald);
+        text-align: center;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 400;
+        letter-spacing: 0.05rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .product-action:hover {
+        background: var(--emerald);
+        color: var(--pure-black);
+        transform: translateY(-2px);
+    }
+
+    /* Product Modal Premium */
+    .modal-premium {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+        z-index: 9000;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .modal-premium.show {
+        display: flex;
+        opacity: 1;
+    }
+
+    .modal-content-premium {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        max-width: 900px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        padding: 3rem;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+        background: var(--emerald);
+        transform: rotate(90deg);
+    }
+
+    /* Mobile Menu */
+    .menu-toggle {
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        cursor: pointer;
+    }
+
+    .menu-line {
+        width: 25px;
+        height: 1px;
+        background: var(--white);
+        transition: all 0.3s ease;
+    }
+
+    .menu-toggle.active .menu-line:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .menu-toggle.active .menu-line:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-toggle.active .menu-line:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+
+        .menu-toggle {
+            display: flex;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+        }
+
+        .services-grid,
+        .team-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .products-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+    }
+
+    /* Reveal Animation */
+    .reveal-element {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .reveal-element.revealed {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Loading Skeleton */
+    .skeleton {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+        border-radius: 10px;
+    }
+
+    @keyframes loading {
+        0% {
+            background-position: 200% 0;
+        }
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    .skeleton-img {
+        width: 100%;
+        height: 200px;
+        border-radius: 10px;
+    }
+
+    .skeleton-title {
+        height: 20px;
+        width: 70%;
+        margin-bottom: 10px;
+    }
+
+    .skeleton-price {
+        height: 25px;
+        width: 40%;
+    }
+</style>
+@endverbatim
+@endpush
+
 @section('content')
-  <div class="body">
-    <div role="main" class="main">
-      <!-- Hero Section -->
-      <section id="hero" class="relative flex items-center justify-center min-h-[70vh] overflow-hidden px-4">
-        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover">
-          <source src="/videos/hero-video.mp4" type="video/mp4">
-          <!-- Fallback for when video fails to load -->
-          <div class="absolute inset-0 bg-gradient-to-br from-green-900 via-gray-900 to-black"></div>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Premium Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-logo">SANAA</div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <p class="loader-text">Building the future</p>
+        </div>
+    </div>
+
+    <!-- Premium Navigation -->
+    <nav class="premium-nav" id="navbar">
+        <div class="nav-container">
+            <a href="{{ url()->current() }}" class="logo" id="home-logo" aria-label="Reload home">
+                <img src="{{ asset('storage/images/sanaa-logo-b.svg') }}" alt="Sanaa" style="height: 28px; filter: invert(1);">
+            </a>
+            <ul class="nav-links">
+                <li><a href="#hero" class="nav-link">HOME</a></li>
+                <li><a href="#services" class="nav-link">SERVICES</a></li>
+                <li><a href="#team" class="nav-link">TEAM</a></li>
+                <li><a href="#products" class="nav-link">PRODUCTS</a></li>
+                <li><a href="#blog" class="nav-link">BLOG</a></li>
+                <li><a href="https://soko.sanaa.co" target="_blank" class="nav-link">SOKO 24</a></li>
+            </ul>
+            <div class="menu-toggle" id="menuToggle">
+                <span class="menu-line"></span>
+                <span class="menu-line"></span>
+                <span class="menu-line"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Enhanced Hero Section -->
+    <section id="hero" class="hero-premium">
+        <video autoplay loop muted playsinline class="hero-video">
+            <source src="/videos/hero-video.mp4" type="video/mp4">
         </video>
-        <div class="absolute inset-0 bg-black/50"></div>
-        <div class="relative z-10 text-center space-y-6">
-          <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white">
-            Building the future we want
-          </h1>
-          <p class="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto">
-            Our mission is to empower businesses with modern digital infrastructure for payments, media and commerce.
-          </p>
-          <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#services" class="btn-cta">Explore Sanaa</a>
-            <a href="https://soko.sanaa.co" target="_blank" class="btn-cta-outline">Shop on Soko 24</a>
-          </div>
-        </div>
-      </section>
-
-<section id="services" class="py-16 bg-gray-100 dark:bg-gray-900">
-  <div class="container mx-auto px-4">
-    <h2 class="text-2xl font-bold text-center mb-10">Sanaa Products & Services</h2>
-    <div class="grid gap-8 md:grid-cols-3">
-      @forelse(\App\Models\Offering::latest()->take(3)->get() as $offering)
-        <div class="group relative bg-white dark:bg-gray-800 rounded-lg p-8 shadow-sm hover:shadow-lg transition overflow-hidden">
-          <div class="mb-4 text-green-600 text-4xl">
-            <i class="fas fa-cube"></i>
-          </div>
-          <h4 class="font-bold text-lg mb-2">{{ $offering->title }}</h4>
-          <p class="text-sm opacity-70">{{ $offering->description }}</p>
-          @if($offering->link)
-            <a href="{{ $offering->link }}" target="_blank" class="absolute inset-0 flex items-center justify-center bg-black/80 text-white opacity-0 group-hover:opacity-100 transition">Learn More</a>
-          @endif
-        </div>
-      @empty
-        <div class="text-center col-span-3 text-gray-600 dark:text-gray-300">Offerings will be added soon.</div>
-      @endforelse
-    </div>
-  </div>
-</section>
-
-
-
-
-    <!-- Team Section -->
-    <section class="py-16 bg-white dark:bg-gray-800">
-      <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-8 text-center">Meet the Team</h2>
-        <div class="grid md:grid-cols-3 gap-8">
-          @foreach($teamMembers as $member)
-          <div class="relative text-center group" tabindex="0" aria-label="More about {{ $member->name }}">
-            @if($member->photo)
-            <img src="{{ asset('storage/'.$member->photo) }}" alt="{{ $member->name }}" class="w-32 h-32 rounded-full mx-auto mb-4 grayscale group-hover:grayscale-0 group-focus:grayscale-0 transition" loading="lazy">
-            @endif
-            <h3 class="text-xl font-semibold">{{ $member->name }}</h3>
-            @if($member->title)
-            <p class="text-gray-600 dark:text-gray-300">{{ $member->title }}</p>
-            @endif
-            <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-white text-sm rounded-full opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition">
-              @if($member->title)
-              <span class="font-semibold">{{ $member->title }}</span>
-              @endif
-              @if($member->bio)
-              <p class="px-4 mt-1">{{ $member->bio }}</p>
-              @endif
+        <div class="hero-overlay"></div>
+        <div class="hero-particles"></div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="hero-title-gradient">Building the future<br>we want</span>
+            </h1>
+            <p class="hero-subtitle">
+                Our mission is to empower businesses with modern digital infrastructure for payments, media and commerce.
+            </p>
+            <div class="hero-buttons">
+                <a href="#services" class="btn-cta">
+                    <span>Explore Sanaa</span>
+                </a>
+                <a href="https://soko.sanaa.co" target="_blank" class="btn-cta-outline">
+                    Shop on Soko 24
+                </a>
             </div>
-          </div>
-          @endforeach
-        </div>
-      </div>
-    </section>
-
-  
-    
-    <!-- Soko Products Section -->
-<section id="soko-products" class="section py-5 border-0 m-0 appear-animation" data-appear-animation="fadeIn">
-  <div class="container my-5">
-    <div class="row mb-5">
-      <div class="col text-center appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="200">
-        <h2 class="text-3xl font-weight-bold mb-3">Featured Products</h2>
-        <p class="text-lg opacity-7 max-w-lg mx-auto">Discover our selection of quality products from Soko 24</p>
-        <div class="divider-small divider-small-center my-3">
-          <hr class="bg-primary">
-        </div>
-      </div>
-    </div>
-    
-    <!-- Products Loading State -->
-    <div id="products-loading" class="row">
-      @for ($i = 0; $i < 8; $i++)
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-          <div class="product-skeleton h-100">
-            <div class="skeleton-img" style="height: 200px;"></div>
-            <div class="skeleton-content p-3">
-              <div class="skeleton-title mb-2"></div>
-              <div class="skeleton-price"></div>
-              <div class="skeleton-button mt-3"></div>
-            </div>
-          </div>
-        </div>
-      @endfor
-    </div>
-    
-    <!-- Products Container -->
-    <div class="row" id="product-container" style="display: none;">
-      @if(isset($sokoProducts['data']) && count($sokoProducts['data']) > 0)
-        @foreach(array_slice($sokoProducts['data'], 0, 8) as $product)
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="product-card" data-product-id="{{ $product['id'] }}" tabindex="0" role="button" aria-label="View details for {{ $product['name'] }}">
-              <div class="card h-100 border-0 shadow-sm rounded-lg overflow-hidden">
-                <div class="position-relative">
-                  <div class="product-image-container d-block overflow-hidden" style="height: 200px;">
-                    <img src="{{ $product['thumbnail_image'] }}" class="card-img-top" alt="{{ $product['name'] }}" 
-                         style="object-fit: cover; width: 100%; height: 100%;" loading="lazy"
-                         onerror="this.src='/img/placeholder-product.jpg'; this.alt='Product image unavailable';">
-                  </div>
-                  @if($product['has_discount'])
-                    <span class="badge badge-danger position-absolute" style="top: 10px; right: 10px; font-size: 0.8rem; padding: 6px 10px;">
-                      {{ $product['discount'] }}
-                    </span>
-                  @endif
-                </div>
-                <div class="card-body d-flex flex-column">
-                  <h5 class="card-title font-weight-bold text-truncate mb-2" style="font-size: 1rem;">
-                    {{ $product['name'] }}
-                  </h5>
-                  <div class="d-flex justify-content-between align-items-center mt-auto pt-2">
-                    <p class="card-text font-weight-bold mb-0 text-primary" style="font-size: 1.1rem;">
-                      {{ str_replace('/=', '', $product['main_price']) }}
-                    </p>
-                    @if($product['has_discount'])
-                      <p class="card-text mb-0 text-muted text-decoration-line-through" style="font-size: 0.9rem;">
-                        {{ str_replace('/=', '', $product['stroked_price']) }}
-                      </p>
-                    @endif
-                  </div>
-                </div>
-                <div class="card-footer bg-white border-0 text-center py-3">
-                  <button class="btn btn-primary btn-sm px-4 quick-view-btn">
-                    <i class="fas fa-eye mr-1"></i> Quick View
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        @endforeach
-      @else
-        <div class="col-12 text-center py-5">
-          <div class="alert alert-warning" role="alert">
-            <i class="fas fa-exclamation-triangle mr-2"></i> No products found.
-          </div>
-        </div>
-      @endif
-    </div>
-    
-    <div class="row mt-5">
-      <div class="col text-center">
-        <a href="https://soko.sanaa.co" class="btn btn-primary btn-lg px-5 py-2 shadow-sm" target="_blank">
-          <i class="fas fa-shopping-cart mr-2"></i> Visit Soko 24
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Product Modal -->
-<div id="productModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content border-0 rounded-lg shadow-lg overflow-hidden">
-      <!-- Modal Loading State -->
-      <div id="modal-loading" class="p-5 text-center">
-        <div class="spinner-border text-primary" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-        <p class="mt-3 text-muted">Loading product details...</p>
-      </div>
-      
-      <!-- Modal Content -->
-      <div id="modal-content" style="display: none;">
-        <div class="modal-header border-bottom-0 pb-0">
-          <h5 class="modal-title font-weight-bold" id="modalProductName"></h5>
-          <button type="button" class="close close-modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
         </div>
         
-        <div class="modal-body pt-3">
-          <div class="row">
-            <div class="col-md-6">
-              <!-- Product Images Slider -->
-              <div id="modalSliderContainer" class="product-slider mb-3 mb-md-0">
-                <div class="swiper-container">
-                  <div class="swiper-wrapper" id="modalSliderWrapper"></div>
-                  <div class="swiper-pagination"></div>
-                  <div class="swiper-button-next"></div>
-                  <div class="swiper-button-prev"></div>
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Premium Services Section -->
+    <section id="services" class="services-premium">
+        <div class="section-header">
+            <h2 class="section-title reveal-element">Sanaa Products & Services</h2>
+        </div>
+        <div class="services-grid">
+            @php
+                try {
+                    $offerings = \App\Models\Offering::latest()->take(6)->get();
+                } catch (\Throwable $e) {
+                    $offerings = collect();
+                }
+            @endphp
+            @forelse($offerings as $index => $offering)
+                <div class="service-card" style="--delay: {{ $index + 1 }}">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">{{ $offering->title }}</h3>
+                    <p class="service-description">{{ $offering->description }}</p>
+                    @if($offering->link)
+                        <a href="{{ $offering->link }}" target="_blank" class="service-link">Learn More →</a>
+                    @endif
                 </div>
-              </div>
-              
-              <!-- Single Product Image (Fallback) -->
-              <div id="modalSingleImage" class="d-none">
-                <img id="modalThumbnail" src="" alt="" class="img-fluid rounded shadow-sm" loading="lazy">
-              </div>
+            @empty
+                @for($i = 1; $i <= 3; $i++)
+                <div class="service-card" style="--delay: {{ $i }}">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">Coming Soon</h3>
+                    <p class="service-description">New innovative services are being developed to better serve your business needs.</p>
+                </div>
+                @endfor
+            @endforelse
+        </div>
+    </section>
+
+    <!-- Premium Team Section -->
+    <section id="team" class="team-premium">
+        <div class="section-header">
+            <h2 class="section-title reveal-element">Meet the Team</h2>
+        </div>
+        <div class="team-grid">
+            @foreach($teamMembers as $index => $member)
+            <div class="team-member" style="--delay: {{ $index + 1 }}">
+                <div class="member-image-container">
+                    @if($member->photo)
+                        <img src="{{ asset('storage/'.$member->photo) }}" alt="{{ $member->name }}" class="member-image" loading="lazy">
+                    @else
+                        <div class="member-image" style="background: linear-gradient(135deg, var(--dark-gray), var(--emerald));"></div>
+                    @endif
+                    <div class="member-overlay">
+                        @if($member->bio)
+                            <p class="member-bio">{{ $member->bio }}</p>
+                        @endif
+                    </div>
+                </div>
+                <h3 class="member-name">{{ $member->name }}</h3>
+                @if($member->title)
+                    <p class="member-title">{{ $member->title }}</p>
+                @endif
+            </div>
+            @endforeach
+        </div>
+    </section>
+
+    <!-- Premium Products Section -->
+    <section id="products" class="products-premium">
+        <div class="section-header">
+            <h2 class="section-title reveal-element">Featured Products</h2>
+            <p class="section-subtitle reveal-element" style="color: var(--light-gray); margin-top: 1rem;">Discover our selection of quality products from Soko 24</p>
+        </div>
+        
+        <!-- Loading State -->
+        <div id="products-loading" class="products-grid">
+            @for ($i = 0; $i < 8; $i++)
+                <div class="product-card-premium skeleton">
+                    <div class="skeleton-img"></div>
+                    <div style="padding: 1.5rem;">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-price"></div>
+                    </div>
+                </div>
+            @endfor
+        </div>
+        
+        <!-- Products Container -->
+        <div class="products-grid" id="product-container" style="display: none;">
+            @if(isset($sokoProducts['data']) && count($sokoProducts['data']) > 0)
+                @foreach(array_slice($sokoProducts['data'], 0, 8) as $index => $product)
+                    <div class="product-card-premium" data-product-id="{{ $product['id'] }}" style="--delay: {{ $index + 1 }}">
+                        <div class="product-image-wrapper">
+                            <img src="{{ $product['thumbnail_image'] }}" alt="{{ $product['name'] }}" class="product-image" loading="lazy" onerror="this.src='/img/placeholder-product.jpg';">
+                            @if($product['has_discount'])
+                                <span class="product-badge">{{ $product['discount'] }}</span>
+                            @endif
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">{{ $product['name'] }}</h3>
+                            <div class="product-price">
+                                <span class="price-current">{{ str_replace('/=', '', $product['main_price']) }}</span>
+                                @if($product['has_discount'])
+                                    <span class="price-original">{{ str_replace('/=', '', $product['stroked_price']) }}</span>
+                                @endif
+                            </div>
+                            <button class="product-action quick-view-btn">Quick View</button>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+        
+        <div style="text-align: center; margin-top: 4rem;">
+            <a href="https://soko.sanaa.co" class="btn-cta" target="_blank">
+                <span>Visit Soko 24</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal-premium">
+        <div class="modal-content-premium">
+            <button class="modal-close close-modal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            
+            <div id="modal-loading" class="text-center" style="padding: 3rem;">
+                <div class="skeleton-img" style="height: 300px; margin-bottom: 2rem;"></div>
+                <div class="skeleton-title" style="height: 30px; margin-bottom: 1rem;"></div>
+                <div class="skeleton-price" style="height: 20px; width: 30%;"></div>
             </div>
             
-            <div class="col-md-6">
-              <!-- Product Details -->
-              <div class="product-details">
-                <div class="product-price mb-3">
-                  <h4 id="modalPrice" class="text-primary font-weight-bold mb-1"></h4>
-                  <div id="modalDiscountContainer" class="d-none">
-                    <span id="modalDiscountPrice" class="text-muted text-decoration-line-through mr-2"></span>
-                    <span id="modalDiscountBadge" class="badge badge-danger"></span>
-                  </div>
-                </div>
-                
-                <div id="modalProductDescription" class="product-description mb-4"></div>
-                
-                <div class="product-actions mt-4">
-                  <a href="#" id="modalViewProductLink" class="btn btn-primary btn-lg" target="_blank">
-                    View on Soko <i class="fas fa-external-link-alt ml-1"></i>
-                  </a>
-                </div>
-              </div>
+            <div id="modal-content" style="display: none;">
+                <!-- Modal content will be populated by JavaScript -->
             </div>
-          </div>
         </div>
-        
-        <div class="modal-footer bg-light border-top-0">
-          <div class="container-fluid">
-            <div class="row align-items-center">
-              <div class="col-md-8 text-md-left text-center mb-2 mb-md-0">
-                <small class="text-muted">Powered by <strong>Soko 24</strong> - Sanaa's e-commerce platform</small>
-              </div>
-              <div class="col-md-4 text-md-right text-center">
-                <button type="button" class="btn btn-sm btn-secondary close-modal">
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Modal Error State -->
-      <div id="modal-error" class="p-5 text-center" style="display: none;">
-        <div class="text-danger mb-3">
-          <i class="fas fa-exclamation-circle fa-3x"></i>
-        </div>
-        <h5 class="text-danger">Unable to Load Product</h5>
-        <p class="text-muted mb-4" id="modal-error-message">An error occurred while loading product details.</p>
-        <button type="button" class="btn btn-outline-primary close-modal">
-          Close
-        </button>
-      </div>
-  </div>
-</div>
-</div>
-
-
-    <!-- Latest Blog Posts (Premium) -->
-<!-- Latest Blog Posts (Ultra-Premium MacBook Pro Inspired) -->
-<section id="latest-blog-premium" class="relative py-40 bg-black overflow-hidden">
-  <!-- Ambient lighting (standard utilities only) -->
-  <div aria-hidden="true" class="pointer-events-none absolute inset-0">
-    <!-- Primary light source -->
-    <div
-      class="absolute -top-80 left-1/2 -translate-x-1/2 w-full max-w-7xl aspect-square rounded-full blur-3xl opacity-10
-             bg-gradient-conic from-emerald-400 via-cyan-400 to-lime-300">
     </div>
 
-    <!-- Secondary accent lights -->
-    <div
-      class="absolute top-1/4 -left-40 w-full max-w-xl aspect-square rounded-full blur-3xl opacity-10
-             bg-gradient-radial from-emerald-400/20 to-transparent">
-    </div>
-    <div
-      class="absolute bottom-1/4 -right-40 w-full max-w-xl aspect-square rounded-full blur-3xl opacity-10
-             bg-gradient-radial from-cyan-400/20 to-transparent">
-    </div>
-
-    <!-- Subtle texture overlay (removed data-URI noise; keep blend for softness) -->
-    <div class="absolute inset-0 opacity-5 mix-blend-soft-light"></div>
-  </div>
-
-  <div class="container mx-auto px-6 pt-8 relative">
-    <!-- Header -->
-    <div class="text-center max-w-5xl mx-auto mb-24">
-      <div class="inline-flex items-center px-5 py-2.5 rounded-full text-xs font-semibold tracking-widest uppercase
-                  bg-white/5 text-gray-300 border border-white/10 backdrop-blur-xl mb-8
-                  hover:bg-white/10 hover:border-white/20 transition-all duration-500 shadow-lg">
-        <span class="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full mr-4 animate-pulse"></span>
-        Latest Stories
-      </div>
-
-      <h2 class="text-6xl md:text-7xl font-semibold tracking-tight text-white mb-8 leading-none"
-          style="font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
-        From our blog
-      </h2>
-
-      <p class="text-xl text-gray-400 font-medium leading-relaxed max-w-3xl mx-auto tracking-tight"
-         style="font-family: 'SF Pro Text', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
-        Thoughtful stories on building, design and technology that shape tomorrow's digital landscape.
-      </p>
-    </div>
-
-    <!-- Blog carousel -->
-    <div class="relative">
-      <div class="swiper blog-swiper">
-        <div class="swiper-wrapper pb-4 pt-4">
-          @foreach(\App\Models\Blog::published()->orderByDesc('published_at')->orderByDesc('created_at')->take(6)->get() as $blog)
-          <div class="swiper-slide h-auto ">
-            <article
-              class="group relative p-4 overflow-hidden rounded-3xl bg-white/5 backdrop-blur-2xl border border-white/10
-                     shadow-2xl flex flex-col h-full
-                     hover:bg-white/10 hover:border-white/20 hover:shadow-2xl transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-2">
-
-              <!-- Glass overlays -->
-              <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/10 via-white/5 to-white/10 pointer-events-none opacity-60"></div>
-              <div class="absolute inset-0 rounded-3xl bg-gradient-to-t from-black/5 via-transparent to-white/5 pointer-events-none"></div>
-
-              <!-- Edge highlight -->
-              <div class="absolute inset-px rounded-3xl bg-gradient-to-b from-white/10 via-transparent to-transparent pointer-events-none opacity-40"></div>
-
-              <!-- Image -->
-              <div class="relative aspect-video overflow-hidden rounded-t-3xl">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500/10 via-transparent to-cyan-500/10 z-10"></div>
-
-                <!-- <img src="{{ $blog->featured_image_url }}" alt="{{ $blog->title }}" loading="lazy"
-                     class="absolute inset-0 h-full w-full object-cover transition-all duration-1000 ease-out
-                            group-hover:scale-110 group-hover:brightness-110 group-hover:contrast-125 group-hover:saturate-150"/> -->
-
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-20"></div>
-
-                @if($blog->category)
-                <a href="{{ route('blog.category', $blog->category->slug) }}"
-                   class="absolute left-7 bottom-7 inline-flex items-center px-4 py-2 rounded-full text-xs font-semibold tracking-wide
-                          bg-white/20 text-white border border-white/30 backdrop-blur-2xl
-                          hover:bg-white/30 hover:border-white/40 transition-all duration-300 z-30 shadow-md hover:shadow-lg hover:scale-105 hover:-translate-y-0.5">
-                  <span class="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full mr-3"></span>
-                  {{ $blog->category->name }}
-                </a>
-                @endif
-              </div>
-
-              <!-- Content -->
-              <div class="p-9 flex flex-col flex-1 relative z-10">
-                <h3 class="text-2xl md:text-3xl font-semibold text-white leading-snug mb-5 group-hover:text-emerald-400 transition-colors duration-300 tracking-tight"
-                    style="font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
-                  <a href="{{ $blog->url }}" class="focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60 rounded-2xl block -m-2 p-2">
-                    {{ $blog->title }}
-                  </a>
-                </h3>
-
-                <p class="text-gray-400 line-clamp-3 leading-relaxed mb-8 flex-1 font-medium tracking-tight"
-                   style="font-family: 'SF Pro Text', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
-                  {{ $blog->excerpt }}
-                </p>
-
-                <div class="flex items-center justify-between pt-6 border-t border-white/10">
-                  <div class="flex items-center gap-4 pr-2 text-xs text-gray-500">
-                    <!-- <div class="flex items-center gap-3">
-                      <div class="w-7 h-7 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-[11px] font-bold text-black">
-                        {{ strtoupper(substr($blog->author->name ?? 'S', 0, 1)) }}
-                      </div>
-                      <span class="font-medium text-gray-400">{{ $blog->author->name ?? 'Sanaa Team' }}</span>
-                    </div> -->
-                    <!-- <span aria-hidden="true" class="text-gray-600/60">•</span> -->
-                    <time datetime="{{ ($blog->published_at ?? $blog->created_at)->toDateString() }}" class="font-medium text-gray-500">
-                      {{ $blog->formatted_date }}
-                    </time>
-                    <!-- <span aria-hidden="true" class="text-gray-600/60">•</span>
-                    <span class="font-medium text-gray-500">{{ $blog->reading_time }} min</span> -->
-                  </div>
-
-                  <a href="{{ $blog->url }}"
-                     class="inline-flex items-center gap-2.5 px-3 py-2.5 rounded-md bg-white/5 hover:bg-emerald-500/20 text-gray-300 hover:text-emerald-400
-                            border border-white/10 hover:border-emerald-500/30 transition-all duration-300 text-xs font-semibold
-                            backdrop-blur-xl hover:shadow-lg group tracking-wide hover:scale-105 hover:-translate-y-0.5">
-                    Read story
-                    <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 opacity-80" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M13.172 12 8.222 7.05l1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"/>
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </article>
-          </div>
-          @endforeach
-        </div>
-
-        <!-- Navigation -->
-        <button
-          class="blog-swiper-button-prev absolute left-6 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-full bg-black/40 backdrop-blur-2xl
-                 border border-white/10 text-white/70 hover:text-white hover:bg-black/60 hover:border-white/20 hover:shadow-xl
-                 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:-translate-x-1"
-          aria-label="Previous">
-          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="m10.828 12 4.95 4.95-1.414 1.414L8 12l6.364-6.364 1.414 1.414z"/>
-          </svg>
-        </button>
-        <button
-          class="blog-swiper-button-next absolute right-6 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-full bg-black/40 backdrop-blur-2xl
-                 border border-white/10 text-white/70 hover:text-white hover:bg-black/60 hover:border-white/20 hover:shadow-xl
-                 transition-all duration-300 flex items-center justify-center hover:scale-110 hover:translate-x-1"
-          aria-label="Next">
-          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M13.172 12 8.222 7.05l1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- CTA -->
-    <div class="text-center mt-24">
-      <a href="{{ route('blog.index') }}"
-         class="inline-flex items-center justify-center px-10 py-5 rounded-md bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-600
-                hover:from-emerald-400 hover:via-emerald-400 hover:to-emerald-500 text-black font-semibold shadow-2xl
-                hover:shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all duration-500 text-base
-                backdrop-blur-sm border border-emerald-400/30 hover:border-emerald-300/50 relative overflow-hidden group tracking-tight">
-        <span class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></span>
-        <span class="relative. test-white">View all stories</span>
-        <svg class="h-5 w-5 ml-3 relative transition-transform duration-300 group-hover:translate-x-2 opacity-90" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M13.172 12 8.222 7.05l1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"/>
-        </svg>
-      </a>
-    </div>
-  </div>
-</section>
-
-
-
-    <!-- Join Section -->
-    <section class="bg-black text-white py-20" style="font-family: 'Montserrat', sans-serif;">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight text-white">
-          Join the 400 + businesses running <br class="hidden md:block" /> with Sanaa.<sup class="align-super text-sm">*</sup>
-        </h1>
-        <div class="mt-8 flex justify-center space-x-4 py-4">
-          <a href="#" class="inline-block border border-blue-600 text-white px-6 py-2 rounded hover:bg-blue-600 hover:text-white transition-colors">Get started</a>
-          <a href="#" class="inline-block bg-primary text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">Contact sales</a>
-        </div>
-        <p class="mt-6 text-sm text-gray-400">*Source: Q1 2023 Earnings Report Shareholder Letter</p>
-      </div>
+    <!-- Premium Blog Section (Keep existing) -->
+    <section id="blog" class="relative py-40 bg-black overflow-hidden">
+        <!-- Keep the existing premium blog section HTML as is -->
+        @includeIf('partials.blog-section')
     </section>
 
-   
-  </div>
-</div>
+    <!-- Join Section with Premium Style -->
+    <section class="relative py-32 bg-black overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square rounded-full blur-3xl opacity-10 bg-gradient-to-r from-emerald-400 to-cyan-400"></div>
+        </div>
+        
+        <div class="relative max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-5xl md:text-6xl font-thin text-white mb-8 tracking-tight">
+                Join the <span class="font-normal">400+</span> businesses<br>
+                running with <span class="text-emerald-400">Sanaa</span>
+            </h2>
+            <div class="flex justify-center gap-4 mb-6">
+                <a href="#" class="btn-cta">
+                    <span>Get Started</span>
+                </a>
+                <a href="#" class="btn-cta-outline">
+                    Contact Sales
+                </a>
+            </div>
+            <p class="text-sm text-gray-400">*Source: Q1 2023 Earnings Report</p>
+        </div>
+    </section>
 @endsection
 
 @push('scripts')
-<!-- External Dependencies -->
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}"></script>
 
 <script>
-// Mobile Menu Toggle
-document.addEventListener('DOMContentLoaded', () => {
-  const mobileMenuButton = document.querySelector('[aria-controls="mobile-menu"]');
-  const mobileMenu = document.getElementById('mobile-menu');
-  if (mobileMenuButton && mobileMenu) {
-    mobileMenuButton.addEventListener('click', () => {
-      const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
-      mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
-      mobileMenu.classList.toggle('hidden');
-    });
-  }
-});
-
-// Google Maps Initialization
-function initializeGoogleMaps() {
-  var mapMarkers = [{
-    address: "Sanaa Brands LTD, Nasser Rd, Kampala",
-    html: "<strong>Sanaa Brands LTD, </strong><br>Nasser Rd, Kampala<br><br><a href='#' onclick='mapCenterAt({latitude: 0.31077238305742366, longitude: 32.58389732826509, zoom: 16}, event)'>[+] zoom here</a>",
-    icon: {
-      image: "img/pin.png",
-      iconsize: [26, 46],
-      iconanchor: [12, 46]
-    }
-  }];
-
-  var initLatitude = 0.31077238305742366;
-  var initLongitude = 32.58389732826509;
-
-  var mapSettings = {
-    controls: {
-      draggable: (($.browser && $.browser.mobile) ? false : true),
-      panControl: true,
-      zoomControl: true,
-      mapTypeControl: true,
-      scaleControl: true,
-      streetViewControl: true,
-      overviewMapControl: true
-    },
-    scrollwheel: false,
-    markers: mapMarkers,
-    latitude: initLatitude,
-    longitude: initLongitude,
-    zoom: 13
-  };
-
-  var map = $('#googlemaps').gMap(mapSettings),
-      mapRef = $('#googlemaps').data('gMap.reference');
-
-  var styles = [
-    {"featureType": "water","elementType": "geometry","stylers": [{"color": "#e9e9e9"},{"lightness": 17}]},
-    {"featureType": "landscape","elementType": "geometry","stylers": [{"color": "#f5f5f5"},{"lightness": 20}]},
-    {"featureType": "road.highway","elementType": "geometry.fill","stylers": [{"color": "#ffffff"},{"lightness": 17}]},
-    {"featureType": "road.highway","elementType": "geometry.stroke","stylers": [{"color": "#ffffff"},{"lightness": 29},{"weight": 0.2}]},
-    {"featureType": "road.arterial","elementType": "geometry","stylers": [{"color": "#ffffff"},{"lightness": 18}]},
-    {"featureType": "road.local","elementType": "geometry","stylers": [{"color": "#ffffff"},{"lightness": 16}]},
-    {"featureType": "poi","elementType": "geometry","stylers": [{"color": "#f5f5f5"},{"lightness": 21}]},
-    {"featureType": "poi.park","elementType": "geometry","stylers": [{"color": "#dedede"},{"lightness": 21}]},
-    {"elementType": "labels.text.stroke","stylers": [{"visibility": "on"},{"color": "#ffffff"},{"lightness": 16}]},
-    {"elementType": "labels.text.fill","stylers": [{"saturation": 36},{"color": "#333333"},{"lightness": 40}]},
-    {"elementType": "labels.icon","stylers": [{"visibility": "off"}]},
-    {"featureType": "transit","elementType": "geometry","stylers": [{"color": "#f2f2f2"},{"lightness": 19}]},
-    {"featureType": "administrative","elementType": "geometry.fill","stylers": [{"color": "#fefefe"},{"lightness": 20}]},
-    {"featureType": "administrative","elementType": "geometry.stroke","stylers": [{"color": "#fefefe"},{"lightness": 17},{"weight": 1.2}]}
-  ];
-  var styledMap = new google.maps.StyledMapType(styles, { name: 'Styled Map' });
-  mapRef.mapTypes.set('map_style', styledMap);
-  mapRef.setMapTypeId('map_style');
-}
-
-theme.fn.intObs('.google-map', 'initializeGoogleMaps()', {});
-
-// Map centerAt function
-var mapCenterAt = function(options, e) {
-  e.preventDefault();
-  $('#googlemaps').gMap("centerAt", options);
-}
-
-// Product Modal & Slider
 document.addEventListener('DOMContentLoaded', function() {
-  const modal = document.getElementById('productModal');
-  const modalProductName = document.getElementById('modalProductName');
-  const modalThumbnail = document.getElementById('modalThumbnail');
-  const modalProductDescription = document.getElementById('modalProductDescription');
-  const closeModal = document.querySelector('.close-modal');
-  const modalSliderContainer = document.getElementById('modalSliderContainer');
-  const modalSliderWrapper = document.getElementById('modalSliderWrapper');
-
-  async function openProductModal(productId) {
-    try {
-      const response = await fetch(`https://soko.sanaa.co/api/v2/products/${productId}`);
-      if (!response.ok) throw new Error(`Network error: ${response.status}`);
-      const data = await response.json();
-      if (data.success && data.data && data.data.length > 0) {
-        const product = data.data[0];
-        modalProductName.textContent = product.name;
-        modalProductDescription.innerHTML = product.description;
-        modal.setAttribute('aria-hidden', 'false');
-        if (product.photos && product.photos.length > 1) {
-          modalSliderContainer.style.display = 'block';
-          modalThumbnail.style.display = 'none';
-          modalSliderWrapper.innerHTML = '';
-          product.photos.forEach((photo, index) => {
-            const slide = document.createElement('div');
-            slide.className = 'swiper-slide';
-            const img = document.createElement('img');
-            img.src = photo.path;
-            img.alt = `${product.name} - Image ${index + 1}`;
-            img.loading = 'lazy';
-            img.style.width = '100%';
-            img.style.objectFit = 'contain';
-            slide.appendChild(img);
-            modalSliderWrapper.appendChild(slide);
-          });
-          if (window.modalSwiper) {
-            window.modalSwiper.update();
-          } else {
-            window.modalSwiper = new Swiper('#modalSliderContainer .swiper-container', {
-              loop: true,
-              autoplay: { delay: 4000, disableOnInteraction: true },
-              pagination: { el: '#modalSliderContainer .swiper-pagination', clickable: true },
-              navigation: {
-                nextEl: '#modalSliderContainer .swiper-button-next',
-                prevEl: '#modalSliderContainer .swiper-button-prev'
-              },
-              spaceBetween: 10,
-              speed: 600
-            });
-          }
+    // Premium Loading Animation
+    const progress = document.getElementById('progress');
+    const loader = document.getElementById('loader');
+    
+    // Simulate loading
+    let width = 0;
+    const loading = setInterval(() => {
+        width += Math.random() * 30;
+        if (width >= 100) {
+            width = 100;
+            progress.style.width = width + '%';
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                document.body.style.overflow = 'visible';
+                clearInterval(loading);
+            }, 500);
         } else {
-          modalSliderContainer.style.display = 'none';
-          modalThumbnail.style.display = 'block';
-          modalThumbnail.src = product.thumbnail_image;
-          modalThumbnail.alt = product.name;
-          modalThumbnail.loading = 'lazy';
+            progress.style.width = width + '%';
         }
-        modal.classList.add('show');
-        modal.style.display = 'flex';
-        closeModal.focus();
-      } else {
-        alert('No product details found.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Failed to load product details.');
-    }
-  }
+    }, 200);
 
-  closeModal.addEventListener('click', function() {
-    modal.classList.remove('show');
-    setTimeout(() => {
-      modal.style.display = 'none';
-      modal.setAttribute('aria-hidden', 'true');
-    }, 300);
-  });
+    // Custom Cursor
+    const cursor = document.querySelector('.cursor');
+    const follower = document.querySelector('.cursor-follower');
+    const links = document.querySelectorAll('a, button, .service-card, .product-card-premium, input');
 
-  closeModal.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      modal.classList.remove('show');
-      setTimeout(() => {
-        modal.style.display = 'none';
-        modal.setAttribute('aria-hidden', 'true');
-      }, 300);
-    }
-  });
-
-  modal.addEventListener('click', function(event) {
-    if (event.target === modal) {
-      modal.classList.remove('show');
-      setTimeout(() => {
-        modal.style.display = 'none';
-        modal.setAttribute('aria-hidden', 'true');
-      }, 300);
-    }
-  });
-
-  document.querySelectorAll('.product-card').forEach(card => {
-    card.addEventListener('click', function() {
-      const productId = this.getAttribute('data-product-id');
-      openProductModal(productId);
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        
+        setTimeout(() => {
+            follower.style.left = e.clientX - 10 + 'px';
+            follower.style.top = e.clientY - 10 + 'px';
+        }, 100);
     });
-  });
+
+    links.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            cursor.classList.add('hover');
+            follower.style.transform = 'scale(2)';
+        });
+        
+        link.addEventListener('mouseleave', () => {
+            cursor.classList.remove('hover');
+            follower.style.transform = 'scale(1)';
+        });
+    });
+
+    // Parallax Particles
+    const heroParticles = document.querySelector('.hero-particles');
+    if (heroParticles) {
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (Math.random() * 20 + 20) + 's';
+            heroParticles.appendChild(particle);
+        }
+    }
+
+    // Navbar Scroll Effect
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll > 100) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+        
+        lastScroll = currentScroll;
+    });
+
+    // Smooth Scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menuToggle');
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            // Add mobile menu logic here
+        });
+    }
+
+    // Home logo reloads the page
+    const homeLogo = document.getElementById('home-logo');
+    if (homeLogo) {
+        homeLogo.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.reload();
+        });
+    }
+
+    // Intersection Observer for Animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                if (entry.target.classList.contains('service-card') || 
+                    entry.target.classList.contains('team-member') ||
+                    entry.target.classList.contains('product-card-premium')) {
+                    entry.target.classList.add('visible');
+                }
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements
+    document.querySelectorAll('.reveal-element, .service-card, .team-member, .product-card-premium').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Interactive Service Cards - Mouse Follow Effect
+    document.querySelectorAll('.service-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            card.style.setProperty('--x', x + 'px');
+            card.style.setProperty('--y', y + 'px');
+        });
+    });
+
+    // Show products after loading
+    setTimeout(() => {
+        const loadingContainer = document.getElementById('products-loading');
+        const productContainer = document.getElementById('product-container');
+        
+        if (loadingContainer && productContainer) {
+            loadingContainer.style.display = 'none';
+            productContainer.style.display = 'grid';
+        }
+    }, 1500);
+
+    // Product Modal
+    const modal = document.getElementById('productModal');
+    const modalLoading = document.getElementById('modal-loading');
+    const modalContent = document.getElementById('modal-content');
+    
+    // Quick View buttons
+    document.querySelectorAll('.quick-view-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const card = this.closest('.product-card-premium');
+            const productId = card.dataset.productId;
+            
+            // Show modal
+            modal.classList.add('show');
+            modalLoading.style.display = 'block';
+            modalContent.style.display = 'none';
+            
+            // Simulate loading product details
+            setTimeout(() => {
+                modalLoading.style.display = 'none';
+                modalContent.style.display = 'block';
+                // Add product details here
+            }, 1000);
+        });
+    });
+
+    // Close modal
+    document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal.classList.remove('show');
+        });
+    });
+
+    // Close modal on outside click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('show');
+        }
+    });
+
+    // Initialize Swiper for blog
+    if (document.querySelector('.blog-swiper')) {
+        new Swiper('.blog-swiper', {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            navigation: {
+                nextEl: '.blog-swiper-button-next',
+                prevEl: '.blog-swiper-button-prev',
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 2,
+                },
+                1024: {
+                    slidesPerView: 3,
+                },
+            },
+        });
+    }
 });
 
-// Duplicate Swiper initialization removed - using the premium one in the blog section instead
+// Page Visibility API - Pause animations when tab is not visible
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        document.querySelectorAll('.particle').forEach(p => {
+            p.style.animationPlayState = 'paused';
+        });
+    } else {
+        document.querySelectorAll('.particle').forEach(p => {
+            p.style.animationPlayState = 'running';
+        });
+    }
+});
 </script>
-@endpush
-
-@push('styles')
-<!-- Swiper CSS -->
-<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-
-<!-- SF Pro Fonts for Premium Blog Section -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;650;700&display=swap" rel="stylesheet">
-
-<style>
-  /* Product card hover effect */
-  .product-card .card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .product-card .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-  }
-  .product-card .card-img-top {
-    transition: transform 0.3s ease;
-  }
-  .product-card .card:hover .card-img-top {
-    transform: scale(1.05);
-  }
-  /* Button styling */
-  .btn-success {
-    background-color: #28a745;
-    border: none;
-    transition: background-color 0.3s ease;
-  }
-  .btn-success:hover {
-    background-color: #218838;
-  }
-  /* Modal styling */
-  #productModal {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  #productModal.show {
-    opacity: 1;
-  }
-  #productModal .modal-content {
-    max-width: 800px;
-    width: 90%;
-    padding: 25px;
-    border-radius: 12px;
-  }
-  /* Swiper slider styling */
-  .swiper-pagination-bullet {
-    background: #000;
-    opacity: 0.7;
-  }
-  .swiper-pagination-bullet-active {
-    opacity: 1;
-  }
-  .swiper-button-next, .swiper-button-prev {
-    color: #000;
-    transition: opacity 0.3s ease;
-  }
-  .swiper-button-next:hover, .swiper-button-prev:hover {
-    opacity: 0.8;
-  }
-  .swiper-slide img {
-    width: 100%;
-    height: auto;
-    max-height: 400px;
-    object-fit: contain;
-  }
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    #productModal .modal-content {
-      width: 95%;
-      padding: 15px;
-    }
-    #modalSliderContainer, #modalThumbnail {
-      max-height: 300px;
-    }
-  }
-  /* Line clamp helper if Tailwind plugin not available */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  
-  /* Ensure premium blog section styles take precedence */
-  #latest-blog-premium .swiper-slide {
-    height: auto !important;
-  }
-  
-  /* Fix any potential z-index conflicts */
-  #latest-blog-premium {
-    position: relative;
-    z-index: 1;
-  }
-</style>
 @endpush

@@ -612,6 +612,9 @@
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @endif
 
+        {{-- Inject per-page pushed styles --}}
+        @stack('styles')
+
 
 		 {{-- <style>
     /* OPTIONAL: Make sure nothing else conflicts */
@@ -623,12 +626,14 @@
 <body class="font-sans antialiased bg-white text-black dark:bg-black dark:text-white">
     <!-- <body id="body" class="one-page alternative-font-5" data-plugin-scroll-spy data-plugin-options="{'target': '#header'}"> -->
 
-    <!-- Header -->
-    @include('components.header')
-<!-- Add padding to the content below to prevent overlap -->
-<div style="padding-top: 64px;">
-    <!-- Your main content goes here -->
-</div>
+    <!-- Header (hide on pages that define 'hide_header' section) -->
+    @hasSection('hide_header')
+        
+    @else
+        @include('components.header')
+        <!-- Add padding to the content below to prevent overlap -->
+        <div style="padding-top: 64px;"></div>
+    @endif
     <!-- Main Content -->
     <main>
         @yield('content')
@@ -1049,6 +1054,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+    <script>
+      // Ensure clicking the header logo always reloads/navigates home
+      document.addEventListener('DOMContentLoaded', function () {
+        const siteLogo = document.getElementById('site-logo');
+        if (siteLogo) {
+          siteLogo.addEventListener('click', function (e) {
+            e.preventDefault();
+            // Force navigation to home (reload if already there)
+            window.location.href = this.href;
+          });
+        }
+      });
+    </script>
 
 
 

@@ -1,10 +1,10 @@
-<header class="bg-white border-b border-gray-200 shadow-sm  border-b border-gray-200 fixed top-0 left-0 w-full z-50">
+<header class="bg-white dark:bg-black/90 border-b border-gray-200 dark:border-gray-700 shadow-sm fixed top-0 left-0 w-full z-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center h-16">
       <!-- Logo Section -->
       <div class="flex items-center">
-        <a href="{{ route('home') }}" class="flex items-center">
-          <img class="h-8 w-auto" src="{{ asset('storage/images/sanaa-logo-b.svg') }}" alt="Sanaa Logo">
+        <a href="{{ route('home') }}" id="site-logo" class="flex items-center">
+          <img class="h-8 w-auto transition dark:invert" src="{{ asset('storage/images/sanaa-logo-b.svg') }}" alt="Sanaa Logo">
         </a>
       </div>
 
@@ -13,7 +13,7 @@
         <!-- Simple Links -->
         <a 
           href="{{ route('about') }}" 
-          class="text-gray-800 hover:text-green-600 font-medium text-sm transition-colors duration-200"
+          class="text-gray-800 hover:text-green-600 dark:text-gray-200 dark:hover:text-emerald-400 font-medium text-sm transition-colors duration-200"
         >
           Personal
         </a>
@@ -32,7 +32,7 @@
             aria-expanded="false"
             x-bind:aria-expanded="open.toString()"
             aria-controls="dropdown-menu"
-            class="text-gray-800 hover:text-green-600 font-medium text-sm inline-flex items-center space-x-2 py-2 transition-colors duration-200"
+            class="text-gray-800 hover:text-green-600 dark:text-gray-200 dark:hover:text-emerald-400 font-medium text-sm inline-flex items-center space-x-2 py-2 transition-colors duration-200"
           >
             <span>Company</span>
             <svg 
@@ -61,7 +61,7 @@
             x-transition:leave="transition ease-in duration-150"
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 translate-y-1"
-            class="fixed inset-20 bg-white border border-gray-200 shadow-lg z-50 transform  border border-gray-200 shadow-lg z-50 rounded-lg " 
+            class="fixed inset-20 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-lg z-50 transform rounded-lg " 
             {{-- absolute left-1/2 transform -translate-x-1/2 mt-2 w-64 bg-white  border border-gray-200 shadow-lg z-50 rounded-lg --}}
             x-cloak
           >
@@ -85,7 +85,7 @@
             <!-- Overlay Content Container -->
             <div class="p-6 max-w-screen-lg mx-auto">
               <!-- Heading -->
-              <h2 class="text-2xl font-bold mb-4 text-gray-900 flex items-center">
+              <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100 flex items-center">
                 Discover Our Company
                 <svg class="w-4 h-4 ml-2 transform -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path 
@@ -98,7 +98,7 @@
               </h2>
 
               <!-- 3-Column Grid -->
-              <div class="grid grid-cols-3 gap-8 text-sm text-gray-700">
+              <div class="grid grid-cols-3 gap-8 text-sm text-gray-700 dark:text-gray-300">
                 <!-- Column 1: General -->
                 <div class="space-y-4">
                   <h3 class="font-bold text-gray-900">General</h3>
@@ -106,7 +106,7 @@
                     <li>
                       <a 
                         href="{{ route('company') }}" 
-                        class="hover:text-green-600 transition-colors duration-200 block"
+                        class="hover:text-green-600 dark:hover:text-emerald-400 transition-colors duration-200 block"
                       >
                         About Us
                       </a>
@@ -114,7 +114,7 @@
                     <li>
                       <a 
                         href="#" 
-                        class="hover:text-green-600 transition-colors duration-200 block"
+                        class="hover:text-green-600 dark:hover:text-emerald-400 transition-colors duration-200 block"
                       >
                         News &amp; Media
                       </a>
@@ -122,7 +122,7 @@
                     <li>
                       <a 
                         href="#" 
-                        class="hover:text-green-600 transition-colors duration-200 block"
+                        class="hover:text-green-600 dark:hover:text-emerald-400 transition-colors duration-200 block"
                       >
                         Company Reviews
                       </a>
@@ -130,7 +130,7 @@
                     <li>
                       <a 
                         href="#" 
-                        class="hover:text-green-600 transition-colors duration-200 block"
+                        class="hover:text-green-600 dark:hover:text-emerald-400 transition-colors duration-200 block"
                       >
                         Blog
                       </a>
@@ -224,25 +224,25 @@
         <!-- More Simple Links -->
         <a
           href="{{ route('products') }}"
-          class="font-medium text-sm transition-colors duration-200 {{ request()->routeIs('products') ? 'text-green-600' : 'text-gray-800 hover:text-green-600' }}"
+          class="font-medium text-sm transition-colors duration-200 {{ request()->routeIs('products') ? 'text-green-600' : 'text-gray-800 hover:text-green-600' }} dark:text-gray-200 dark:hover:text-emerald-400"
         >
           Products
         </a>
         <a
           href="{{ route('services') }}"
-          class="font-medium text-sm transition-colors duration-200 {{ request()->routeIs('services') ? 'text-green-600' : 'text-gray-800 hover:text-green-600' }}"
+          class="font-medium text-sm transition-colors duration-200 {{ request()->routeIs('services') ? 'text-green-600' : 'text-gray-800 hover:text-green-600' }} dark:text-gray-200 dark:hover:text-emerald-400"
         >
           Services
         </a>
         <a
           href="{{ route('bulk-sms') }}"
-          class="font-medium text-sm transition-colors duration-200 {{ request()->routeIs('bulk-sms') ? 'text-green-600' : 'text-gray-800 hover:text-green-600' }}"
+          class="font-medium text-sm transition-colors duration-200 {{ request()->routeIs('bulk-sms') ? 'text-green-600' : 'text-gray-800 hover:text-green-600' }} dark:text-gray-200 dark:hover:text-emerald-400"
         >
           Bulk SMS
         </a>
         <a
           href="{{ route('prices') }}"
-          class="text-gray-800 hover:text-green-600 font-medium text-sm transition-colors duration-200"
+          class="text-gray-800 hover:text-green-600 dark:text-gray-200 dark:hover:text-emerald-400 font-medium text-sm transition-colors duration-200"
         >
           Sanaa &lt;18
         </a>
@@ -252,20 +252,20 @@
       <div class="hidden sm:flex items-center space-x-4">
         <a 
           href="http://soko.sanaa.co/" 
-          class="text-gray-800 hover:text-green-600 font-medium text-sm transition-colors duration-200"
+          class="text-gray-800 hover:text-green-600 dark:text-gray-200 dark:hover:text-emerald-400 font-medium text-sm transition-colors duration-200"
         >
           Shop 24
         </a>
         <a 
           href="{{ route('support') }}" 
-          class="text-gray-800 hover:text-green-600 font-medium text-sm transition-colors duration-200"
+          class="text-gray-800 hover:text-green-600 dark:text-gray-200 dark:hover:text-emerald-400 font-medium text-sm transition-colors duration-200"
         >
           Support
         </a>
         @auth
         <a
           href="{{ route('dashboard') }}"
-          class="text-gray-800 hover:text-green-600 font-medium text-sm transition-colors duration-200"
+          class="text-gray-800 hover:text-green-600 dark:text-gray-200 dark:hover:text-emerald-400 font-medium text-sm transition-colors duration-200"
         >
           Dashboard
         </a>
@@ -278,7 +278,7 @@
         </a>
         @endauth
 
-        <button id="theme-toggle" class="p-2 rounded text-gray-800 hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition" aria-label="Toggle dark mode">
+        <button id="theme-toggle" class="p-2 rounded text-gray-800 dark:text-gray-200 hover:text-green-600 dark:hover:text-emerald-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition" aria-label="Toggle dark mode">
           <svg class="h-5 w-5 block dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.66-9h-1M4.34 12h-1m15.02 5.66l-.7-.7M6.34 6.34l-.7-.7m12.02 0l-.7.7M6.34 17.66l-.7.7M12 5a7 7 0 100 14 7 7 0 000-14z" />
           </svg>

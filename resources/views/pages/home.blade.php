@@ -154,7 +154,7 @@
         position: fixed;
         top: 0;
         width: 100%;
-        padding: 1.25rem 2rem; /* tighter spacing */
+        padding: 2rem 4rem;
         z-index: 1000;
         transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         mix-blend-mode: difference;
@@ -164,59 +164,89 @@
         background: rgba(0, 0, 0, 0.95);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        padding: 0.75rem 2rem; /* compact when scrolled */
+        padding: 1rem 4rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         mix-blend-mode: normal;
     }
 
     .nav-container {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        column-gap: 1.5rem;
     }
 
     .logo {
         font-size: 1.5rem;
         font-weight: 200;
-        letter-spacing: 0.2rem;
+        letter-spacing: 0.3rem;
         transition: all 0.3s ease;
         cursor: pointer;
-        margin-right: 1.5rem;
     }
 
     .nav-links {
         display: flex;
-        gap: 2rem;
+        gap: 3rem;
         list-style: none;
-        align-items: center;
-    }
-
-    .nav-actions {
-        display: flex;
-        gap: 1.25rem;
-        align-items: center;
-        margin-left: 1rem;
-    }
-
-    .nav-actions .btn-cta-outline {
-        padding: 0.5rem 1rem;
-        border-radius: 9999px;
     }
 
     .nav-link {
         color: var(--white);
         text-decoration: none;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         font-weight: 300;
-        letter-spacing: 0.02rem;
+        letter-spacing: 0.05rem;
         transition: all 0.3s ease;
         position: relative;
         cursor: pointer;
-        padding: 0.5rem 0.25rem; /* better hit area */
-        line-height: 1;
+    }
+
+    /* Header actions (auth + contact sales) */
+    .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .btn-nav {
+        padding: 0.5rem 1rem;
+        background: var(--emerald);
+        color: var(--pure-black);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.02rem;
+        border-radius: 999px;
+        transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .btn-nav:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+        background: var(--emerald-light);
+    }
+
+    .btn-nav-outline {
+        padding: 0.5rem 1rem;
+        background: transparent;
+        color: var(--white);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.02rem;
+        border-radius: 999px;
+        transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .btn-nav-outline:hover {
+        background: var(--white);
+        color: var(--pure-black);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.15);
     }
 
     .nav-link::after {
@@ -331,7 +361,7 @@
         font-size: 1.25rem;
         font-weight: 200;
         letter-spacing: 0.1rem;
-        color: var(--light-gray);
+        color: var(--black);
         margin-bottom: 3rem;
         opacity: 0;
         animation: fadeInUp 1s ease 1s forwards;
@@ -901,10 +931,6 @@
             display: none;
         }
 
-        nav.premium-nav {
-            padding: 0.75rem 1rem;
-        }
-
         .hero-title {
             font-size: clamp(2.5rem, 8vw, 4rem);
         }
@@ -999,12 +1025,12 @@
                 <li><a href="https://soko.sanaa.co" target="_blank" class="nav-link">SOKO 24</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="{{ route('support') }}" class="nav-link">Support</a>
-                <a href="{{ route('contact') }}" class="btn-cta-outline">Contact Sales</a>
+                <a href="{{ route('contact') }}" class="btn-nav-outline">Contact Sales</a>
                 @auth
-                    <a href="{{ route('dashboard') }}" class="nav-link">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="btn-nav">Dashboard</a>
                 @else
-                    <a href="{{ route('login') }}" class="nav-link">Login</a>
+                    <a href="{{ route('login') }}" class="btn-nav-outline">Sign In</a>
+                    <a href="{{ route('register') }}" class="btn-nav">Create Account</a>
                 @endauth
             </div>
             <div class="menu-toggle" id="menuToggle">
@@ -1017,8 +1043,8 @@
 
     <!-- Enhanced Hero Section -->
     <section id="hero" class="hero-premium">
-        <video autoplay loop muted playsinline class="hero-video">
-            <source src="/videos/hero-video.mp4" type="video/mp4">
+        <video id="hero-video" autoplay loop muted playsinline preload="metadata" class="hero-video" poster="{{ asset('storage/images/sanaa.png') }}">
+            <source src="{{ asset('storage/images/live.mp4') }}" type="video/mp4">
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-particles"></div>
@@ -1199,8 +1225,18 @@
         @includeIf('partials.blog-section')
     </section>
 
-    <!-- Join Section with Premium Style -->
+
     <section class="relative py-32 bg-black overflow-hidden">
+        <!-- Spacer Section -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="h-32 flex items-center justify-center">
+                <div class="w-1 h-16 bg-gradient-to-b from-emerald-500/20 to-transparent"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Join Section with Premium Style -->
+    <section class="relative py-32  bg-black overflow-hidden">
         <div class="absolute inset-0">
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square rounded-full blur-3xl opacity-10 bg-gradient-to-r from-emerald-400 to-cyan-400"></div>
         </div>
@@ -1221,6 +1257,17 @@
             <p class="text-sm text-gray-400">*Source: Q1 2023 Earnings Report</p>
         </div>
     </section>
+
+
+     <section class="relative py-32 bg-black overflow-hidden">
+        <!-- Spacer Section -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="h-32 flex items-center justify-center">
+                <div class="w-1 h-16 bg-gradient-to-b from-emerald-500/20 to-transparent"></div>
+            </div>
+        </div>
+    </section>
+
 @endsection
 
 @push('scripts')
@@ -1228,26 +1275,81 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Premium Loading Animation
+    // Premium Loading Animation (real resource tracking)
     const progress = document.getElementById('progress');
     const loader = document.getElementById('loader');
-    
-    // Simulate loading
-    let width = 0;
-    const loading = setInterval(() => {
-        width += Math.random() * 30;
-        if (width >= 100) {
-            width = 100;
-            progress.style.width = width + '%';
+
+    let resourcesLoaded = 0;
+    const resourceNodes = document.querySelectorAll('img, video, script[src], link[rel="stylesheet"]');
+    const totalResources = resourceNodes.length || 1; // prevent division by zero
+
+    const updateProgress = () => {
+        const percentage = Math.min(100, (resourcesLoaded / totalResources) * 100);
+        if (progress) progress.style.width = percentage + '%';
+        if (percentage >= 100 && loader) {
             setTimeout(() => {
-                loader.classList.add('hidden');
+                loader.style.opacity = '0';
                 document.body.style.overflow = 'visible';
-                clearInterval(loading);
-            }, 500);
-        } else {
-            progress.style.width = width + '%';
+                setTimeout(() => loader.remove(), 500);
+            }, 300);
         }
-    }, 200);
+    };
+
+    const markLoaded = (el) => {
+        resourcesLoaded++;
+        updateProgress();
+        // cleanup listeners to avoid double counting
+        if (!el) return;
+        el.removeEventListener && el.removeEventListener('load', onAnyLoad);
+        el.removeEventListener && el.removeEventListener('error', onAnyLoad);
+        el.removeEventListener && el.removeEventListener('loadeddata', onAnyLoad);
+        el.removeEventListener && el.removeEventListener('loadedmetadata', onAnyLoad);
+    };
+
+    const onAnyLoad = function() { markLoaded(this); };
+
+    resourceNodes.forEach((el) => {
+        const tag = el.tagName;
+        if (tag === 'IMG') {
+            if (el.complete) markLoaded(el);
+            else { el.addEventListener('load', onAnyLoad); el.addEventListener('error', onAnyLoad); }
+        } else if (tag === 'VIDEO') {
+            // loadeddata fires when first frame is available
+            if (el.readyState >= 2) markLoaded(el);
+            else { el.addEventListener('loadeddata', onAnyLoad); el.addEventListener('error', onAnyLoad); }
+        } else if (tag === 'SCRIPT') {
+            // readyState for older browsers, load for modern
+            if (el.readyState === 'complete' || el.readyState === 'loaded') markLoaded(el);
+            else { el.addEventListener('load', onAnyLoad); el.addEventListener('error', onAnyLoad); }
+        } else if (tag === 'LINK') {
+            // stylesheet load event
+            if (el.sheet) markLoaded(el);
+            else { el.addEventListener('load', onAnyLoad); el.addEventListener('error', onAnyLoad); }
+        } else {
+            // unknown: count it anyway to avoid hang
+            markLoaded(el);
+        }
+    });
+
+    // Fallback: ensure we finish after window load in case of missing events
+    window.addEventListener('load', () => {
+        resourcesLoaded = totalResources;
+        updateProgress();
+
+        // Ensure hero video autoplay after website load
+        const hv = document.getElementById('hero-video');
+        if (hv) {
+            hv.muted = true; // required for autoplay on many browsers
+            const tryPlay = () => {
+                try {
+                    const p = hv.play();
+                    if (p && typeof p.catch === 'function') p.catch(() => {});
+                } catch (e) { /* ignore autoplay promise rejections */ }
+            };
+            if (hv.readyState >= 2) tryPlay();
+            else hv.addEventListener('canplay', tryPlay, { once: true });
+        }
+    });
 
     // Custom Cursor
     const cursor = document.querySelector('.cursor');

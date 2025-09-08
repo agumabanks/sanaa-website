@@ -154,7 +154,7 @@
         position: fixed;
         top: 0;
         width: 100%;
-        padding: 2rem 4rem;
+        padding: 1.25rem 2rem; /* tighter spacing */
         z-index: 1000;
         transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         mix-blend-mode: difference;
@@ -164,42 +164,59 @@
         background: rgba(0, 0, 0, 0.95);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        padding: 1rem 4rem;
+        padding: 0.75rem 2rem; /* compact when scrolled */
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         mix-blend-mode: normal;
     }
 
     .nav-container {
-        max-width: 1400px;
+        max-width: 1200px;
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        column-gap: 1.5rem;
     }
 
     .logo {
         font-size: 1.5rem;
         font-weight: 200;
-        letter-spacing: 0.3rem;
+        letter-spacing: 0.2rem;
         transition: all 0.3s ease;
         cursor: pointer;
+        margin-right: 1.5rem;
     }
 
     .nav-links {
         display: flex;
-        gap: 3rem;
+        gap: 2rem;
         list-style: none;
+        align-items: center;
+    }
+
+    .nav-actions {
+        display: flex;
+        gap: 1.25rem;
+        align-items: center;
+        margin-left: 1rem;
+    }
+
+    .nav-actions .btn-cta-outline {
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
     }
 
     .nav-link {
         color: var(--white);
         text-decoration: none;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         font-weight: 300;
-        letter-spacing: 0.05rem;
+        letter-spacing: 0.02rem;
         transition: all 0.3s ease;
         position: relative;
         cursor: pointer;
+        padding: 0.5rem 0.25rem; /* better hit area */
+        line-height: 1;
     }
 
     .nav-link::after {
@@ -880,6 +897,14 @@
             display: flex;
         }
 
+        .nav-actions {
+            display: none;
+        }
+
+        nav.premium-nav {
+            padding: 0.75rem 1rem;
+        }
+
         .hero-title {
             font-size: clamp(2.5rem, 8vw, 4rem);
         }
@@ -973,6 +998,15 @@
                 <li><a href="#blog" class="nav-link">BLOG</a></li>
                 <li><a href="https://soko.sanaa.co" target="_blank" class="nav-link">SOKO 24</a></li>
             </ul>
+            <div class="nav-actions">
+                <a href="{{ route('support') }}" class="nav-link">Support</a>
+                <a href="{{ route('contact') }}" class="btn-cta-outline">Contact Sales</a>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="nav-link">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="nav-link">Login</a>
+                @endauth
+            </div>
             <div class="menu-toggle" id="menuToggle">
                 <span class="menu-line"></span>
                 <span class="menu-line"></span>

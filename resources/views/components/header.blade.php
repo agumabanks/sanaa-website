@@ -262,6 +262,12 @@
         >
           Support
         </a>
+        <a 
+          href="{{ route('contact') }}" 
+          class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-black rounded-full text-sm font-semibold transition"
+        >
+          Contact Sales
+        </a>
         @auth
         <a
           href="{{ route('dashboard') }}"
@@ -272,7 +278,7 @@
         @else
         <a
           href="{{ route('login') }}"
-          class="text-gray-800 hover:text-green-600 font-medium text-sm transition-colors duration-200"
+          class="text-gray-800 hover:text-green-600 dark:text-gray-200 dark:hover:text-emerald-400 font-medium text-sm transition-colors duration-200"
         >
           Login
         </a>

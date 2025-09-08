@@ -1043,8 +1043,8 @@
 
     <!-- Enhanced Hero Section -->
     <section id="hero" class="hero-premium">
-        <video id="hero-video" autoplay loop muted playsinline preload="metadata" class="hero-video" poster="{{ asset('storage/images/sanaa.png') }}">
-            <source src="{{ asset('storage/images/live.mp4') }}" type="video/mp4">
+        <video id="hero-video" autoplay muted loop playsinline webkit-playsinline preload="auto" class="hero-video" poster="{{ asset('storage/images/sanaa.png') }}">
+            <source id="hero-video-source" data-src="{{ asset('storage/images/live.mp4') }}" type="video/mp4">
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-particles"></div>
@@ -1283,6 +1283,39 @@ document.addEventListener('DOMContentLoaded', function() {
     const resourceNodes = document.querySelectorAll('img, video, script[src], link[rel="stylesheet"]');
     const totalResources = resourceNodes.length || 1; // prevent division by zero
 
+    // Helper: play hero video once loader is done
+    const playHeroVideo = () => {
+        const hv = document.getElementById('hero-video');
+        if (!hv) return;
+
+        // Ensure best mobile compatibility
+        hv.setAttribute('playsinline', '');
+        hv.setAttribute('webkit-playsinline', '');
+        hv.muted = true; // required by most mobile browsers for autoplay
+
+        // Set the source now to start fetching only after loader is done
+        const srcEl = document.getElementById('hero-video-source');
+        if (srcEl && !srcEl.src && srcEl.dataset.src) {
+            srcEl.src = srcEl.dataset.src;
+        }
+        // Kick off network request
+        try { hv.load(); } catch (_) {}
+
+        const tryPlay = () => {
+            try {
+                const p = hv.play();
+                if (p && typeof p.catch === 'function') p.catch(() => {});
+            } catch (_) {}
+        };
+
+        if (hv.readyState >= 2) tryPlay();
+        else hv.addEventListener('canplay', tryPlay, { once: true });
+
+        // As a safety net on some mobiles, trigger once on first touch
+        const onFirstTouch = () => { tryPlay(); window.removeEventListener('touchstart', onFirstTouch, { capture: false }); };
+        window.addEventListener('touchstart', onFirstTouch, { once: true, passive: true });
+    };
+
     const updateProgress = () => {
         const percentage = Math.min(100, (resourcesLoaded / totalResources) * 100);
         if (progress) progress.style.width = percentage + '%';
@@ -1290,7 +1323,11 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 loader.style.opacity = '0';
                 document.body.style.overflow = 'visible';
-                setTimeout(() => loader.remove(), 500);
+                setTimeout(() => {
+                    loader.remove();
+                    // Trigger hero video autoplay exactly after loader is gone
+                    playHeroVideo();
+                }, 500);
             }, 300);
         }
     };
@@ -1335,20 +1372,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('load', () => {
         resourcesLoaded = totalResources;
         updateProgress();
-
-        // Ensure hero video autoplay after website load
-        const hv = document.getElementById('hero-video');
-        if (hv) {
-            hv.muted = true; // required for autoplay on many browsers
-            const tryPlay = () => {
-                try {
-                    const p = hv.play();
-                    if (p && typeof p.catch === 'function') p.catch(() => {});
-                } catch (e) { /* ignore autoplay promise rejections */ }
-            };
-            if (hv.readyState >= 2) tryPlay();
-            else hv.addEventListener('canplay', tryPlay, { once: true });
-        }
+        // autoplay is triggered by the loader completion handler above
     });
 
     // Custom Cursor

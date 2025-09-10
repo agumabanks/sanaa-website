@@ -6,8 +6,9 @@ export default defineConfig({
         laravel({
             input: [ 
                 'resources/css/app.css',
+                'resources/css/layout-conflicts-fix.css',
                 'resources/css/blog.css',
-                'resources/js/app.js', 
+                'resources/js/app.js',
                 'resources/js/blog.js',
             ],
             refresh: true,

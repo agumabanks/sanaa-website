@@ -263,7 +263,7 @@
                                 <div class="relative mb-6">
                                     @if($service->icon)
                                         <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl group-hover:from-emerald-100 group-hover:to-emerald-200 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
-                                            <i class="text-emerald-600 text-2xl group-hover:scale-110 transition-transform duration-300">{{ $service->icon }}</i>
+                                            <i class="text-emerald-600 text-2xl group-hover:scale-110 transition-transform duration-300 {{ $service->icon }}"></i>
                                         </div>
                                     @else
                                         <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl group-hover:from-emerald-100 group-hover:to-emerald-200 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">

@@ -22,7 +22,7 @@
                     <div class="flex items-center gap-4">
                         @if($service->icon)
                             <div class="flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-lg">
-                                <i class="text-emerald-600 text-2xl">{{ $service->icon }}</i>
+                                <i class="text-emerald-600 text-2xl {{ $service->icon }}"></i>
                             </div>
                         @endif
                         <div>

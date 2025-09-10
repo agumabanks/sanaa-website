@@ -45,7 +45,7 @@
                             <div class="flex items-start gap-4">
                                 @if($service->icon)
                                     <div class="flex items-center justify-center w-12 h-12 bg-emerald-100 rounded-lg">
-                                        <i class="text-emerald-600 text-xl">{{ $service->icon }}</i>
+                                        <i class="text-emerald-600 text-xl {{ $service->icon }}"></i>
                                     </div>
                                 @endif
                                 <div class="flex-1">

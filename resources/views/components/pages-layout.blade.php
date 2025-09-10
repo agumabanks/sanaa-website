@@ -13,6 +13,7 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="stylesheet" href="{{ asset('resources/css/layout-conflicts-fix.css') }}">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     {{-- Favicon --}}
@@ -35,6 +36,12 @@
             --emerald-600: #059669;
             --emerald-700: #047857;
         }
+
+        /* Update the nav height variable */
+:root {
+    --nav-height: 80px; /* Make this consistent across all layouts */
+}
+
 
         /* Base Styles */
         * {

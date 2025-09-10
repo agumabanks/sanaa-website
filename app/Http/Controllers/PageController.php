@@ -223,4 +223,12 @@ class PageController extends Controller
         $content = include resource_path('content/why-sanaa.php');
         return view('pages.why-sanaa', ['c' => $content]);
     }
+
+    /**
+     * Display the Investor Relations page.
+     */
+    public function investorRelations()
+    {
+        return view('pages.investor-relations');
+    }
 }

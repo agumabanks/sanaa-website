@@ -39,6 +39,7 @@ Route::get('/prices', [PageController::class, 'prices'])->name('prices');
 Route::get('/careers', [CareerController::class, 'index'])->name('careers');
 Route::get('/partners', [PartnerController::class, 'index'])->name('partners');
 Route::get('/why-sanaa', [PageController::class, 'whySanaa'])->name('why-sanaa');
+Route::get('/investor-relations', [PageController::class, 'investorRelations'])->name('investor-relations');
 Route::get('/terms', [PolicyController::class, 'show'])->defaults('key', 'terms')->name('terms');
 Route::get('/seller-policies', [PolicyController::class, 'show'])->defaults('key', 'seller-policies')->name('seller-policies');
 

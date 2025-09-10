@@ -921,6 +921,26 @@
     @media (max-width: 768px) {
         .nav-links {
             display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            flex-direction: column;
+            padding: 1rem;
+            gap: 1rem;
+            z-index: 999;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-links.mobile-open {
+            display: flex;
+        }
+
+        .nav-link {
+            padding: 0.5rem 0;
+            font-size: 1rem;
         }
 
         .menu-toggle {
@@ -1043,7 +1063,7 @@
 
     <!-- Enhanced Hero Section -->
     <section id="hero" class="hero-premium">
-        <video id="hero-video" autoplay muted loop playsinline webkit-playsinline preload="auto" class="hero-video" poster="{{ asset('storage/images/sanaa.png') }}">
+        <video id="hero-video" autoplay muted loop playsinline webkit-playsinline preload="auto" class="hero-video" poster="{{ asset('storage/images/sanaa-sky.png') }}">
             <source id="hero-video-source" data-src="{{ asset('storage/images/live.mp4') }}" type="video/mp4">
         </video>
         <div class="hero-overlay"></div>
@@ -1447,10 +1467,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mobile Menu Toggle
     const menuToggle = document.getElementById('menuToggle');
-    if (menuToggle) {
+    const navLinks = document.querySelector('.nav-links');
+    if (menuToggle && navLinks) {
         menuToggle.addEventListener('click', () => {
             menuToggle.classList.toggle('active');
-            // Add mobile menu logic here
+            navLinks.classList.toggle('mobile-open');
+            console.log('Mobile menu toggled:', navLinks.classList.contains('mobile-open') ? 'opened' : 'closed');
+        });
+
+        // Close menu when clicking on a link
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('mobile-open');
+                console.log('Mobile menu closed via link click');
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('mobile-open');
+                console.log('Mobile menu closed via outside click');
+            }
         });
     }
 

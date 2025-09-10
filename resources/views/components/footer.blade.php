@@ -78,6 +78,7 @@
                 <li class="mb-2"><a href="{{ route('developer-platforms') }}" class="hover:underline">Developer Platform</a></li>
                 <li class="mb-2"><a href="#" class="hover:underline">Merchant Services</a></li>
                 <li class="mb-2"><a href="{{ route('rent-hardware') }}" class="hover:underline">Rent Hardware</a></li>
+                 <li class="mb-2"><a href="{{ route('services') }}" class="hover:underline">Services</a></li>
                 <li class="mb-2"><a href="{{ route('contact') }}" class="hover:underline">Contact</a></li>
               </ul>
             </div>

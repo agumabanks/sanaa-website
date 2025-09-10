@@ -20,6 +20,7 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\OfferingController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\SitemapController;
 use App\Models\Policy; 
  
@@ -32,7 +33,7 @@ Route::get('/company', [PageController::class, 'company'])->name('company');
 Route::get('/support', [PageController::class, 'support'])->name('support');
 Route::post('/support', [SupportController::class, 'send'])->name('support.send');
 Route::get('/products', [OfferingController::class, 'index'])->defaults('type', 'product')->name('products');
-Route::get('/services', [OfferingController::class, 'index'])->defaults('type', 'service')->name('services');
+Route::get('/services', [ServicesController::class, 'index'])->name('services');
 Route::get('/bulk-sms', [PageController::class, 'bulkSms'])->name('bulk-sms');
 Route::get('/prices', [PageController::class, 'prices'])->name('prices');
 Route::get('/careers', [CareerController::class, 'index'])->name('careers');
@@ -331,6 +332,10 @@ Route::middleware([
         Route::post('/dashboard/offering', [OfferingController::class, 'store'])->name('dashboard.offering.store');
         Route::put('/dashboard/offering/{offering}', [OfferingController::class, 'update'])->name('dashboard.offering.update');
         Route::delete('/dashboard/offering/{offering}', [OfferingController::class, 'destroy'])->name('dashboard.offering.destroy');
+
+        // Services routes
+        Route::get('/dashboard/services', [ServicesController::class, 'adminIndex'])->name('dashboard.services.index');
+        Route::resource('dashboard/services', ServicesController::class)->only(['create', 'store', 'show', 'edit', 'update', 'destroy'])->names('dashboard.services');
 
         // Users
         Route::get('/dashboard/users', function () {

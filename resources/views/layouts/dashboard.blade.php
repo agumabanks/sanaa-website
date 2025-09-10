@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+ <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,6 +34,21 @@
                         <span class="sr-only">{{ config('app.name', 'Sanaa Admin') }}</span>
                     </a>
                 </div>
+@php
+$routeChecks = [
+    'dashboard.users' => Route::has('dashboard.users'),
+    'dashboard.careers' => Route::has('dashboard.careers'),
+    'dashboard.partners' => Route::has('dashboard.partners'),
+    'dashboard.suggestions' => Route::has('dashboard.suggestions'),
+    'dashboard.followers' => Route::has('dashboard.followers'),
+    'dashboard.notifications' => Route::has('dashboard.notifications'),
+    'dashboard.search' => Route::has('dashboard.search'),
+    'dashboard.purchases' => Route::has('dashboard.purchases'),
+    'dashboard.products' => Route::has('dashboard.products'),
+    'dashboard.wallet' => Route::has('dashboard.wallet'),
+];
+\Log::info('Dashboard route existence check', $routeChecks);
+@endphp
                 <nav class="flex-1 p-3 space-y-1">
                     @php($navItem = function($route, $label, $icon, $exact = false) {
                         $isActive = request()->routeIs($route) || (!$exact && request()->routeIs($route.'.*'));
@@ -42,6 +56,7 @@
                         $active = $isActive ? 'bg-white/10 text-white border border-white/10' : 'text-white/70 hover:text-white hover:bg-white/5';
                         $aria = $isActive ? "aria-current='page'" : '';
                         return "<a href='".route($route)."' $aria class='$base $active'>".
+@if(Auth::user()->isAdmin())
                                "<span class='opacity-70 group-hover:opacity-100'>$icon</span>".
                                "<span class='text-sm font-medium tracking-tight'>$label</span>".
                                "</a>";
@@ -63,6 +78,7 @@
                         {!! $navItem('dashboard.developer-platforms', 'Developers', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M8 5l-6 7 6 7v-4h8v4l6-7-6-7v4H8V5z'/></svg>") !!}
                         {!! $navItem('dashboard.hardware-rentals', 'Hardware Rentals', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M20 8h-3V4H7v4H4l-2 3v9h2v-2h16v2h2v-9l-2-3zM9 6h6v2H9V6zm11 10H4v-5h16v5z'/></svg>") !!}
                         {!! $navItem('dashboard.prices', 'Prices', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18L18.56 6 12 8.82 5.44 6 12 3.18zM5 8.1l7 2.8 7-2.8V11c0 4.09-2.63 7.89-7 9-4.37-1.11-7-4.91-7-9V8.1z'/></svg>") !!}
+                        {!! $navItem('dashboard.services', 'Services', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'/></svg>") !!}
                         {!! $navItem('dashboard.policies', 'Policies', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 7V3.5L19.5 9H14z'/></svg>") !!}
                     @else
                         <div class="px-3 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/50">Stories</div>
@@ -166,8 +182,9 @@
                         {!! $navItem('dashboard.developer-platforms', 'Developers', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M8 5l-6 7 6 7v-4h8v4l6-7-6-7v4H8V5z'/></svg>") !!}
                         {!! $navItem('dashboard.hardware-rentals', 'Hardware Rentals', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M20 8h-3V4H7v4H4l-2 3v9h2v-2h16v2h2v-9l-2-3zM9 6h6v2H9V6zm11 10H4v-5h16v5z'/></svg>") !!}
                         {!! $navItem('dashboard.prices', 'Prices', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18L18.56 6 12 8.82 5.44 6 12 3.18zM5 8.1l7 2.8 7-2.8V11c0 4.09-2.63 7.89-7 9-4.37-1.11-7-4.91-7-9V8.1z'/></svg>") !!}
+                        {!! $navItem('dashboard.services', 'Services', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'/></svg>") !!}
                         {!! $navItem('dashboard.policies', 'Policies', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 7V3.5L19.5 9H14z'/></svg>") !!}
-                    @else
+                    @endif
                         <div class="px-3 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/50">Blog</div>
                         {!! $navItem('dashboard.write', 'Write', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z'/></svg>") !!}
                         {!! $navItem('dashboard.my-posts', 'My Posts', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M3 6h18v2H3V6zm0 5h12v2H3v-2zm0 5h18v2H3v-2z'/></svg>") !!}

@@ -123,4 +123,47 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Log Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the log settings for your application. Out of
+    | the box, Laravel uses the Monolog PHP logging library. This gives
+    | you a variety of powerful log handlers / formatters to utilize.
+    |
+    | Available Settings: "single", "daily", "syslog", "errorlog"
+    |
+    */
+
+    'log' => env('LOG_CHANNEL', 'stack'),
+    'log_level' => env('LOG_LEVEL', 'debug'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Autoloaded Service Providers
+    |--------------------------------------------------------------------------
+    |
+    | The service providers listed here will be automatically loaded on the
+    | request to your application. Feel free to add your own services to
+    | this array to grant expanded functionality to your applications.
+    |
+    */
+
+    'providers' => ServiceProvider::defaultProviders()->merge([
+        /*
+         * Package Service Providers...
+         */
+
+        /*
+         * Application Service Providers...
+         */
+        App\Providers\AppServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
+        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\EventServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
+        App\Providers\CdnServiceProvider::class,
+    ])->toArray(),
+
 ];

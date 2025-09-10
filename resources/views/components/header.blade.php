@@ -198,8 +198,16 @@
                   <h3 class="font-bold text-gray-900">Investor Relations</h3>
                   <ul class="space-y-2">
                     <li>
-                      <a 
-                        href="#" 
+                      <a
+                        href="{{ route('investor-relations') }}"
+                        class="hover:text-green-600 transition-colors duration-200 block"
+                      >
+                        Investor Overview
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
                         class="hover:text-green-600 transition-colors duration-200 block"
                       >
                         Annual Report

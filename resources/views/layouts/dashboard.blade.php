@@ -178,7 +178,11 @@ use Illuminate\Support\Facades\Route;
 
                 <!-- Page Content -->
                 <main class="p-6 flex-1">
-                    {{ $slot }}
+                    @hasSection('content')
+                        @yield('content')
+                    @else
+                        {{ $slot ?? '' }}
+                    @endif
                 </main>
             </div>
         </div>

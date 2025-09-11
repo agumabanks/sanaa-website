@@ -84,6 +84,9 @@ class FinanceController extends Controller
         if ($page) {
             return view('finance.pages.show', ['page' => $page]);
         }
-        return view("finance.$slug");
+        if (view()->exists("finance.$slug")) {
+            return view("finance.$slug");
+        }
+        abort(404);
     }
 }

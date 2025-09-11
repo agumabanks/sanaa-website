@@ -416,7 +416,7 @@ class BlogController extends Controller
         return Cache::remember('popular_categories', 3600, function () {
             return BlogCategory::active()
                 ->withCount('blogs')
-                ->having('blogs_count', '>', 0)
+                ->where('blogs_count', '>', 0)
                 ->orderByDesc('blogs_count')
                 ->limit(8)
                 ->get();
@@ -427,7 +427,7 @@ class BlogController extends Controller
     {
         return Cache::remember('popular_tags', 3600, function () {
             return BlogTag::withCount('blogs')
-                ->having('blogs_count', '>', 0)
+                ->where('blogs_count', '>', 0)
                 ->orderByDesc('blogs_count')
                 ->limit(10)
                 ->get();

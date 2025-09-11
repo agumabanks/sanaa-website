@@ -103,6 +103,7 @@
                   <li class="mb-2"><a href="{{ route('careers') }}" class="hover:underline">Careers</a></li>
                   <li class="mb-2"><a href="#" class="hover:underline">Referrals</a></li>
                   <li class="mb-2"><a href="{{ route('partners') }}" class="hover:underline">Partners</a></li>
+                  <li class="mb-2"><a href="{{ route('investor-relations') }}" class="hover:underline">Investor Relations</a></li>
                    <li class="mb-2"><a href="https://os.sanaa.co/" class="hover:underline">My Sanaa</a></li>
                 </ul>
               </div>

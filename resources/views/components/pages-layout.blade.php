@@ -40,6 +40,7 @@
                 <li><a href="{{ route('products') }}" class="nav-link {{ request()->routeIs('products') ? 'active' : '' }}">PRODUCTS</a></li>
                 <li><a href="{{ route('careers') }}" class="nav-link {{ request()->routeIs('careers') ? 'active' : '' }}">CAREERS</a></li>
                 <li><a href="{{ route('partners') }}" class="nav-link {{ request()->routeIs('partners') ? 'active' : '' }}">PARTNERS</a></li>
+                <li><a href="{{ route('investor-relations') }}" class="nav-link {{ request()->routeIs('investor-relations') ? 'active' : '' }}">INVESTORS</a></li>
                 <li><a href="{{ route('blog.index') }}" class="nav-link {{ request()->routeIs('blog.*') ? 'active' : '' }}">BLOG</a></li>
                 <li><a href="https://soko.sanaa.co" target="_blank" rel="noopener noreferrer" class="nav-link">SOKO 24</a></li>
             </ul>
@@ -69,6 +70,7 @@
                 <li><a href="{{ route('products') }}" class="{{ request()->routeIs('products') ? 'active' : '' }}">PRODUCTS</a></li>
                 <li><a href="{{ route('careers') }}" class="{{ request()->routeIs('careers') ? 'active' : '' }}">CAREERS</a></li>
                 <li><a href="{{ route('partners') }}" class="{{ request()->routeIs('partners') ? 'active' : '' }}">PARTNERS</a></li>
+                <li><a href="{{ route('investor-relations') }}" class="{{ request()->routeIs('investor-relations') ? 'active' : '' }}">INVESTORS</a></li>
                 <li><a href="{{ route('blog.index') }}" class="{{ request()->routeIs('blog.*') ? 'active' : '' }}">BLOG</a></li>
                 <li><a href="https://soko.sanaa.co" target="_blank" rel="noopener noreferrer">SOKO 24</a></li>
                 
@@ -108,6 +110,7 @@
                     <li><a href="{{ route('about') }}">About Us</a></li>
                     <li><a href="{{ route('careers') }}">Careers</a></li>
                     <li><a href="{{ route('partners') }}">Partners</a></li>
+                    <li><a href="{{ route('investor-relations') }}">Investor Relations</a></li>
                     <li><a href="{{ route('contact') }}">Contact</a></li>
                 </ul>
             </div>

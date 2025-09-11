@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use App\Models\TeamMember;
 
 
 class PageController extends Controller
@@ -26,7 +28,16 @@ class PageController extends Controller
         } catch (\Throwable $e) {
             $sokoProducts = $this->fallbackSokoProducts();
         }
-        $teamMembers = \App\Models\TeamMember::all();
+        $cacheKey = 'team_members_all';
+        if (Cache::has($cacheKey)) {
+            Log::debug("Cache hit: {$cacheKey}");
+        }
+
+        $teamMembers = Cache::remember($cacheKey, now()->addDay(), function () use ($cacheKey) {
+            Log::debug("Cache miss: {$cacheKey}");
+            return TeamMember::all();
+        });
+
         return view('pages.home', [
             'sokoProducts' => $sokoProducts,
             'teamMembers' => $teamMembers,

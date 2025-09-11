@@ -18,14 +18,26 @@ class PageController extends Controller
     {
         $sokoProducts = [];
         try {
-            $response = Http::timeout(5)->get('https://soko.sanaa.co/api/v2/products');
-            $json = $response->json();
-            if (is_array($json) && isset($json['data']) && is_array($json['data']) && count($json['data']) > 0) {
-                $sokoProducts = $json;
-            } else {
-                $sokoProducts = $this->fallbackSokoProducts();
-            }
+            $sokoProducts = Cache::remember('soko_products', 3600, function () {
+                $response = Http::timeout(2)->get('https://soko.sanaa.co/api/v2/products');
+
+                if (!$response->successful()) {
+                    throw new \RuntimeException('Remote API returned status ' . $response->status());
+                }
+
+                $json = $response->json();
+                if (is_array($json) && isset($json['data']) && is_array($json['data']) && count($json['data']) > 0) {
+                    return $json;
+                }
+
+                // Treat empty or malformed as an error to avoid caching bad data
+                throw new \RuntimeException('Remote API returned empty or malformed payload');
+            });
         } catch (\Throwable $e) {
+            Log::warning('Failed to load Soko products; using fallback', [
+                'error' => $e->getMessage(),
+            ]);
+            // Fallback is not cached to allow quick recovery once API is back
             $sokoProducts = $this->fallbackSokoProducts();
         }
         $cacheKey = 'team_members_all';
@@ -130,34 +142,30 @@ class PageController extends Controller
     */
     public function getProductDetails($productId)
     {
-        // Try to get from cache first to improve performance
         $cacheKey = 'soko_product_' . $productId;
-        if (Cache::has($cacheKey)) {
-            return response()->json(Cache::get($cacheKey));
-        }
-        
+
         try {
-            // Make the API request from the server side
-            $response = Http::get('https://soko.sanaa.co/api/v2/products/' . $productId);
-            
-            if ($response->successful()) {
-                $productData = $response->json();
-                
-                // Cache the result for 1 hour (or whatever duration makes sense)
-                Cache::put($cacheKey, $productData, 3600);
-                
-                return response()->json($productData);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Failed to fetch product details: ' . $response->status()
-                ], $response->status());
-            }
-        } catch (\Exception $e) {
+            $productData = Cache::remember($cacheKey, 3600, function () use ($productId) {
+                $response = Http::timeout(2)->get('https://soko.sanaa.co/api/v2/products/' . $productId);
+
+                if (!$response->successful()) {
+                    throw new \RuntimeException('Remote API returned status ' . $response->status());
+                }
+
+                return $response->json();
+            });
+
+            return response()->json($productData);
+        } catch (\Throwable $e) {
+            Log::warning('Failed to fetch product details', [
+                'productId' => $productId,
+                'error' => $e->getMessage(),
+            ]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error fetching product: ' . $e->getMessage()
-            ], 500);
+                'message' => 'We couldn\'t load the product details right now. Please try again shortly.'
+            ], 502);
         }
     }
 

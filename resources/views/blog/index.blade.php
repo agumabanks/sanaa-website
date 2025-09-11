@@ -295,6 +295,7 @@
                     <div class="grid grid-cols-1 gap-2">
                         @foreach($categories as $category)
                             <a href="{{ route('blog.index', ['category' => $category->slug]) }}"
+                               data-type="category" data-filter="{{ $category->slug }}"
                                class="category-item group flex items-center justify-between p-3 rounded-xl bg-gray-800/50 hover:bg-green-600/20 hover:border-green-500/30 border border-transparent hover:border-current text-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md">
                                 <span class="group-hover:text-green-400 transition-colors">{{ $category->name }}</span>
                                 <span class="text-xs text-gray-500 group-hover:text-green-300 transition-colors bg-gray-700/50 px-2 py-1 rounded-full">{{ $category->blogs_count }}</span>
@@ -322,6 +323,7 @@
                     <div class="flex flex-wrap gap-2">
                         @foreach($tags as $tag)
                             <a href="{{ route('blog.index', ['tag' => $tag->slug]) }}"
+                               data-type="tag" data-filter="{{ $tag->slug }}"
                                class="tag-item inline-flex items-center px-3 py-1.5 bg-gray-800/70 hover:bg-gray-700 text-xs rounded-full border border-gray-700 hover:border-gray-600 transition-all duration-200 hover:scale-105 hover:shadow-sm group">
                                 <span class="text-gray-300 group-hover:text-white transition-colors">#{{ $tag->name }}</span>
                             </a>
@@ -820,23 +822,85 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Filter tabs functionality
+    // Filter functionality for tabs, categories, and tags
     const filterTabs = document.querySelectorAll('.filter-tab');
+    const categoryItems = document.querySelectorAll('.category-item');
+    const tagItems = document.querySelectorAll('.tag-item');
+
+    function applyFilter(type, value) {
+        const url = new URL(window.location);
+        url.searchParams.delete('page');
+
+        if (value === 'all') {
+            url.searchParams.delete(type);
+            if (type === 'category') url.searchParams.delete('tag');
+            if (type === 'tag') url.searchParams.delete('category');
+        } else {
+            url.searchParams.set(type, value);
+            if (type === 'category') url.searchParams.delete('tag');
+            if (type === 'tag') url.searchParams.delete('category');
+        }
+
+        history.pushState({}, '', url);
+
+        isLoading = true;
+        showLoading();
+
+        fetch(url.toString(), {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            articlesContainer.innerHTML = '';
+            if (data.articles) {
+                data.articles.forEach(article => {
+                    const el = createArticleElement(article);
+                    articlesContainer.appendChild(el);
+                    setTimeout(() => el.classList.add('fade-in'), 50);
+                });
+            }
+            currentPage = data.current_page;
+            hasMorePages = data.has_more;
+            if (hasMorePages) {
+                loadMoreContainer.classList.remove('hidden');
+            } else {
+                loadMoreContainer.classList.add('hidden');
+            }
+        })
+        .catch(error => console.error('Error loading articles:', error))
+        .finally(() => {
+            isLoading = false;
+            hideLoading();
+        });
+    }
+
     filterTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            // Remove active class from all tabs
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
             filterTabs.forEach(t => {
                 t.classList.remove('active', 'border-green-500', 'text-green-400');
                 t.classList.add('text-gray-400');
             });
-
-            // Add active class to clicked tab
             this.classList.add('active', 'border-green-500', 'text-green-400');
             this.classList.remove('text-gray-400');
+            applyFilter(this.dataset.type || 'category', this.dataset.filter);
+        });
+    });
 
-            // TODO: Implement actual filtering logic based on filter type
-            const filter = this.dataset.filter;
-            console.log('Filter changed to:', filter);
+    categoryItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            applyFilter(this.dataset.type, this.dataset.filter);
+        });
+    });
+
+    tagItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            applyFilter(this.dataset.type, this.dataset.filter);
         });
     });
 

@@ -12,7 +12,10 @@ class BlogApiTest extends TestCase
 
     public function test_show_endpoint_increments_views(): void
     {
-        $post = Blog::factory()->create();
+        $post = Blog::factory()->create([
+            'status' => 'published',
+            'published_at' => now()->subDay(),
+        ]);
 
         $this->getJson("/api/blogs/{$post->slug}")->assertOk();
 
@@ -21,7 +24,10 @@ class BlogApiTest extends TestCase
 
     public function test_like_endpoint_increments_likes(): void
     {
-        $post = Blog::factory()->create();
+        $post = Blog::factory()->create([
+            'status' => 'published',
+            'published_at' => now()->subDay(),
+        ]);
 
         $this->postJson("/api/blogs/{$post->slug}/like")->assertOk()->assertJson(['likes' => 1]);
 

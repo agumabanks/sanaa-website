@@ -212,6 +212,23 @@
                 </div>
             @endif
 
+            <!-- Error Message -->
+            @if($errors->any())
+                <div class="mb-12 max-w-2xl mx-auto">
+                    <div class="bg-red-50 border border-red-200 rounded-2xl p-6 text-red-800 animate-fade-up">
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            <div>
+                                <h3 class="font-semibold text-red-900">Message Failed</h3>
+                                <p class="text-red-700">{{ $errors->first() }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="grid lg:grid-cols-2 gap-16 items-start">
                 
                 <!-- Contact Information -->

@@ -46,32 +46,28 @@
         @stack('modals')
 
         @livewireScripts
-        
-<!-- sanaa google tag -->
- 
 
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+        <!-- Firebase Analytics -->
+        @hasSection('analytics')
+            <script defer>
+                window.addEventListener('DOMContentLoaded', async () => {
+                    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js');
+                    const { getAnalytics } = await import('https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js');
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "{{ config('services.firebase.api_key') }}",
-    authDomain: "{{ config('services.firebase.auth_domain') }}",
-    projectId: "{{ config('services.firebase.project_id') }}",
-    storageBucket: "{{ config('services.firebase.storage_bucket') }}",
-    messagingSenderId: "{{ config('services.firebase.messaging_sender_id') }}",
-    appId: "{{ config('services.firebase.app_id') }}",
-    measurementId: "{{ config('services.firebase.measurement_id') }}"
-  };
+                    const firebaseConfig = {
+                        apiKey: "{{ config('services.firebase.api_key') }}",
+                        authDomain: "{{ config('services.firebase.auth_domain') }}",
+                        projectId: "{{ config('services.firebase.project_id') }}",
+                        storageBucket: "{{ config('services.firebase.storage_bucket') }}",
+                        messagingSenderId: "{{ config('services.firebase.messaging_sender_id') }}",
+                        appId: "{{ config('services.firebase.app_id') }}",
+                        measurementId: "{{ config('services.firebase.measurement_id') }}"
+                    };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+                    const app = initializeApp(firebaseConfig);
+                    getAnalytics(app);
+                });
+            </script>
+        @endif
     </body>
 </html>

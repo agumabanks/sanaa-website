@@ -44,6 +44,19 @@ The `/contact` endpoint is protected by Laravel's `throttle` middleware and allo
    php artisan serve
    ```
 
+## Analytics
+
+Firebase analytics is optional and loaded only on pages that opt in. To enable it for a Blade view that extends `layouts.app`, declare an empty `analytics` section:
+
+```blade
+@extends('layouts.app')
+
+@section('analytics')
+@endsection
+```
+
+The layout detects this section and dynamically imports the Firebase SDK after `DOMContentLoaded`, ensuring that analytics does not block page rendering.
+
 ## Testing
 
 Run the automated test suite with:

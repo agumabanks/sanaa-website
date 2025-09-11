@@ -4,13 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\TeamMember;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
     public function index()
     {
-        $members = TeamMember::all();
+        $cacheKey = 'team_members_all';
+        if (Cache::has($cacheKey)) {
+            Log::debug("Cache hit: {$cacheKey}");
+        }
+
+        $members = Cache::remember($cacheKey, now()->addDay(), function () use ($cacheKey) {
+            Log::debug("Cache miss: {$cacheKey}");
+            return TeamMember::all();
+        });
+
         return view('team.index', compact('members'));
     }
 
@@ -33,6 +44,8 @@ class TeamController extends Controller
         }
 
         TeamMember::create($data);
+        Cache::forget('team_members_all');
+        Log::debug('Cache cleared: team_members_all');
 
         return redirect()->route('dashboard.team')->with('status', 'Team member created');
     }
@@ -51,6 +64,8 @@ class TeamController extends Controller
         }
 
         $member->update($data);
+        Cache::forget('team_members_all');
+        Log::debug('Cache cleared: team_members_all');
 
         return redirect()->route('dashboard.team')->with('status', 'Team member updated');
     }
@@ -61,6 +76,9 @@ class TeamController extends Controller
             Storage::disk('public')->delete($member->photo);
         }
         $member->delete();
+        Cache::forget('team_members_all');
+        Log::debug('Cache cleared: team_members_all');
+
         return redirect()->route('dashboard.team')->with('status', 'Team member deleted');
     }
 }

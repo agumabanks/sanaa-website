@@ -330,7 +330,8 @@
 
                         <form action="{{ route('contact.store') }}" method="POST" class="space-y-6">
                             @csrf
-                            
+                            <input type="text" name="website" id="website" class="hidden" tabindex="-1" autocomplete="off">
+
                             <div class="grid sm:grid-cols-2 gap-6">
                                 <!-- Name -->
                                 <div>

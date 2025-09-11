@@ -9,6 +9,10 @@ It is built with [Laravel](https://laravel.com/) and uses Jetstream for authenti
 - Dynamic product listing pulled from Soko 24
 - Placeholder pages for company information, services and more
 
+## Contact Form Rate Limiting
+
+The `/contact` endpoint is protected by Laravel's `throttle` middleware and allows up to five submissions per minute per IP address. Users who exceed this limit will receive a **429 Too Many Requests** response and should wait before trying again.
+
 ## Upcoming Menu Items
 
 - [ ] Ai branding

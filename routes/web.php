@@ -127,7 +127,9 @@ Route::prefix('policies')->name('policies.')->group(function () {
 Route::get('/developer-platforms', [DeveloperPlatformController::class, 'index'])->name('developer-platforms');
 Route::get('/rent-hardware', [HardwareRentalController::class, 'index'])->name('rent-hardware');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
 
 // Blog routes
 Route::prefix('blog')->name('blog.')->group(function () {

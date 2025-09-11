@@ -17,12 +17,17 @@ class ContactController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
             'name' => 'required',
             'email' => 'required|email',
             'message' => 'nullable',
+            'website' => 'present|size:0',
         ]);
+
+        $data = $request->only('name', 'email', 'message');
+
         Contact::create($data);
+
         Mail::to('agumabanksibrahim@gmail.com')->send(
             new ContactMessage(
                 $data['name'],

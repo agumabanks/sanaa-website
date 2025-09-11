@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blog Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Quill editor styles -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <!-- Syntax highlighting styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+  <!-- Image cropper styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+  <style>
+    /* Layout & base styles */
+    body {
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:#f9f9f9;
+      color:#333;
+    }
+    .container {
+      display:flex;
+      flex-wrap:wrap;
+      min-height:100vh;
+    }
+    .editor-section, .preview-section {
+      flex:1 1 50%;
+      box-sizing:border-box;
+      padding:1rem;
+    }
+    .preview-section {
+      background:#fff;
+      border-left:1px solid #ccc;
+      overflow:auto;
+    }
+    form {
+      display:flex;
+      flex-direction:column;
+      gap:0.5rem;
+    }
+    label { font-weight:bold; }
+    input[type="text"], input[type="date"], select, textarea {
+      padding:0.5rem;
+      font-size:1rem;
+    }
+    #featuredPreview {
+      max-width:100%;
+      margin-top:0.5rem;
+      display:none;
+    }
+    .actions {
+      margin-top:1rem;
+      display:flex;
+      gap:0.5rem;
+      align-items:center;
+    }
+    .actions button {
+      padding:0.5rem 1rem;
+      font-size:1rem;
+      cursor:pointer;
+    }
+    #statusMsg {
+      margin-left:1rem;
+      font-weight:bold;
+      color:#0a0;
+    }
+    #toolbar { margin-top:1rem; }
+    #editor {
+      height:300px;
+      background:#fff;
+    }
+    /* Modal styles */
+    .modal {
+      display:none;
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.6);
+      justify-content:center;
+      align-items:center;
+      z-index:1000;
+    }
+    .modal-content {
+      background:#fff;
+      padding:1rem;
+      max-width:90%;
+      width:400px;
+      border-radius:4px;
+    }
+    .modal-actions {
+      margin-top:1rem;
+      display:flex;
+      gap:0.5rem;
+      justify-content:flex-end;
+    }
+    /* Responsive tweaks */
+    @media (max-width:768px) {
+      .editor-section, .preview-section {
+        flex:1 1 100%;
+        border:none;
+      }
+      .preview-section { border-top:1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ================= Editor column ================= -->
+    <section class="editor-section">
+      <form id="blogForm">
+        <!-- Metadata inputs -->
+        <label for="title">Title *</label>
+        <input id="title" type="text" placeholder="Post title" aria-required="true">
+
+        <label for="tags">Tags (comma separated)</label>
+        <input id="tags" type="text" placeholder="e.g. JavaScript, CSS" list="tagOptions">
+        <datalist id="tagOptions">
+          <option value="JavaScript"></option>
+          <option value="CSS"></option>
+          <option value="HTML"></option>
+          <option value="Web"></option>
+        </datalist>
+
+        <label for="category">Category</label>
+        <select id="category">
+          <option value="Tech">Tech</option>
+          <option value="Life">Life</option>
+          <option value="Travel">Travel</option>
+        </select>
+
+        <label for="featuredImage">Featured Image</label>
+        <input type="file" id="featuredImage" accept="image/*">
+        <img id="featuredPreview" alt="Featured preview">
+
+        <label for="publishDate">Publish Date</label>
+        <input type="date" id="publishDate">
+
+        <label for="status">Status</label>
+        <select id="status">
+          <option value="draft">Draft</option>
+          <option value="published">Published</option>
+        </select>
+
+        <!-- Toolbar for the editor -->
+        <div id="toolbar">
+          <span class="ql-formats">
+            <select class="ql-header" aria-label="Heading">
+              <option value="1"></option>
+              <option value="2"></option>
+              <option selected></option>
+            </select>
+            <button class="ql-bold" aria-label="Bold"></button>
+            <button class="ql-italic" aria-label="Italic"></button>
+            <button class="ql-underline" aria-label="Underline"></button>
+            <button class="ql-link" aria-label="Link"></button>
+            <button class="ql-image" aria-label="Image"></button>
+            <button class="ql-code-block" aria-label="Code block"></button>
+            <button class="ql-list" value="ordered" aria-label="Ordered list"></button>
+            <button class="ql-list" value="bullet" aria-label="Bullet list"></button>
+            <button type="button" class="ql-undo" aria-label="Undo">⟲</button>
+            <button type="button" class="ql-redo" aria-label="Redo">⟳</button>
+            <button type="button" id="openCustomModal" aria-label="Insert custom">★</button>
+          </span>
+        </div>
+        <div id="editor" aria-label="Editor"></div>
+      </form>
+      <!-- Save/publish actions -->
+      <div class="actions">
+        <button id="saveBtn" type="button">Save</button>
+        <button id="publishBtn" type="button">Publish</button>
+        <span id="statusMsg" role="alert"></span>
+      </div>
+    </section>
+
+    <!-- ================= Preview column ================= -->
+    <section class="preview-section">
+      <h2>Live Preview</h2>
+      <article id="preview">
+        <h1 id="previewTitle">Untitled</h1>
+        <img id="previewImage" alt="Featured" style="display:none;max-width:100%;">
+        <p id="previewMeta"></p>
+        <div id="previewContent"></div>
+      </article>
+    </section>
+  </div>
+
+  <!-- Modal for inserting custom elements -->
+  <div id="customModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <h3 id="modalTitle">Insert Element</h3>
+      <label for="elementType">Type</label>
+      <select id="elementType">
+        <option value="quote">Quote</option>
+        <option value="embed">Embed (HTML)</option>
+      </select>
+      <label for="elementContent">Content</label>
+      <textarea id="elementContent" rows="4"></textarea>
+      <div class="modal-actions">
+        <button id="insertElement" type="button">Insert</button>
+        <button id="closeModal" type="button">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for cropping featured image -->
+  <div id="cropModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="cropTitle">
+    <div class="modal-content">
+      <h3 id="cropTitle">Crop Image</h3>
+      <div>
+        <img id="cropImage" alt="Crop image" style="max-width:100%;">
+      </div>
+      <div class="modal-actions">
+        <button id="cropConfirm" type="button">Crop</button>
+        <button id="cropCancel" type="button">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+  <script>
+  // ================= Initialization =================
+  Quill.register('modules/imageResize', ImageResize); // enable image resize plugin
+  const quill = new Quill('#editor', {
+    theme: 'snow',
+    modules: {
+      toolbar: '#toolbar',
+      history: { delay: 2000, userOnly: true },
+      syntax: true,
+      imageResize: {}
+    }
+  });
+
+  // DOM elements
+  const titleInput = document.getElementById('title');
+  const tagsInput = document.getElementById('tags');
+  const categorySelect = document.getElementById('category');
+  const featuredInput = document.getElementById('featuredImage');
+  const featuredPreview = document.getElementById('featuredPreview');
+  const publishDateInput = document.getElementById('publishDate');
+  const statusSelect = document.getElementById('status');
+  const previewTitle = document.getElementById('previewTitle');
+  const previewImage = document.getElementById('previewImage');
+  const previewMeta = document.getElementById('previewMeta');
+  const previewContent = document.getElementById('previewContent');
+  const statusMsg = document.getElementById('statusMsg');
+
+  // Undo/redo
+  document.querySelector('.ql-undo').addEventListener('click', () => quill.history.undo());
+  document.querySelector('.ql-redo').addEventListener('click', () => quill.history.redo());
+
+  // ======== Custom element modal ========
+  const customModal = document.getElementById('customModal');
+  document.getElementById('openCustomModal').addEventListener('click', () => {
+    customModal.style.display = 'flex';
+    document.getElementById('elementContent').value = '';
+  });
+  document.getElementById('closeModal').addEventListener('click', () => {
+    customModal.style.display = 'none';
+  });
+  document.getElementById('insertElement').addEventListener('click', () => {
+    const type = document.getElementById('elementType').value;
+    const content = document.getElementById('elementContent').value;
+    if (!content.trim()) return;
+    const index = (quill.getSelection() || {index: quill.getLength()}).index;
+    if (type === 'quote') {
+      quill.clipboard.dangerouslyPasteHTML(index, '<blockquote>' + content + '</blockquote>');
+    } else {
+      quill.clipboard.dangerouslyPasteHTML(index, content);
+    }
+    customModal.style.display = 'none';
+  });
+
+  // ======== Featured image cropping ========
+  const cropModal = document.getElementById('cropModal');
+  const cropImage = document.getElementById('cropImage');
+  let cropper;
+
+  featuredInput.addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        cropImage.src = e.target.result;
+        cropModal.style.display = 'flex';
+        cropper = new Cropper(cropImage, { aspectRatio: 16 / 9, viewMode: 1 });
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+  document.getElementById('cropConfirm').addEventListener('click', () => {
+    const canvas = cropper.getCroppedCanvas({ maxWidth: 800, maxHeight: 450 });
+    const dataUrl = canvas.toDataURL('image/png');
+    featuredPreview.src = dataUrl;
+    featuredPreview.style.display = 'block';
+    previewImage.src = dataUrl;
+    previewImage.style.display = 'block';
+    cropper.destroy();
+    cropModal.style.display = 'none';
+    saveDraft();
+  });
+  document.getElementById('cropCancel').addEventListener('click', () => {
+    if (cropper) cropper.destroy();
+    cropModal.style.display = 'none';
+  });
+
+  // ======== Preview updates ========
+  function updatePreview() {
+    previewTitle.textContent = titleInput.value || 'Untitled';
+    previewContent.innerHTML = quill.root.innerHTML;
+    hljs.highlightAll(); // syntax highlight
+  }
+  function updateMeta() {
+    const parts = [];
+    if (tagsInput.value) parts.push('Tags: ' + tagsInput.value);
+    if (categorySelect.value) parts.push('Category: ' + categorySelect.value);
+    if (publishDateInput.value) parts.push('Date: ' + publishDateInput.value);
+    parts.push('Status: ' + statusSelect.value);
+    previewMeta.textContent = parts.join(' | ');
+  }
+
+  quill.on('text-change', () => { updatePreview(); saveDraft(); });
+  titleInput.addEventListener('input', () => { updatePreview(); saveDraft(); });
+  tagsInput.addEventListener('input', () => { updateMeta(); saveDraft(); });
+  categorySelect.addEventListener('change', () => { updateMeta(); saveDraft(); });
+  publishDateInput.addEventListener('change', () => { updateMeta(); saveDraft(); });
+  statusSelect.addEventListener('change', () => { updateMeta(); saveDraft(); });
+
+  // ======== Autosave every 30s ========
+  setInterval(() => {
+    saveDraft();
+    statusMsg.textContent = 'Autosaved';
+    setTimeout(() => statusMsg.textContent = '', 2000);
+  }, 30000);
+
+  // ======== Persistence ========
+  function saveDraft(statusOverride) {
+    const data = {
+      title: titleInput.value,
+      tags: tagsInput.value,
+      category: categorySelect.value,
+      featuredImage: featuredPreview.src || '',
+      publishDate: publishDateInput.value,
+      status: statusOverride || statusSelect.value,
+      content: quill.root.innerHTML
+    };
+    localStorage.setItem('blogDraft', JSON.stringify(data));
+  }
+
+  // Restore draft on load
+  window.addEventListener('load', () => {
+    const stored = localStorage.getItem('blogDraft');
+    if (stored) {
+      const data = JSON.parse(stored);
+      titleInput.value = data.title || '';
+      tagsInput.value = data.tags || '';
+      categorySelect.value = data.category || 'Tech';
+      publishDateInput.value = data.publishDate || '';
+      statusSelect.value = data.status || 'draft';
+      if (data.featuredImage) {
+        featuredPreview.src = data.featuredImage;
+        featuredPreview.style.display = 'block';
+        previewImage.src = data.featuredImage;
+        previewImage.style.display = 'block';
+      }
+      quill.clipboard.dangerouslyPasteHTML(data.content || '');
+      updatePreview();
+      updateMeta();
+    } else {
+      updatePreview();
+      updateMeta();
+    }
+  });
+
+  // ======== Validation & actions ========
+  function validate() {
+    const errors = [];
+    if (!titleInput.value.trim()) errors.push('Title is required.');
+    if (quill.getText().trim().length === 0) errors.push('Content is required.');
+    statusMsg.style.color = errors.length ? 'red' : '#0a0';
+    statusMsg.textContent = errors.join(' ');
+    return errors.length === 0;
+  }
+
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    if (!validate()) return;
+    saveDraft();
+    statusMsg.style.color = '#0a0';
+    statusMsg.textContent = 'Saved!';
+    setTimeout(() => statusMsg.textContent = '', 2000);
+  });
+
+  document.getElementById('publishBtn').addEventListener('click', () => {
+    if (!validate()) return;
+    statusMsg.style.color = '#00f';
+    statusMsg.textContent = 'Publishing...';
+    setTimeout(() => {
+      saveDraft('published');
+      statusSelect.value = 'published';
+      updateMeta();
+      statusMsg.style.color = '#0a0';
+      statusMsg.textContent = 'Published!';
+      setTimeout(() => statusMsg.textContent = '', 2000);
+    }, 1000);
+  });
+
+  // Close modals with Escape key
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      customModal.style.display = 'none';
+      cropModal.style.display = 'none';
+      if (cropper) cropper.destroy();
+    }
+  });
+  </script>
+</body>
+</html>

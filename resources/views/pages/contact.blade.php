@@ -1,4 +1,5 @@
 <x-pages-layout title="Contact Us | {{ config('app.name') }}">
+    {{-- Contact methods cached for 1 hour in controller --}}
     <x-slot name="metaDescription">
         Get in touch with Sanaa Co. for questions, support, or business inquiries. We're here to help you succeed with our innovative digital solutions.
     </x-slot>

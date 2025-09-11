@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use App\Models\TeamMember;
 
 
 class PageController extends Controller
@@ -26,7 +27,8 @@ class PageController extends Controller
         } catch (\Throwable $e) {
             $sokoProducts = $this->fallbackSokoProducts();
         }
-        $teamMembers = \App\Models\TeamMember::all();
+        // Team members rarely change; cache for 1 hour
+        $teamMembers = Cache::remember('team_members', 3600, fn() => TeamMember::all());
         return view('pages.home', [
             'sokoProducts' => $sokoProducts,
             'teamMembers' => $teamMembers,

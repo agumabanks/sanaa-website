@@ -34,10 +34,11 @@
             @endif
 
             @if($services->count())
+                {{-- Services are paginated in the controller (20 per page) --}}
                 <div class="bg-white rounded-2xl border border-gray-200 shadow-sm">
                     <div class="p-6 border-b border-gray-100 flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-900">Manage Services</h3>
-                        <span class="text-sm text-gray-500">{{ $services->count() }} total</span>
+                        <span class="text-sm text-gray-500">{{ $services->total() }} total</span>
                     </div>
                     <div class="divide-y divide-gray-100" id="servicesList">
                         @foreach($services as $service)
@@ -77,6 +78,9 @@
                             </div>
                         </div>
                         @endforeach
+                    </div>
+                    <div class="p-6">
+                        {{ $services->links() }}
                     </div>
                 </div>
             @else

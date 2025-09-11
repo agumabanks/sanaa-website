@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\TeamMember;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class TeamController extends Controller
 {
     public function index()
     {
-        $members = TeamMember::all();
+        // Team size is small (<50); cache for one hour
+        $members = Cache::remember('team_members', 3600, fn() => TeamMember::all());
         return view('team.index', compact('members'));
     }
 

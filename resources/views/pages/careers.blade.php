@@ -3,6 +3,7 @@
 @section('title', 'Careers | ' . config('app.name'))
 
 @section('content')
+    {{-- Career listings cached for 30 minutes in controller --}}
     <section class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 class="text-2xl font-bold">Careers</h1>

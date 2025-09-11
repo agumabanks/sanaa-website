@@ -169,10 +169,12 @@ class PolicyController extends Controller
         }
 
         // Clear all policy caches
-        $policies = Policy::all();
-        foreach ($policies as $policy) {
-            Cache::forget("policy_{$policy->key}");
+        // Policy count is modest (<100), cache the list of keys for an hour
+        $policyKeys = Cache::remember('policy_keys', 3600, fn() => Policy::pluck('key'));
+        foreach ($policyKeys as $key) {
+            Cache::forget("policy_{$key}");
         }
+        Cache::forget('policy_keys');
 
         return response()->json(['success' => true, 'message' => 'Policies updated successfully']);
     }

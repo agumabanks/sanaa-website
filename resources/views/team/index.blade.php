@@ -1,6 +1,7 @@
 @extends('layouts.landing')
 
 @section('content')
+{{-- Team list cached for 1 hour in controller --}}
 <div class="container mx-auto py-12 px-4">
     <h1 class="text-3xl font-bold mb-8 text-center">Our Team</h1>
     <div class="grid md:grid-cols-3 gap-8">

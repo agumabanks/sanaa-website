@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\HardwareRental;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class HardwareRentalController extends Controller
 {
     public function index()
     {
-        $items = HardwareRental::all();
+        // Hardware rental catalog is small (<50); cache for 1 hour
+        $items = Cache::remember('hardware_rentals', 3600, fn() => HardwareRental::all());
         return view('pages.rent-hardware', compact('items'));
     }
 

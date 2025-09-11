@@ -1136,6 +1136,7 @@
     </section>
 
     <!-- Premium Team Section -->
+    {{-- Team members cached for 1 hour in controller --}}
     <section id="team" class="team-premium">
         <div class="section-header">
             <h2 class="section-title reveal-element">Meet the Team</h2>

@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Partner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class PartnerController extends Controller
 {
     public function index()
     {
-        $items = Partner::all();
+        // Partner list is expected to stay under 50 records so cache for an hour
+        $items = Cache::remember('partners', 3600, fn() => Partner::all());
         return view('pages.partners', compact('items'));
     }
 

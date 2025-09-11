@@ -22,7 +22,8 @@ class ServicesController extends Controller
      */
     public function adminIndex()
     {
-        $services = Service::all();
+        // Services may grow large; paginate 20 per page
+        $services = Service::paginate(20);
         return view('dashboard.services.index', compact('services'));
     }
 

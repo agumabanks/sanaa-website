@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             TeamMemberSeeder::class,
             ServicesTableSeeder::class,
             OfferingSeeder::class,
+            FinanceSeeder::class,
         ]);
     }
 }

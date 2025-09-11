@@ -58,6 +58,24 @@ use Illuminate\Support\Facades\Route;
                     };
                     @endphp
 
+                    @php
+                        $user = Auth::user();
+                        $financeRoles = ['FinanceEditor','FinancePublisher','FinanceAdmin'];
+                        $isFinance = false;
+                        if ($user) {
+                            if (method_exists($user, 'hasAnyRole') && $user->hasAnyRole($financeRoles)) {
+                                $isFinance = true;
+                            } elseif (isset($user->roles)) {
+                                $roles = is_string($user->roles) ? (json_decode($user->roles, true) ?: [$user->roles]) : $user->roles;
+                                if (is_array($roles)) {
+                                    $isFinance = count(array_intersect($financeRoles, $roles)) > 0;
+                                }
+                            } elseif (isset($user->role) && in_array($user->role, $financeRoles, true)) {
+                                $isFinance = true;
+                            }
+                        }
+                    @endphp
+
                     {!! $navItem('dashboard', 'Dashboard', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z'/></svg>", true) !!}
                     
                     @if(Auth::check() && Auth::user()->isAdmin())
@@ -82,6 +100,20 @@ use Illuminate\Support\Facades\Route;
                         {!! $navItem('dashboard.prices', 'Prices', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18L18.56 6 12 8.82 5.44 6 12 3.18zM5 8.1l7 2.8 7-2.8V11c0 4.09-2.63 7.89-7 9-4.37-1.11-7-4.91-7-9V8.1z'/></svg>") !!}
                         {!! $navItem('dashboard.services', 'Services', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'/></svg>") !!}
                         {!! $navItem('dashboard.policies', 'Policies', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 7V3.5L19.5 9H14z'/></svg>") !!}
+
+                        <div class="px-3 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/50">Finance</div>
+                        {!! $navItem('admin.finance.index', 'Finance', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M3 3h18v2H3V3zm4 6h14v2H7V9zM3 15h18v2H3v-2zm4 6h14v2H7v-2z'/></svg>") !!}
+                        @if(Route::has('admin.finance.index'))
+                        <div class="pl-9 pr-3 space-y-1">
+                            <a href="{{ route('admin.finance.pricing-plans.index') }}" class="block text-xs text-white/60 hover:text-white">Pricing Plans</a>
+                            <a href="{{ route('admin.finance.cards.index') }}" class="block text-xs text-white/60 hover:text-white">Cards</a>
+                            <a href="{{ route('admin.finance.technologies.index') }}" class="block text-xs text-white/60 hover:text-white">Technologies</a>
+                            <a href="{{ route('admin.finance.team-members.index') }}" class="block text-xs text-white/60 hover:text-white">Team</a>
+                            <a href="{{ route('admin.finance.communities.index') }}" class="block text-xs text-white/60 hover:text-white">Communities</a>
+                            <a href="{{ route('admin.finance.compliance-items.index') }}" class="block text-xs text-white/60 hover:text-white">Compliance</a>
+                            <a href="{{ route('admin.finance.analytics') }}" class="block text-xs text-white/60 hover:text-white">Analytics</a>
+                        </div>
+                        @endif
                     @else
                         <div class="px-3 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/50">Stories</div>
                         {!! $navItem('dashboard.write', 'Write', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z'/></svg>") !!}
@@ -96,6 +128,11 @@ use Illuminate\Support\Facades\Route;
                         {!! $navItem('dashboard.purchases', 'My Purchases', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M7 4V2C7 1.45 7.45 1 8 1s1 .45 1 1v2h4V2c0-.55.45-1 1-1s1 .45 1 1v2h2c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2h2zM5 6v14h14V6H5zm4 8h6c.55 0 1-.45 1-1s-.45-1-1-1H9c-.55 0-1 .45-1 1s.45 1 1 1z'/></svg>") !!}
                         {!! $navItem('dashboard.products', 'My Products', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M3 13h8V3H3v10zm10 8h8v-6h-8v6zm0-18v6h8V3h-8zM3 21h8v-6H3v6z'/></svg>") !!}
                         {!! $navItem('dashboard.wallet', 'Sanaa Wallet', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M21 7h-2V5c0-.55-.45-1-1-1H6c-.55 0-1 .45-1 1v2H3c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zM6 5h12v2H6V5zm15 14H3V9h18v10zM7 11h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z'/></svg>") !!}
+
+                        @if($isFinance && Route::has('admin.finance.index'))
+                            <div class="px-3 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/50">Finance</div>
+                            {!! $navItem('admin.finance.index', 'Finance', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M3 3h18v2H3V3zm4 6h14v2H7V9zM3 15h18v2H3v-2zm4 6h14v2H7v-2z'/></svg>") !!}
+                        @endif
                     @endif
                 </nav>
                 

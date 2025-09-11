@@ -1,2 +1,4 @@
 User-agent: *
 Disallow:
+Sitemap: https://sanaa.co/sitemap.xml
+Sitemap: https://sanaa.co/sitemap-finance.xml

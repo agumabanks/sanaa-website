@@ -22,6 +22,14 @@ use App\Http\Controllers\OfferingController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\FinanceController;
+use App\Http\Controllers\Admin\Finance\PricingPlanController as AdminFinancePricingPlanController;
+use App\Http\Controllers\Admin\Finance\CardController as AdminFinanceCardController;
+use App\Http\Controllers\Admin\Finance\TechnologyController as AdminFinanceTechnologyController;
+use App\Http\Controllers\Admin\Finance\TeamMemberController as AdminFinanceTeamMemberController;
+use App\Http\Controllers\Admin\Finance\CommunityController as AdminFinanceCommunityController;
+use App\Http\Controllers\Admin\Finance\ComplianceItemController as AdminFinanceComplianceItemController;
+use App\Http\Controllers\FinanceContactController;
 use App\Models\Policy; 
  
 
@@ -40,6 +48,64 @@ Route::get('/careers', [CareerController::class, 'index'])->name('careers');
 Route::get('/partners', [PartnerController::class, 'index'])->name('partners');
 Route::get('/why-sanaa', [PageController::class, 'whySanaa'])->name('why-sanaa');
 Route::get('/investor-relations', [PageController::class, 'investorRelations'])->name('investor-relations');
+
+// Finance routes
+Route::prefix('finance')->name('finance.')->group(function () {
+    Route::get('/', [FinanceController::class, 'index'])->name('index');
+    // Primary IA pages (explicit first to avoid catch-all conflicts)
+    Route::get('/overview', [FinanceController::class, 'overview'])->name('overview');
+    Route::get('/pricing', [FinanceController::class, 'pricing'])->name('pricing');
+    Route::get('/cards', [FinanceController::class, 'cards'])->name('cards');
+    Route::get('/technologies', [FinanceController::class, 'technologies'])->name('technologies');
+    Route::get('/team', [FinanceController::class, 'team'])->name('team');
+    Route::get('/communities', [FinanceController::class, 'communities'])->name('communities');
+    Route::get('/compliance', [FinanceController::class, 'compliance'])->name('compliance');
+    Route::get('/testimonials', [FinanceController::class, 'testimonials'])->name('testimonials');
+    Route::get('/solutions', [FinanceController::class, 'solutions'])->name('solutions');
+    Route::get('/benchmarking', [FinanceController::class, 'benchmarking'])->name('benchmarking');
+    Route::get('/resources', [FinanceController::class, 'resources'])->name('resources');
+    Route::get('/promise', [FinanceController::class, 'promise'])->name('promise');
+    Route::get('/clients', [FinanceController::class, 'clients'])->name('clients');
+    Route::get('/better-banking', [FinanceController::class, 'betterBanking'])->name('better-banking');
+    Route::get('/contact-sales', [FinanceController::class, 'contactSales'])->name('contact-sales');
+    Route::get('/lets-discuss', [FinanceController::class, 'contactSales']); // alias
+    Route::post('/contact-sales', [FinanceContactController::class, 'store'])
+        ->middleware('throttle:6,1')
+        ->name('contact-sales.submit');
+    Route::get('/contact-sales/success', [FinanceController::class, 'contactSalesSuccess'])->name('contact-sales.success');
+    Route::get('/ai-driven', [FinanceController::class, 'aiDriven'])->name('ai-driven');
+    Route::get('/automation-accounting', [FinanceController::class, 'automationAccounting'])->name('automation-accounting');
+    Route::get('/stats', [FinanceController::class, 'stats'])->name('stats');
+    Route::get('/founder-message', [FinanceController::class, 'founderMessage'])->name('founder-message');
+    Route::get('/cloud-alerts', [FinanceController::class, 'cloudAlerts'])->name('cloud-alerts');
+    Route::get('/news-insights', [FinanceController::class, 'newsInsights'])->name('news-insights');
+
+    // Section-scoped search
+    Route::get('/search', [FinanceController::class, 'search'])->name('search');
+
+    // Dynamic CMS pages (by slug)
+    Route::get('/p/{page:slug}', [FinanceController::class, 'show'])->name('show');
+});
+
+// Admin → Finance (isolated)
+Route::middleware(['auth', 'finance'])->prefix('admin/finance')->name('admin.finance.')->group(function () {
+    Route::get('/', function () {
+        return view('admin.finance.index');
+    })->name('index');
+
+    Route::resource('pricing-plans', AdminFinancePricingPlanController::class);
+    Route::resource('cards', AdminFinanceCardController::class);
+    Route::resource('technologies', AdminFinanceTechnologyController::class);
+    Route::resource('team-members', AdminFinanceTeamMemberController::class);
+    Route::resource('communities', AdminFinanceCommunityController::class);
+    Route::resource('compliance-items', AdminFinanceComplianceItemController::class);
+
+    // Placeholder analytics dashboard
+    Route::get('/analytics', function () {
+        return view('admin.finance.analytics');
+    })->name('analytics');
+});
+
 Route::get('/terms', [PolicyController::class, 'show'])->defaults('key', 'terms')->name('terms');
 Route::get('/seller-policies', [PolicyController::class, 'show'])->defaults('key', 'seller-policies')->name('seller-policies');
 
@@ -217,6 +283,7 @@ Route::post('newsletter/subscribe', [NewsletterController::class, 'subscribe'])-
 // Sitemap
 Route::get('sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('sitemap/blogs.xml', [SitemapController::class, 'blogs'])->name('sitemap.blogs');
+Route::get('sitemap-finance.xml', [SitemapController::class, 'finance'])->name('sitemap.finance');
 
 // Search
 // Route::get('search', [SearchController::class, 'index'])->name('search');
@@ -252,6 +319,11 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard.index');
     })->name('dashboard');
+
+    // Shortcut to Finance admin from the dashboard
+    Route::get('/dashboard/finance', function () {
+        return redirect()->route('admin.finance.index');
+    })->name('dashboard.finance');
 
     // Admin-only dashboard routes
     Route::middleware('admin')->group(function () {

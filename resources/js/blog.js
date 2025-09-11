@@ -81,6 +81,11 @@ class BlogManager {
             tab.addEventListener('click', (e) => this.handleFilterChange(e));
         });
 
+        // Category and tag filters
+        document.querySelectorAll('.category-item, .tag-item').forEach(item => {
+            item.addEventListener('click', (e) => this.handleFilterChange(e));
+        });
+
         // Load more button
         document.getElementById('load-more-btn')?.addEventListener('click', () => this.loadMoreArticles());
 
@@ -601,23 +606,81 @@ class BlogManager {
         }
     }
 
-    handleFilterChange(event) {
+    async handleFilterChange(event) {
+        event.preventDefault();
+
         const clickedTab = event.currentTarget;
         const filter = clickedTab.dataset.filter;
-        
-        // Remove active class from all tabs
-        document.querySelectorAll('.filter-tab').forEach(tab => {
-            tab.classList.remove('active', 'border-green-500', 'text-green-400');
-            tab.classList.add('text-gray-400');
-        });
-        
-        // Add active class to clicked tab
-        clickedTab.classList.add('active', 'border-green-500', 'text-green-400');
-        clickedTab.classList.remove('text-gray-400');
-        
-        // TODO: Implement actual filtering logic
-        console.log('Filter changed to:', filter);
-        this.trackAnalytics('filter_change', 0, { filter });
+        const type = clickedTab.dataset.type || 'category';
+
+        if (clickedTab.classList.contains('filter-tab')) {
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active', 'border-green-500', 'text-green-400');
+                tab.classList.add('text-gray-400');
+            });
+
+            clickedTab.classList.add('active', 'border-green-500', 'text-green-400');
+            clickedTab.classList.remove('text-gray-400');
+        }
+
+        const url = new URL(window.location);
+        url.searchParams.delete('page');
+
+        if (filter === 'all') {
+            url.searchParams.delete('category');
+            url.searchParams.delete('tag');
+        } else if (type === 'tag') {
+            url.searchParams.set('tag', filter);
+            url.searchParams.delete('category');
+        } else {
+            url.searchParams.set('category', filter);
+            url.searchParams.delete('tag');
+        }
+
+        history.pushState({}, '', url);
+
+        try {
+            this.isLoading = true;
+            this.showLoading();
+
+            const response = await fetch(url.toString(), {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            const container = document.getElementById('articles-container');
+            if (container) {
+                container.innerHTML = '';
+            }
+
+            if (data.articles) {
+                this.appendArticles(data.articles);
+            }
+
+            this.currentPage = data.current_page || 1;
+            this.hasMorePages = data.has_more;
+
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            if (loadMoreBtn) {
+                if (this.hasMorePages) {
+                    loadMoreBtn.style.removeProperty('display');
+                } else {
+                    loadMoreBtn.style.setProperty('display', 'none');
+                }
+            }
+        } catch (error) {
+            console.error('Error loading articles:', error);
+            this.showToast('Error loading articles', 'error');
+        } finally {
+            this.isLoading = false;
+            this.hideLoading();
+        }
+
+        this.trackAnalytics('filter_change', 0, { type, filter });
     }
 
     async handleNewsletterSubmit(event) {

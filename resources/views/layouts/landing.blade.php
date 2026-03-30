@@ -1,44 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <title>@yield('title', 'Sanaa Co. by Aguma Banks')</title>
-
-        
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="facebook-domain-verification" content="9sz4w1uhc1h5znmxytx5h8d9ub838m" />
-
- 
-        <meta name="keywords" content="Sanaa Co.,Sanaa Brands, soko.ug, soko 24, soko ug,kampala,nasser road, museveni, sanaa, sanaa media, oyes, aguma banks, sanaa finance, sanaa pay, uganda, east africa entreprenuers, jumia, jiji, bank of ugada, aguma ibrahim, aguma banks, king Ceasor" />
-        <meta name="description" content="Sanaa Co. building digital infrastructure solutions, Value addition and supply chain for small, medium and large busineses in Africa.">
-        <meta name="author" content="Aguma Banks">
-        <link rel="canonical" href="{{ url()->current() }}" />
-        <meta property="og:title" content="Sanaa" />
-        <meta property="og:description" content="Sanaa is building digital infrastructure across Africa." />
-        <meta property="og:url" content="{{ url()->current() }}" />
-        <meta property="og:type" content="website" />
-
-        <!-- Performance hints for YouTube background -->
-        <link rel="preconnect" href="https://www.youtube.com">
-        <link rel="preconnect" href="https://i.ytimg.com">
-        <link rel="preconnect" href="https://www.google.com">
-		
-		   <!-- Subcompany Links for SEO -->
-            <link rel="alternate" hreflang="en" href="https://soko.sanaa.co/">
-            <link rel="alternate" hreflang="en" href="https://media.sanaa.co">
-            <link rel="alternate" hreflang="en" href="https://fi.sanaa.co">
-
-		<!-- Favicon -->
-		<link rel="shortcut icon" href="{{ asset('storage/images/sanaa.png') }}" type="image/x-icon" />
-		<link rel="apple-touch-icon" href="{{ asset('storage/images/sanaa.png') }}">
-
-		<style>
-            body {
-                font-family: 'Montserrat', sans-serif !important;
-            }
-        </style>
+        @include('partials.seo')
 
  <style>
     /* Ultra-premium Swiper customizations */
@@ -609,7 +572,7 @@
 
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-            @vite(['resources/css/app.css', 'resources/js/app.js'])
+            @vite(['resources/css/app.css', 'resources/css/premium-nav.css', 'resources/js/app.js'])
         @endif
 
         {{-- Inject per-page pushed styles --}}
@@ -628,9 +591,9 @@
 
     <!-- Header (hide on pages that define 'hide_header' section) -->
     @hasSection('hide_header')
-        
+        {{-- Header hidden by child section --}}
     @else
-        @include('components.header')
+        <x-header />
         <!-- Add padding to the content below to prevent overlap -->
         <div style="padding-top: 64px;"></div>
     @endif
@@ -646,378 +609,25 @@
 
 <!-- Add these scripts to your scripts section -->
 <!-- Add these scripts to your scripts section -->
+<script src="https://unpkg.com/lucide@latest"></script>
 <script>
-// Enhanced Product Modal & Slider Functionality with AJAX Product Details
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+    });
+</script>
+<script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Show products after loading
-  setTimeout(() => {
-    if (document.getElementById('products-loading')) {
-      document.getElementById('products-loading').style.display = 'none';
-    }
-    if (document.getElementById('product-container')) {
-      document.getElementById('product-container').style.display = 'flex';
-    }
-    initProductAnimations();
-  }, 800);
-  
-  // DOM Elements
-  const modal = document.getElementById('productModal');
-  if (!modal) return; // Stop execution if modal doesn't exist
-  
-  const modalContent = document.getElementById('modal-content') || document.createElement('div');
-  const modalLoading = document.getElementById('modal-loading') || document.createElement('div');
-  const modalError = document.getElementById('modal-error') || document.createElement('div');
-  const modalErrorMessage = document.getElementById('modal-error-message') || document.createElement('p');
-  
-  const modalProductName = document.getElementById('modalProductName') || document.createElement('h2');
-  const modalPrice = document.getElementById('modalPrice') || document.createElement('p');
-  const modalDiscountContainer = document.getElementById('modalDiscountContainer');
-  const modalDiscountPrice = document.getElementById('modalDiscountPrice') || document.createElement('span');
-  const modalDiscountBadge = document.getElementById('modalDiscountBadge') || document.createElement('span');
-  const modalViewProductLink = document.getElementById('modalViewProductLink') || document.createElement('a');
-  
-  const modalThumbnail = document.getElementById('modalThumbnail') || document.createElement('img');
-  const modalProductDescription = document.getElementById('modalProductDescription') || document.createElement('div');
-  const modalSliderContainer = document.getElementById('modalSliderContainer');
-  const modalSingleImage = document.getElementById('modalSingleImage');
-  const modalSliderWrapper = document.getElementById('modalSliderWrapper');
-  
-  // Hard-coded mock product data to use as fallback
-  const mockProducts = {
-    // Map using the product IDs from your original data
-    productMap: {},
-    slugMap: {},
+  const productContainer = document.getElementById('product-container');
+  const loadingEl = document.getElementById('products-loading');
 
-    // Initialize with sensible defaults based on product ID
-    getProduct: function(productId) {
-      // Check if we already have this product in our map
-      if (this.productMap[productId]) {
-        return this.productMap[productId];
-      }
+  if (loadingEl) {
+    loadingEl.style.display = 'none';
+  }
 
-      // Create a new mock product based on ID
-      const product = {
-        id: productId,
-        name: "Product " + productId,
-        slug: "product-" + productId, // Generate a default slug
-        description: "<p>This is a sample product description. The actual product details could not be loaded from the API.</p><p>Please visit the Soko 24 website for complete information about this product.</p>",
-        main_price: "UGX --,---",
-        has_discount: false,
-        stroked_price: "",
-        discount: "",
-        thumbnail_image: "/img/placeholder-product.jpg",
-        photos: [
-          { path: "/img/placeholder-product.jpg" }
-        ]
-      };
-
-      // Store in map for future reference
-      this.productMap[productId] = product;
-      this.slugMap[product.slug] = product;
-      return product;
-    },
-    
-    // Generate a slug from a product name
-    generateSlug: function(name) {
-      return name.toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')  // Replace non-alphanumeric chars with hyphens
-        .replace(/^-+|-+$/g, '')      // Remove leading/trailing hyphens
-        .substring(0, 50);            // Limit length
-    }
-  };
-
-  // Get from existing data on page
-  document.querySelectorAll('.product-card').forEach(card => {
-    try {
-      const productId = card.getAttribute('data-product-id');
-      const nameEl = card.querySelector('.card-title');
-      const priceEl = card.querySelector('.card-text.font-weight-bold');
-      const discountEl = card.querySelector('.badge-danger');
-      const discountedPriceEl = card.querySelector('.text-decoration-line-through');
-      const imgEl = card.querySelector('img');
-
-      if (productId && nameEl) {
-        const productName = nameEl.textContent.trim();
-        const productSlug = mockProducts.generateSlug(productName);
-        
-        const mockProduct = {
-          id: productId,
-          name: productName,
-          slug: productSlug,
-          description: "<p>This product is from the Soko 24 collection. Please visit the Soko website for full details.</p>",
-          main_price: priceEl ? priceEl.textContent.trim() : "UGX --,---",
-          has_discount: !!discountEl,
-          stroked_price: discountedPriceEl ? discountedPriceEl.textContent.trim() : "",
-          discount: discountEl ? discountEl.textContent.trim() : "",
-          thumbnail_image: imgEl ? imgEl.src : "/img/placeholder-product.jpg",
-          photos: [
-            { path: imgEl ? imgEl.src : "/img/placeholder-product.jpg" }
-          ]
-        };
-        
-        // Store this product in our mock database
-        mockProducts.productMap[productId] = mockProduct;
-        mockProducts.slugMap[productSlug] = mockProduct;
-      }
-    } catch (e) {
-      console.warn('Error extracting product data from card:', e);
-    }
-  });
-  
-  // Function to show different modal states (loading, content, error)
-  function showModalState(state) {
-    if (modalLoading) {
-      modalLoading.style.display = state === 'loading' ? 'block' : 'none';
-    }
-    if (modalContent) {
-      modalContent.style.display = state === 'content' ? 'block' : 'none';
-    }
-    if (modalError) {
-      modalError.style.display = state === 'error' ? 'block' : 'none';
-    }
+  if (productContainer) {
+    const prefersGrid = productContainer.classList.contains('products-grid');
+    productContainer.style.display = prefersGrid ? 'grid' : 'flex';
   }
-  
-  // Function to fetch product data via AJAX
-  async function fetchProductData(productId) {
-    try {
-      // Call your controller endpoint
-      const response = await fetch(`/api/product/${productId}`);
-      
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (data.success && data.data && data.data.length > 0) {
-        return data.data[0];
-      } else {
-        throw new Error("No product details found.");
-      }
-    } catch (error) {
-      console.error('Error fetching product:', error);
-      throw error;
-    }
-  }
-  
-  // Simplified modal display function for compatibility with original code
-  function openSimpleModal(product) {
-    // Clear existing content
-    if (modalProductName) modalProductName.textContent = product.name;
-    if (modalProductDescription) modalProductDescription.innerHTML = product.description || '';
-    
-    // Display the image
-    if (modalThumbnail) {
-      modalThumbnail.style.display = 'block';
-      modalThumbnail.src = product.thumbnail_image;
-      modalThumbnail.alt = product.name;
-      
-      // Handle image loading errors
-      modalThumbnail.onerror = function() {
-        this.src = '/img/placeholder-product.jpg';
-        this.alt = 'Product image unavailable';
-      };
-    }
-    
-    // Update pricing information
-    if (modalPrice) modalPrice.textContent = product.main_price;
-    
-    // Update the link to Soko
-    if (modalViewProductLink) {
-      modalViewProductLink.href = `https://soko.sanaa.co/product/${product.slug}`;
-    }
-    
-    // Handle discount information
-    if (modalDiscountContainer && modalDiscountPrice && modalDiscountBadge) {
-      if (product.has_discount) {
-        modalDiscountPrice.textContent = product.stroked_price;
-        modalDiscountBadge.textContent = product.discount;
-        modalDiscountContainer.classList.remove('d-none');
-      } else {
-        modalDiscountContainer.classList.add('d-none');
-      }
-    }
-    
-    // Show the modal
-    modal.style.display = 'flex';
-    modal.classList.add('show');
-    
-    // Make sure the modal is styled correctly
-    const modalContentElem = modal.querySelector('.modal-content');
-    if (modalContentElem) {
-      modalContentElem.style.display = 'block';
-    }
-    
-    // Try Bootstrap modal if available
-    if (typeof $ !== 'undefined') {
-      try {
-        $(modal).modal('show');
-      } catch (e) {
-        console.warn('Bootstrap modal failed, using direct style manipulation');
-      }
-    }
-  }
-  
-  // Open product modal with AJAX
-  async function openProductModal(productId) {
-    try {
-      // Show loading state
-      if (typeof showModalState === 'function') {
-        showModalState('loading');
-      }
-      
-      // Show the modal
-      modal.style.display = 'flex';
-      modal.classList.add('show');
-      
-      let product;
-      
-      // Try to fetch product data via AJAX
-      try {
-        product = await fetchProductData(productId);
-      } catch (error) {
-        console.warn('API fetch failed, using fallback data:', error);
-        // Use fallback data if the API call fails
-        product = mockProducts.getProduct(productId);
-      }
-      
-      // Display the product in the modal
-      openSimpleModal(product);
-      
-      // Show content state
-      if (typeof showModalState === 'function') {
-        showModalState('content');
-      }
-      
-    } catch (error) {
-      console.error('Error opening product modal:', error);
-      // Show error message
-      if (modalErrorMessage) {
-        modalErrorMessage.textContent = 'Failed to load product details. Please try again later.';
-      }
-      // Show error state
-      if (typeof showModalState === 'function') {
-        showModalState('error');
-      } else {
-        // Fallback error display
-        if (modalError) modalError.style.display = 'block';
-      }
-    }
-  }
-  
-  // Close modal event handlers
-  function closeProductModal() {
-    // Try Bootstrap method first
-    if (typeof $ !== 'undefined') {
-      try {
-        $(modal).modal('hide');
-      } catch (e) {
-        console.warn('Bootstrap modal hide failed, using direct style manipulation');
-      }
-    }
-    
-    // Direct style manipulation as fallback
-    modal.style.display = 'none';
-    modal.classList.remove('show');
-    
-    // Stop swiper if it exists
-    if (window.modalSwiper && window.modalSwiper.autoplay) {
-      window.modalSwiper.autoplay.stop();
-    }
-  }
-  
-  // Setup close modal buttons
-  document.querySelectorAll('.close-modal').forEach(btn => {
-    btn.addEventListener('click', closeProductModal);
-  });
-  
-  // Add click event to product cards
-  document.querySelectorAll('.product-card').forEach(card => {
-    card.addEventListener('click', function(e) {
-      // Prevent default only if the click is not on a link
-      if (e.target.tagName.toLowerCase() !== 'a' && !e.target.closest('a')) {
-        e.preventDefault();
-      }
-      
-      const productId = this.getAttribute('data-product-id');
-      if (productId) {
-        openProductModal(productId);
-      }
-    });
-    
-    // Add keyboard accessibility
-    card.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        const productId = this.getAttribute('data-product-id');
-        if (productId) {
-          openProductModal(productId);
-        }
-      }
-    });
-  });
-  
-  // Init animations for product cards
-  function initProductAnimations() {
-    const animateProducts = () => {
-      const cards = document.querySelectorAll('.product-card');
-      cards.forEach((card, index) => {
-        setTimeout(() => {
-          card.classList.add('appear-animation');
-          card.dataset.appearAnimation = 'fadeInUp';
-          card.dataset.appearAnimationDelay = (index * 100) + 200;
-        }, 100);
-      });
-    };
-  
-    // Initialize animations when product section is visible
-    if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            animateProducts();
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1 });
-    
-      const productSection = document.getElementById('soko-products');
-      if (productSection) {
-        observer.observe(productSection);
-      }
-    } else {
-      // Fallback for browsers without IntersectionObserver support
-      animateProducts();
-    }
-  }
-  
-  // Lazy load product images
-  document.querySelectorAll('.product-card img').forEach(img => {
-    img.loading = 'lazy';
-    
-    // Add placeholder for images that fail to load
-    img.onerror = function() {
-      this.src = '/img/placeholder-product.jpg';
-      this.alt = 'Product image unavailable';
-    };
-  });
-  
-  // Handle close on escape key
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && 
-        (modal.style.display === 'flex' || 
-         modal.classList.contains('show') || 
-         (typeof $ !== 'undefined' && $(modal).is(':visible')))) {
-      closeProductModal();
-    }
-  });
-  
-  // Handle click outside modal
-  modal.addEventListener('click', function(e) {
-    if (e.target === modal) {
-      closeProductModal();
-    }
-  });
 });
 </script>
 	
@@ -1135,6 +745,10 @@ document.addEventListener('DOMContentLoaded', function() {
   <script>
     // Ultra-premium Swiper initialization
     document.addEventListener('DOMContentLoaded', function() {
+      if (!document.querySelector('.blog-swiper')) {
+        return;
+      }
+
       const swiper = new Swiper('.blog-swiper', {
         slidesPerView: 1.1,
         spaceBetween: 28,

@@ -7,6 +7,7 @@ use App\Models\Blog;
 use App\Models\BlogCategory;
 use App\Models\BlogTag;
 use App\Models\BlogAnalytics;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
@@ -114,6 +115,22 @@ class BlogController extends Controller
         return view('blog.index', compact('blogs', 'featuredPost', 'trendingPosts', 'categories', 'tags', 'seoData'));
     }
 
+    public function feed()
+    {
+        $posts = Blog::published()
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
+            ->limit(30)
+            ->get();
+
+        $updated = optional($posts->first())->updated_at ?: now();
+        return response()
+            ->view('partials.rss', [
+                'posts' => $posts,
+                'updated' => $updated,
+            ], 200)
+            ->header('Content-Type', 'application/rss+xml; charset=UTF-8');
+    }
+
     public function category(BlogCategory $category, Request $request)
     {
         // Reuse index() with category filter
@@ -126,6 +143,35 @@ class BlogController extends Controller
         // Reuse index() with tag filter
         $request->merge(['tag' => $tag->slug]);
         return $this->index($request);
+    }
+
+    public function author(User $author)
+    {
+        $posts = Blog::with(['author', 'category', 'tags'])
+            ->published()
+            ->where('author_id', $author->id)
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
+            ->paginate(12);
+
+        abort_if($posts->isEmpty(), 404);
+
+        $latestPost = $posts->first();
+        $seoData = [
+            'title' => $author->name . ' — Articles on Sanaa Blog',
+            'description' => 'Read articles, founder notes, and operating lessons by ' . $author->name . ' on Sanaa.ug.',
+            'keywords' => implode(', ', array_filter([
+                $author->name,
+                'Sanaa',
+                'Sanaa blog',
+                'articles by ' . $author->name,
+                'Aguma Banks',
+            ])),
+            'image' => $author->profile_photo_url ?: optional($latestPost)->featured_image_url ?: cdn_asset('storage/images/sanaa.png'),
+            'url' => $author->author_url,
+            'author' => $author->name,
+        ];
+
+        return view('blog.author', compact('author', 'posts', 'seoData'));
     }
 
     public function show(Blog $blog, Request $request)
@@ -161,6 +207,7 @@ class BlogController extends Controller
             'published_time' => $blog->published_at ? $blog->published_at->toISOString() : $blog->created_at->toISOString(),
             'modified_time' => $blog->updated_at->toISOString(),
             'author' => $blog->author ? $blog->author->name : 'Sanaa Team',
+            'author_url' => $blog->author ? $blog->author->author_url : route('blog.index'),
             'reading_time' => $readingTime,
             'category' => $blog->category ? $blog->category->name : null
         ];

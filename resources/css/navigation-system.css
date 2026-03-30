@@ -1,0 +1,779 @@
+/**
+ * Sanaa Unified Navigation System
+ * Consolidated design system for all public navigation
+ * Version: 2.0
+ */
+
+/* ============================================================================
+   1. DESIGN TOKENS & CSS VARIABLES
+   ============================================================================ */
+
+:root {
+    /* --- Navigation Dimensions --- */
+    --nav-height: 80px;
+    --nav-height-scrolled: 64px;
+    --nav-padding-x: 2rem;
+    --nav-padding-y: 1rem;
+
+    /* --- Z-Index Hierarchy --- */
+    --z-base: 1;
+    --z-dropdown: 40;
+    --z-nav: 100;
+    --z-mobile-menu: 110;
+    --z-modal: 120;
+    --z-reading-progress: 101;
+
+    /* --- Colors: Dark Theme (Default) --- */
+    --nav-bg: rgba(0, 0, 0, 0.95);
+    --nav-bg-scrolled: rgba(0, 0, 0, 0.98);
+    --nav-border: rgba(255, 255, 255, 0.08);
+    --nav-border-scrolled: rgba(255, 255, 255, 0.12);
+
+    --nav-text-primary: rgba(255, 255, 255, 0.95);
+    --nav-text-secondary: rgba(255, 255, 255, 0.7);
+    --nav-text-muted: rgba(255, 255, 255, 0.5);
+
+    --nav-accent: #10b981;
+    --nav-accent-hover: #34d399;
+    --nav-accent-dark: #047857;
+
+    /* --- Colors: Light Theme Variant --- */
+    --nav-bg-light: rgba(255, 255, 255, 0.95);
+    --nav-bg-light-scrolled: rgba(255, 255, 255, 0.98);
+    --nav-border-light: rgba(0, 0, 0, 0.08);
+    --nav-text-light: rgba(0, 0, 0, 0.95);
+    --nav-text-light-secondary: rgba(0, 0, 0, 0.7);
+
+    /* --- Glassmorphism Effects --- */
+    --glass-blur: blur(24px);
+    --glass-bg-dark: rgba(5, 5, 5, 0.01);
+    --glass-border: rgba(255, 255, 255, 0.06);
+    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+
+    /* --- Premium Motion Tokens --- */
+    --ease-premium: cubic-bezier(0.16, 1, 0.3, 1); /* Apple-like */
+    --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+    --duration-instant: 150ms;
+    --duration-fast: 250ms;
+    --duration-standard: 400ms;
+    --duration-slow: 600ms;
+
+    /* --- Typography --- */
+    --nav-font-primary: 'Figtree', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+    --nav-font-size: 0.875rem;
+    --nav-font-weight: 500;
+    --nav-letter-spacing: 0.01em;
+
+    /* --- Spacing & Sizing --- */
+    --nav-link-gap: 2rem;
+    --nav-pill-radius: 99px;
+    --dropdown-radius: 20px;
+    --touch-target-min: 44px;
+
+    /* --- Effects --- */
+    --nav-glow: 0 0 20px rgba(16, 185, 129, 0.15);
+    --nav-hover-bg: rgba(255, 255, 255, 0.08);
+    --nav-active-underline-height: 2px;
+}
+
+/* ============================================================================
+   2. ANIMATION KEYFRAMES
+   ============================================================================ */
+
+@keyframes navFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes navScaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes navSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes navPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* ============================================================================
+   3. BASE NAVIGATION STRUCTURE
+   ============================================================================ */
+
+.nav-premium {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--nav-height);
+    background: var(--nav-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-bottom: 1px solid var(--nav-border);
+    z-index: var(--z-nav);
+    transition: all var(--duration-standard) var(--ease-premium);
+    font-family: var(--nav-font-primary);
+}
+
+/* Scrolled State */
+.nav-premium.scrolled {
+    height: var(--nav-height-scrolled);
+    background: var(--nav-bg-scrolled);
+    border-bottom-color: var(--nav-border-scrolled);
+    box-shadow: var(--glass-shadow);
+}
+
+/* Light Theme Variant */
+.nav-premium.light {
+    background: var(--nav-bg-light);
+    border-bottom-color: var(--nav-border-light);
+    color: var(--nav-text-light);
+}
+
+.nav-premium.light.scrolled {
+    background: var(--nav-bg-light-scrolled);
+}
+
+/* Transparent Variant (for landing pages) */
+.nav-premium.transparent {
+    background: transparent;
+    border-bottom-color: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.nav-premium.transparent.scrolled {
+    background: var(--nav-bg);
+    border-bottom-color: var(--nav-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+}
+
+/* ============================================================================
+   4. NAVIGATION CONTAINER
+   ============================================================================ */
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--nav-padding-x);
+}
+
+/* ============================================================================
+   5. LOGO SECTION
+   ============================================================================ */
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    z-index: calc(var(--z-nav) + 1);
+    transition: transform var(--duration-fast) var(--ease-premium);
+}
+
+.nav-logo:hover {
+    transform: scale(1.05);
+}
+
+.nav-logo img {
+    height: 32px;
+    width: auto;
+    transition: all var(--duration-standard) var(--ease-premium);
+}
+
+.nav-premium.scrolled .nav-logo img {
+    height: 28px;
+}
+
+/* ============================================================================
+   6. DESKTOP NAVIGATION LINKS
+   ============================================================================ */
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: var(--nav-link-gap);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-link {
+    position: relative;
+    color: var(--nav-text-secondary);
+    text-decoration: none;
+    font-size: var(--nav-font-size);
+    font-weight: var(--nav-font-weight);
+    letter-spacing: var(--nav-letter-spacing);
+    padding: 0.5rem 0;
+    transition: color var(--duration-fast) var(--ease-smooth);
+    cursor: pointer;
+}
+
+/* Magnetic Hover Pill Effect */
+.nav-link::before {
+    content: '';
+    position: absolute;
+    inset: -6px -12px;
+    background: transparent;
+    border-radius: var(--nav-pill-radius);
+    z-index: -1;
+    transform: scale(0.9);
+    transition: all var(--duration-fast) var(--ease-premium);
+    pointer-events: none;
+}
+
+.nav-link:hover {
+    color: var(--nav-text-primary);
+}
+
+.nav-link:hover::before {
+    background: var(--nav-hover-bg);
+    transform: scale(1);
+}
+
+/* Active State */
+.nav-link.active {
+    color: var(--nav-accent);
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--nav-active-underline-height);
+    background: var(--nav-accent);
+    border-radius: 1px;
+}
+
+/* Light Theme Link Colors */
+.nav-premium.light .nav-link {
+    color: var(--nav-text-light-secondary);
+}
+
+.nav-premium.light .nav-link:hover {
+    color: var(--nav-text-light);
+}
+
+/* ============================================================================
+   7. MEGA MENU DROPDOWNS
+   ============================================================================ */
+
+.mega-menu-container {
+    position: relative;
+    perspective: 2000px;
+}
+
+.mega-menu-panel {
+    position: absolute;
+    top: calc(100% + 1rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    transform-origin: top center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    background: #050505;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--dropdown-radius);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+
+    min-width: 600px;
+    max-width: 800px;
+    padding: 2rem;
+
+    transition: all var(--duration-standard) var(--ease-premium);
+    z-index: var(--z-dropdown);
+}
+
+.mega-menu-container:hover .mega-menu-panel,
+.mega-menu-panel:hover {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.mega-menu-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.mega-menu-items {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.mega-menu-item {
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all var(--duration-fast) var(--ease-smooth);
+    color: var(--nav-text-secondary);
+}
+
+.mega-menu-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--nav-text-primary);
+    transform: translateX(4px);
+}
+
+.mega-menu-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--nav-accent);
+    flex-shrink: 0;
+}
+
+.mega-menu-text h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    color: var(--nav-text-primary);
+}
+
+.mega-menu-text p {
+    font-size: 0.75rem;
+    margin: 0;
+    color: var(--nav-text-muted);
+    line-height: 1.4;
+}
+
+.mega-menu-featured {
+    padding: 1rem;
+    border-radius: 12px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* ============================================================================
+   8. NAVIGATION ACTIONS (CTA Buttons, Search, etc.)
+   ============================================================================ */
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--nav-pill-radius);
+    font-size: var(--nav-font-size);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--duration-fast) var(--ease-premium);
+    cursor: pointer;
+    border: none;
+    font-family: var(--nav-font-primary);
+}
+
+.nav-btn-primary {
+    background: linear-gradient(135deg, var(--nav-accent) 0%, var(--nav-accent-hover) 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.nav-btn-primary:hover {
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+    transform: translateY(-1px);
+}
+
+.nav-btn-secondary {
+    background: transparent;
+    color: var(--nav-text-primary);
+    border: 1px solid var(--nav-border);
+}
+
+.nav-btn-secondary:hover {
+    background: var(--nav-hover-bg);
+}
+
+.nav-search-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--nav-border);
+    border-radius: var(--nav-pill-radius);
+    color: var(--nav-text-muted);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.nav-search-trigger:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--nav-text-primary);
+}
+
+.search-shortcut {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    font-family: monospace;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--nav-text-muted);
+}
+
+/* ============================================================================
+   9. MOBILE MENU
+   ============================================================================ */
+
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    z-index: calc(var(--z-nav) + 1);
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+}
+
+.menu-line {
+    width: 24px;
+    height: 2px;
+    background: var(--nav-text-primary);
+    margin: 3px 0;
+    transition: all var(--duration-standard) var(--ease-premium);
+    border-radius: 2px;
+}
+
+.mobile-menu-toggle.active .menu-line:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.mobile-menu-toggle.active .menu-line:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+
+.mobile-menu-toggle.active .menu-line:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Mobile Menu Overlay */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.98);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    z-index: var(--z-mobile-menu);
+    padding: calc(var(--nav-height) + 2rem) 2rem 2rem;
+    overflow-y: auto;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all var(--duration-standard) var(--ease-premium);
+}
+
+.mobile-nav.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.mobile-nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mobile-nav-links li {
+    margin: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mobile-nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--nav-text-secondary);
+    text-decoration: none;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 1.25rem 0;
+    transition: color var(--duration-fast) var(--ease-smooth);
+    min-height: var(--touch-target-min);
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+    color: var(--nav-accent);
+}
+
+.mobile-nav-submenu {
+    padding-left: 1rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--duration-standard) var(--ease-smooth);
+}
+
+.mobile-nav-submenu.expanded {
+    max-height: 1000px;
+}
+
+.mobile-nav-submenu a {
+    display: block;
+    padding: 0.75rem 0;
+    color: var(--nav-text-muted);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color var(--duration-fast) var(--ease-smooth);
+}
+
+.mobile-nav-submenu a:hover {
+    color: var(--nav-accent);
+    padding-left: 0.5rem;
+}
+
+.mobile-nav-actions {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ============================================================================
+   10. READING PROGRESS BAR (Blog Feature)
+   ============================================================================ */
+
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: transparent;
+    z-index: var(--z-reading-progress);
+    pointer-events: none;
+}
+
+.reading-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--nav-accent), var(--nav-accent-hover));
+    width: 0%;
+    transition: width 0.1s ease;
+    box-shadow: var(--nav-glow);
+}
+
+/* ============================================================================
+   11. SKIP TO CONTENT LINK (Accessibility)
+   ============================================================================ */
+
+.skip-to-content {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: calc(var(--z-modal) + 1);
+    background: var(--nav-accent);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: var(--nav-pill-radius);
+    text-decoration: none;
+    font-weight: 600;
+    transition: top var(--duration-fast) var(--ease-premium);
+}
+
+.skip-to-content:focus {
+    top: 1rem;
+    outline: 2px solid white;
+    outline-offset: 4px;
+}
+
+/* ============================================================================
+   12. CONTENT SPACING
+   ============================================================================ */
+
+.nav-offset {
+    padding-top: var(--nav-height);
+}
+
+.nav-offset-scrolled {
+    padding-top: var(--nav-height-scrolled);
+}
+
+/* ============================================================================
+   13. RESPONSIVE BREAKPOINTS
+   ============================================================================ */
+
+@media (max-width: 1024px) {
+    .nav-links,
+    .nav-actions {
+        display: none;
+    }
+
+    .mobile-menu-toggle {
+        display: flex;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --nav-padding-x: 1rem;
+        --nav-link-gap: 1.5rem;
+    }
+
+    .mega-menu-panel {
+        min-width: 100%;
+        max-width: 100%;
+        left: 0;
+        right: 0;
+        transform: none;
+    }
+}
+
+/* ============================================================================
+   14. ACCESSIBILITY ENHANCEMENTS
+   ============================================================================ */
+
+/* Focus States */
+.nav-link:focus-visible,
+.nav-btn:focus-visible,
+.mobile-nav-link:focus-visible {
+    outline: 2px solid var(--nav-accent);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .nav-premium {
+        border-bottom-width: 2px;
+    }
+
+    .nav-link.active::after {
+        height: 3px;
+    }
+}
+
+/* ============================================================================
+   15. UTILITY CLASSES
+   ============================================================================ */
+
+.no-scroll {
+    overflow: hidden;
+}
+
+.nav-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Animation Stagger */
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+
+/* ============================================================================
+   16. PRINT STYLES
+   ============================================================================ */
+
+@media print {
+    .nav-premium,
+    .mobile-nav,
+    .skip-to-content,
+    .reading-progress {
+        display: none !important;
+    }
+
+    .nav-offset {
+        padding-top: 0 !important;
+    }
+}
+
+/* ============================================================================
+   17. LINK RESET - Remove underlines from all navigation links
+   ============================================================================ */
+
+header a,
+header a:hover,
+header a:focus,
+header a:active,
+.nav-premium a,
+.nav-premium a:hover,
+.mobile-nav a,
+.mobile-nav a:hover {
+    text-decoration: none !important;
+}
+
+/* Ensure dropdown menu links have no underline */
+header [class*="rounded-xl"] a,
+header [class*="rounded-xl"] a:hover,
+header [class*="rounded-lg"] a,
+header [class*="rounded-lg"] a:hover {
+    text-decoration: none !important;
+}

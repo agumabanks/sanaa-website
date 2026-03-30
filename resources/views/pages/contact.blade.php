@@ -1,6 +1,6 @@
 <x-pages-layout title="Contact Us | {{ config('app.name') }}">
     <x-slot name="metaDescription">
-        Get in touch with Sanaa Co. for questions, support, or business inquiries. We're here to help you succeed with our innovative digital solutions.
+        Get in touch with Sanaa Co. for questions, support, partnerships, or product enquiries across Uganda and the region.
     </x-slot>
 
     @push('styles')
@@ -162,22 +162,22 @@
 
                 <!-- Subtitle -->
                 <p class="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-up" style="animation-delay: 0.4s;">
-                    Questions, feedback, or ready to start your next project? We're here to help you succeed with personalized support and expert guidance.
+                    Questions, feedback, or ready to work with Sanaa? Reach us directly by email, phone, or WhatsApp.
                 </p>
 
                 <!-- Quick stats -->
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-8 max-w-2xl mx-auto animate-fade-up" style="animation-delay: 0.6s;">
                     <div class="text-center">
-                        <div class="text-2xl font-bold text-emerald-400 mb-2">< 2h</div>
-                        <div class="text-gray-400 text-sm">Response Time</div>
+                        <div class="text-2xl font-bold text-emerald-400 mb-2">Email</div>
+                        <div class="text-gray-400 text-sm">info@sanaa.co</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-2xl font-bold text-emerald-400 mb-2">24/7</div>
-                        <div class="text-gray-400 text-sm">Support Available</div>
+                        <div class="text-2xl font-bold text-emerald-400 mb-2">Phone</div>
+                        <div class="text-gray-400 text-sm">0706 272 481</div>
                     </div>
                     <div class="text-center col-span-2 md:col-span-1">
-                        <div class="text-2xl font-bold text-emerald-400 mb-2">100%</div>
-                        <div class="text-gray-400 text-sm">Free Consultation</div>
+                        <div class="text-2xl font-bold text-emerald-400 mb-2">WhatsApp</div>
+                        <div class="text-gray-400 text-sm">Direct line</div>
                     </div>
                 </div>
             </div>
@@ -221,7 +221,7 @@
                             Let's Start a <span class="gradient-text">Conversation</span>
                         </h2>
                         <p class="text-lg text-gray-600 leading-relaxed mb-8">
-                            Ready to transform your business? Reach out to us anytime and we'll get back to you promptly. We're committed to providing exceptional support every step of the way.
+                            Reach out directly if you want to discuss products, partnerships, investor enquiries, or support. We read every message and respond in order.
                         </p>
                     </div>
 
@@ -315,7 +315,7 @@
                             </div>
                         </div>
                         <p class="text-gray-600">
-                            We're based in the heart of East Africa's tech hub, serving clients globally with cutting-edge digital solutions.
+                            We are based in Kampala, Uganda, and work with businesses across East and Central Africa.
                         </p>
                     </div>
                 </div>
@@ -325,7 +325,7 @@
                     <div class="glass-card rounded-3xl p-8 shadow-2xl">
                         <div class="mb-8">
                             <h3 class="text-2xl font-bold text-gray-900 mb-2">Send us a Message</h3>
-                            <p class="text-gray-600">Fill out the form below and we'll get back to you within 24 hours.</p>
+                            <p class="text-gray-600">Fill out the form below and we will review it and reply directly.</p>
                         </div>
 
                         <form action="{{ route('contact.store') }}" method="POST" class="space-y-6">

@@ -12,47 +12,49 @@ class ServicesTableSeeder extends Seeder
      */
     public function run(): void
     {
+        Service::truncate();
+
         $services = [
             [
-                'name' => 'Content Generation',
-                'description' => 'AI-powered content creation for blogs, social media, marketing materials, and more. Generate high-quality, engaging content that resonates with your audience.',
-                'icon' => 'fas fa-pen-fancy',
-                'price' => 99.99,
+                'name' => 'Sanaa Finance Implementation',
+                'description' => 'Complete deployment of Sanaa Finance for SACCOs, MFIs, and money lenders. Includes data migration, system configuration, staff training, and go-live support. We digitise your member management, loan origination, collections, and URBRA compliance reporting.',
+                'icon' => 'fas fa-university',
+                'price' => null, // Custom pricing
                 'active' => true,
             ],
             [
-                'name' => 'Web Development',
-                'description' => 'Custom web development services including responsive websites, e-commerce platforms, and web applications built with modern technologies.',
-                'icon' => 'fas fa-code',
-                'price' => 499.99,
+                'name' => 'Soko24 POS & Marketplace Setup',
+                'description' => 'End-to-end setup of Soko24 point-of-sale system for retailers and SMEs. Hardware installation, inventory configuration, pricing structure, staff training, and connection to the Soko24 marketplace for online sales.',
+                'icon' => 'fas fa-cash-register',
+                'price' => null,
                 'active' => true,
             ],
             [
-                'name' => 'Digital Consulting',
-                'description' => 'Strategic digital transformation consulting to help businesses leverage technology for growth, efficiency, and competitive advantage.',
-                'icon' => 'fas fa-chart-line',
-                'price' => 199.99,
+                'name' => 'Digital Transformation for SACCOs',
+                'description' => 'Strategic consulting and implementation for SACCOs looking to modernise. Process mapping, digitisation roadmap, change management, and staff capacity building. Move from paper and WhatsApp to a fully digital operation.',
+                'icon' => 'fas fa-sync-alt',
+                'price' => null,
                 'active' => true,
             ],
             [
-                'name' => 'AI Integration',
-                'description' => 'Seamlessly integrate artificial intelligence capabilities into your existing systems and workflows to enhance productivity and decision-making.',
-                'icon' => 'fas fa-brain',
-                'price' => 299.99,
+                'name' => 'School & Education Programs',
+                'description' => 'Complete education technology deployment including computer labs with Matic devices, EduOS school management system, digital fee collection, and teacher training programs. From kindergarten to university.',
+                'icon' => 'fas fa-graduation-cap',
+                'price' => null,
                 'active' => true,
             ],
             [
-                'name' => 'Data Analytics',
-                'description' => 'Advanced data analytics services to extract insights from your data, create dashboards, and drive data-informed business decisions.',
-                'icon' => 'fas fa-chart-bar',
-                'price' => 149.99,
+                'name' => 'Logistics & Corridor Design',
+                'description' => 'Courier process digitisation, warehouse management, and route planning using the Baraka logistics platform. Specialised in Uganda-DRC corridors and Asia-to-Africa import/export visibility.',
+                'icon' => 'fas fa-truck',
+                'price' => null,
                 'active' => true,
             ],
             [
-                'name' => 'Mobile App Development',
-                'description' => 'Native and cross-platform mobile application development for iOS and Android, delivering exceptional user experiences.',
-                'icon' => 'fas fa-mobile-alt',
-                'price' => 799.99,
+                'name' => 'Device Deployment & Support',
+                'description' => 'Hardware rollout services for laptops, tablets, POS terminals, and custom devices. Includes procurement, configuration, deployment logistics, warranty support, and field engineer maintenance across all 134 Ugandan districts.',
+                'icon' => 'fas fa-laptop',
+                'price' => null,
                 'active' => true,
             ],
         ];

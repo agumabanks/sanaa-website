@@ -1,0 +1,465 @@
+/**
+ * Tiptap Rich Text Editor Styles
+ * Google Docs-inspired, Steve Jobs minimalist design
+ */
+
+/* ================================================
+   EDITOR CONTAINER
+   ================================================ */
+.tiptap-editor-wrapper {
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    background: #ffffff;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.1);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+.tiptap-editor-wrapper:focus-within {
+    border-color: #1a73e8;
+    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.1), 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+/* ================================================
+   TOOLBAR - Google Docs Style
+   ================================================ */
+.tiptap-toolbar {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 2px !important;
+    padding: 8px 12px !important;
+    background: #f8f9fa !important;
+    border-bottom: 1px solid #dadce0 !important;
+    min-height: 40px !important;
+}
+
+.tiptap-toolbar-group {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 2px !important;
+}
+
+.tiptap-toolbar-divider {
+    width: 1px !important;
+    height: 20px !important;
+    background: #dadce0 !important;
+    margin: 0 6px !important;
+    flex-shrink: 0 !important;
+}
+
+/* ================================================
+   TOOLBAR BUTTONS
+   ================================================ */
+.tiptap-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 28px !important;
+    height: 28px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 4px !important;
+    background: transparent !important;
+    color: #5f6368 !important;
+    cursor: pointer !important;
+    transition: background-color 0.1s ease, color 0.1s ease !important;
+    flex-shrink: 0 !important;
+}
+
+.tiptap-btn:hover {
+    background: #e8eaed !important;
+    color: #202124 !important;
+}
+
+.tiptap-btn:active {
+    background: #d2e3fc !important;
+}
+
+.tiptap-btn.active {
+    background: #e8f0fe !important;
+    color: #1a73e8 !important;
+}
+
+.tiptap-btn:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.4) !important;
+}
+
+.tiptap-btn svg {
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0 !important;
+}
+
+/* ================================================
+   HEADING DROPDOWN
+   ================================================ */
+.tiptap-select {
+    height: 28px !important;
+    min-width: 110px !important;
+    padding: 0 24px 0 8px !important;
+    border: 1px solid transparent !important;
+    border-radius: 4px !important;
+    background: transparent !important;
+    color: #202124 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.1s ease !important;
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%235f6368'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 4px center !important;
+}
+
+.tiptap-select:hover {
+    background-color: #e8eaed !important;
+    border-color: #dadce0 !important;
+}
+
+.tiptap-select:focus {
+    outline: none !important;
+    border-color: #1a73e8 !important;
+    background-color: #ffffff !important;
+}
+
+/* ================================================
+   EDITOR CONTENT AREA
+   ================================================ */
+.tiptap-editor-content {
+    min-height: 400px !important;
+    max-height: 65vh !important;
+    overflow-y: auto !important;
+    background: #ffffff !important;
+}
+
+/* ================================================
+   PROSE STYLING (Main Editor Content)
+   ================================================ */
+.tiptap-prose,
+.ProseMirror {
+    padding: 24px 32px !important;
+    min-height: 380px !important;
+    font-family: 'Georgia', 'Times New Roman', Times, serif !important;
+    font-size: 16px !important;
+    line-height: 1.8 !important;
+    color: #202124 !important;
+    outline: none !important;
+}
+
+.tiptap-prose:focus,
+.ProseMirror:focus {
+    outline: none !important;
+}
+
+.ProseMirror-focused {
+    outline: none !important;
+}
+
+/* Placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder) !important;
+    float: left !important;
+    color: #9aa0a6 !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    font-style: italic !important;
+}
+
+/* ================================================
+   TYPOGRAPHY
+   ================================================ */
+
+/* Headings */
+.tiptap-prose h1,
+.ProseMirror h1 {
+    font-size: 28px !important;
+    font-weight: 400 !important;
+    line-height: 1.3 !important;
+    margin: 24px 0 12px !important;
+    color: #202124 !important;
+    font-family: 'Arial', sans-serif !important;
+}
+
+.tiptap-prose h2,
+.ProseMirror h2 {
+    font-size: 22px !important;
+    font-weight: 400 !important;
+    line-height: 1.35 !important;
+    margin: 20px 0 10px !important;
+    color: #202124 !important;
+    font-family: 'Arial', sans-serif !important;
+}
+
+.tiptap-prose h3,
+.ProseMirror h3 {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+    margin: 18px 0 8px !important;
+    color: #202124 !important;
+    font-family: 'Arial', sans-serif !important;
+}
+
+/* Paragraphs */
+.tiptap-prose p,
+.ProseMirror p {
+    margin: 0 0 12px !important;
+}
+
+/* Links */
+.tiptap-prose a,
+.ProseMirror a,
+.tiptap-link {
+    color: #1a73e8 !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+}
+
+.tiptap-prose a:hover,
+.ProseMirror a:hover {
+    text-decoration: underline !important;
+}
+
+/* Bold, Italic, Underline, Strike */
+.tiptap-prose strong,
+.ProseMirror strong {
+    font-weight: 700 !important;
+}
+
+.tiptap-prose em,
+.ProseMirror em {
+    font-style: italic !important;
+}
+
+.tiptap-prose u,
+.ProseMirror u {
+    text-decoration: underline !important;
+}
+
+.tiptap-prose s,
+.ProseMirror s {
+    text-decoration: line-through !important;
+    color: #5f6368 !important;
+}
+
+/* ================================================
+   LISTS
+   ================================================ */
+.tiptap-prose ul,
+.ProseMirror ul {
+    list-style-type: disc !important;
+    padding-left: 24px !important;
+    margin: 12px 0 !important;
+}
+
+.tiptap-prose ol,
+.ProseMirror ol {
+    list-style-type: decimal !important;
+    padding-left: 24px !important;
+    margin: 12px 0 !important;
+}
+
+.tiptap-prose li,
+.ProseMirror li {
+    margin: 4px 0 !important;
+}
+
+.tiptap-prose li p,
+.ProseMirror li p {
+    margin: 0 !important;
+}
+
+/* ================================================
+   BLOCKQUOTE
+   ================================================ */
+.tiptap-prose blockquote,
+.ProseMirror blockquote {
+    border-left: 3px solid #1a73e8 !important;
+    padding: 8px 16px !important;
+    margin: 16px 0 !important;
+    background: #f8f9fa !important;
+    color: #5f6368 !important;
+    font-style: italic !important;
+}
+
+.tiptap-prose blockquote p,
+.ProseMirror blockquote p {
+    margin: 0 !important;
+}
+
+/* ================================================
+   CODE
+   ================================================ */
+.tiptap-prose code,
+.ProseMirror code {
+    background: #f1f3f4 !important;
+    color: #d93025 !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-family: 'Roboto Mono', 'Monaco', 'Consolas', monospace !important;
+    font-size: 14px !important;
+}
+
+.tiptap-prose pre,
+.ProseMirror pre {
+    background: #202124 !important;
+    color: #e8eaed !important;
+    padding: 16px 20px !important;
+    border-radius: 8px !important;
+    margin: 16px 0 !important;
+    overflow-x: auto !important;
+    font-family: 'Roboto Mono', 'Monaco', 'Consolas', monospace !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+}
+
+.tiptap-prose pre code,
+.ProseMirror pre code {
+    background: none !important;
+    color: inherit !important;
+    padding: 0 !important;
+    font-size: inherit !important;
+}
+
+/* ================================================
+   IMAGES
+   ================================================ */
+.tiptap-prose img,
+.ProseMirror img,
+.tiptap-image {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 4px !important;
+    margin: 16px 0 !important;
+}
+
+/* ================================================
+   HORIZONTAL RULE
+   ================================================ */
+.tiptap-prose hr,
+.ProseMirror hr {
+    border: none !important;
+    border-top: 1px solid #dadce0 !important;
+    margin: 24px 0 !important;
+}
+
+/* ================================================
+   TEXT ALIGNMENT
+   ================================================ */
+.tiptap-prose [style*="text-align: center"],
+.ProseMirror [style*="text-align: center"] {
+    text-align: center !important;
+}
+
+.tiptap-prose [style*="text-align: right"],
+.ProseMirror [style*="text-align: right"] {
+    text-align: right !important;
+}
+
+/* ================================================
+   STATUS BAR
+   ================================================ */
+.tiptap-status-bar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 8px 16px !important;
+    background: #f8f9fa !important;
+    border-top: 1px solid #dadce0 !important;
+    font-size: 12px !important;
+    color: #5f6368 !important;
+    font-family: 'Roboto', -apple-system, sans-serif !important;
+}
+
+.tiptap-status-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+}
+
+.tiptap-status-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.tiptap-autosave {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    color: #188038 !important;
+}
+
+.tiptap-autosave svg {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (max-width: 768px) {
+    .tiptap-toolbar {
+        padding: 6px 8px !important;
+        gap: 1px !important;
+    }
+    
+    .tiptap-toolbar-divider {
+        margin: 0 4px !important;
+        height: 16px !important;
+    }
+    
+    .tiptap-btn {
+        width: 32px !important;
+        height: 32px !important;
+    }
+    
+    .tiptap-select {
+        min-width: 90px !important;
+        font-size: 12px !important;
+    }
+    
+    .tiptap-prose,
+    .ProseMirror {
+        padding: 16px !important;
+        font-size: 15px !important;
+    }
+    
+    .tiptap-status-bar {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+}
+
+/* ================================================
+   SELECTION
+   ================================================ */
+.tiptap-prose ::selection,
+.ProseMirror ::selection {
+    background: rgba(26, 115, 232, 0.2) !important;
+}
+
+/* ================================================
+   SCROLLBAR (Webkit)
+   ================================================ */
+.tiptap-editor-content::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+.tiptap-editor-content::-webkit-scrollbar-track {
+    background: #f1f3f4 !important;
+}
+
+.tiptap-editor-content::-webkit-scrollbar-thumb {
+    background: #dadce0 !important;
+    border-radius: 4px !important;
+}
+
+.tiptap-editor-content::-webkit-scrollbar-thumb:hover {
+    background: #bdc1c6 !important;
+}

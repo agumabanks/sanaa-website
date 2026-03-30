@@ -1,6 +1,18 @@
 {{-- resources/views/blog/index.blade.php --}}
 @extends('layouts.blog')
 
+@push('meta')
+@if(method_exists($blogs, 'onFirstPage'))
+  @if(!$blogs->onFirstPage())
+    <link rel="prev" href="{{ $blogs->previousPageUrl() }}" />
+  @endif
+  @if($blogs->hasMorePages())
+    <link rel="next" href="{{ $blogs->nextPageUrl() }}" />
+  @endif
+@endif
+<link rel="alternate" type="application/rss+xml" title="{{ config('app.name') }} Blog RSS" href="{{ route('blog.feed') }}" />
+@endpush
+
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     {{-- Hero Section with Featured Post --}}
@@ -92,7 +104,8 @@
                                 <div class="md:w-48 md:flex-shrink-0">
                                     <img src="{{ $blog->featured_image_url }}" 
                                          alt="{{ $blog->title }}" 
-                                         class="w-full h-48 md:h-32 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300">
+                                         class="w-full h-48 md:h-32 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
+                                         loading="lazy">
                                 </div>
                             @endif
                             
@@ -344,12 +357,14 @@
                     <h3 class="text-lg font-bold group-hover:text-green-400 transition-colors">Stay Updated</h3>
                 </div>
                 <p class="text-sm text-gray-400 mb-4 text-center">Get the latest insights delivered to your inbox.</p>
-                <form class="newsletter-form space-y-3" action="#" method="POST">
+                <form class="newsletter-form space-y-3" action="{{ route('newsletter.subscribe') }}" method="POST" id="newsletterForm" data-source="blog-index">
                     @csrf
                     <div class="relative">
                         <input type="email"
+                               name="email"
                                placeholder="Enter your email"
-                               class="newsletter-input w-full px-4 py-3 bg-gray-900/80 border border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 text-sm transition-all duration-200">
+                               class="newsletter-input w-full px-4 py-3 bg-gray-900/80 border border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 text-sm transition-all duration-200"
+                               required>
                         <svg class="w-4 h-4 text-gray-500 absolute right-3 top-1/2 -translate-y-1/2" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
                             <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
@@ -363,7 +378,7 @@
                         </svg>
                     </button>
                 </form>
-                <p class="text-xs text-gray-500 mt-3 text-center">No spam. Unsubscribe anytime.</p>
+                <p class="text-xs text-gray-500 mt-3 text-center" id="newsletterFeedback" data-state="idle">No spam. Unsubscribe anytime.</p>
             </div>
 
             {{-- About Sanaa --}}
@@ -964,9 +979,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Newsletter form enhancement
-        const newsletterForm = document.querySelector('.newsletter-form');
-        const newsletterInput = document.querySelector('.newsletter-input');
-        const newsletterBtn = document.querySelector('.newsletter-btn');
+        const newsletterForm = document.getElementById('newsletterForm');
+        const newsletterInput = newsletterForm?.querySelector('.newsletter-input');
+        const newsletterBtn = newsletterForm?.querySelector('.newsletter-btn');
+        const newsletterFeedback = document.getElementById('newsletterFeedback');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
         if (newsletterForm && newsletterInput && newsletterBtn) {
             newsletterInput.addEventListener('focus', function() {
@@ -977,23 +994,67 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.parentElement.classList.remove('focused');
             });
 
-            newsletterForm.addEventListener('submit', function(e) {
+            newsletterForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
+                const email = newsletterInput.value.trim();
+                if (!email) {
+                    newsletterFeedback.textContent = 'Please enter a valid email.';
+                    newsletterFeedback.classList.add('text-red-500');
+                    return;
+                }
+
                 newsletterBtn.innerHTML = '<div class="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full mx-auto"></div>';
                 newsletterBtn.disabled = true;
+                newsletterFeedback.textContent = 'Subscribing...';
+                newsletterFeedback.classList.remove('text-red-500', 'text-gray-500');
+                newsletterFeedback.classList.add('text-green-400');
+                newsletterFeedback.dataset.state = 'pending';
 
-                // Simulate form submission
-                setTimeout(() => {
+                try {
+                    const res = await fetch(newsletterForm.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        body: JSON.stringify({
+                            email,
+                            source: newsletterForm.dataset.source || 'blog-index',
+                        }),
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(data.message || 'Subscription failed.');
+                    }
+
                     newsletterBtn.innerHTML = '✓ Subscribed!';
                     newsletterBtn.classList.add('bg-green-700');
                     newsletterInput.value = '';
-
+                    newsletterFeedback.textContent = data.message || 'Thanks for subscribing!';
+                    newsletterFeedback.classList.remove('text-red-500');
+                    newsletterFeedback.classList.add('text-green-400');
+                    newsletterFeedback.dataset.state = 'success';
+                } catch (error) {
+                    newsletterFeedback.textContent = error.message || 'Something went wrong. Try again.';
+                    newsletterFeedback.classList.add('text-red-500');
+                    newsletterFeedback.classList.remove('text-green-400');
+                    newsletterFeedback.dataset.state = 'error';
+                } finally {
                     setTimeout(() => {
                         newsletterBtn.innerHTML = 'Subscribe <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>';
                         newsletterBtn.classList.remove('bg-green-700');
                         newsletterBtn.disabled = false;
+                        if (newsletterFeedback.dataset.state !== 'error') {
+                            newsletterFeedback.textContent = 'No spam. Unsubscribe anytime.';
+                            newsletterFeedback.classList.remove('text-green-400');
+                            newsletterFeedback.classList.add('text-gray-500');
+                            newsletterFeedback.dataset.state = 'idle';
+                        }
                     }, 2000);
-                }, 1000);
+                }
             });
         }
 

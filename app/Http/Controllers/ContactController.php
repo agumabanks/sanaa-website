@@ -28,7 +28,7 @@ class ContactController extends Controller
 
         Contact::create($data);
 
-        Mail::to('agumabanksibrahim@gmail.com')->send(
+        Mail::to(config('mail.contact_recipient', 'banks@sanaa.ug'))->send(
             new ContactMessage(
                 $data['name'],
                 $data['email'],

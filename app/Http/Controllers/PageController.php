@@ -7,52 +7,45 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use App\Models\TeamMember;
-
+use App\Models\LandingPageSetting;
+use App\Models\IndustrySolution;
+use App\Models\Capability;
+use App\Models\LandingPricingPlan;
+use App\Models\LandingStat;
+use App\Models\Offering;
 
 class PageController extends Controller
 {
-    /**
-     * Display the Home page.
-     */
-    public function home()
+    public function home($locale = null)
     {
         $sokoProducts = [];
-        try {
-            $sokoProducts = Cache::remember('soko_products', 3600, function () {
-                $response = Http::timeout(2)->get('https://soko.sanaa.co/api/v2/products');
 
-                if (!$response->successful()) {
-                    throw new \RuntimeException('Remote API returned status ' . $response->status());
-                }
-
-                $json = $response->json();
-                if (is_array($json) && isset($json['data']) && is_array($json['data']) && count($json['data']) > 0) {
-                    return $json;
-                }
-
-                // Treat empty or malformed as an error to avoid caching bad data
-                throw new \RuntimeException('Remote API returned empty or malformed payload');
-            });
-        } catch (\Throwable $e) {
-            Log::warning('Failed to load Soko products; using fallback', [
-                'error' => $e->getMessage(),
-            ]);
-            // Fallback is not cached to allow quick recovery once API is back
-            $sokoProducts = $this->fallbackSokoProducts();
-        }
-        $cacheKey = 'team_members_all';
-        if (Cache::has($cacheKey)) {
-            Log::debug("Cache hit: {$cacheKey}");
-        }
-
-        $teamMembers = Cache::remember($cacheKey, now()->addDay(), function () use ($cacheKey) {
-            Log::debug("Cache miss: {$cacheKey}");
+        $teamMembers = Cache::remember('team_members_all', now()->addDay(), function () {
             return TeamMember::all();
+        });
+
+        $landingData = Cache::remember('landing_page_data', 3600, function () {
+            return [
+                'settings' => LandingPageSetting::pluck('value', 'key')->toArray(),
+                'industries' => IndustrySolution::active()->ordered()->get(),
+                'capabilities' => Capability::active()->ordered()->get(),
+                'pricingPlans' => LandingPricingPlan::active()->ordered()->get(),
+                'stats' => LandingStat::active()->section('join')->ordered()->get(),
+                'offerings' => Offering::latest()->take(6)->get(),
+                'sections' => \App\Models\LandingSection::active()->ordered()->get(),
+            ];
         });
 
         return view('pages.home', [
             'sokoProducts' => $sokoProducts,
             'teamMembers' => $teamMembers,
+            'settings' => $landingData['settings'] ?? [],
+            'industries' => $landingData['industries'] ?? collect(),
+            'capabilities' => $landingData['capabilities'] ?? collect(),
+            'pricingPlans' => $landingData['pricingPlans'] ?? collect(),
+            'stats' => $landingData['stats'] ?? collect(),
+            'offerings' => $landingData['offerings'] ?? collect(),
+            'sections' => $landingData['sections'] ?? collect(),
         ]);
     }
 
@@ -142,7 +135,7 @@ class PageController extends Controller
     */
     public function getProductDetails($productId)
     {
-        $cacheKey = 'soko_product_' . $productId;
+        $cacheKey = 'soko_product_v2_' . $productId;
 
         try {
             $productData = Cache::remember($cacheKey, 3600, function () use ($productId) {
@@ -152,7 +145,36 @@ class PageController extends Controller
                     throw new \RuntimeException('Remote API returned status ' . $response->status());
                 }
 
-                return $response->json();
+                $payload = $response->json();
+                $products = data_get($payload, 'data');
+
+                if (!is_array($products) || empty($products)) {
+                    throw new \RuntimeException('Remote API returned an empty dataset');
+                }
+
+                $product = collect($products)->first(function ($item) use ($productId) {
+                    return (string) data_get($item, 'id') === (string) $productId;
+                });
+
+                if (!$product) {
+                    throw new \RuntimeException('Requested product not found in remote payload');
+                }
+
+                return [
+                    'success' => true,
+                    'data' => [
+                        'id' => data_get($product, 'id'),
+                        'slug' => data_get($product, 'slug'),
+                        'name' => data_get($product, 'name'),
+                        'thumbnail_image' => data_get($product, 'thumbnail_image'),
+                        'has_discount' => (bool) data_get($product, 'has_discount', false),
+                        'discount' => data_get($product, 'discount'),
+                        'main_price' => data_get($product, 'main_price'),
+                        'stroked_price' => data_get($product, 'stroked_price'),
+                        'links' => data_get($product, 'links', []),
+                        'description' => data_get($product, 'description'),
+                    ],
+                ];
             });
 
             return response()->json($productData);
@@ -248,6 +270,10 @@ class PageController extends Controller
      */
     public function investorRelations()
     {
-        return view('pages.investor-relations');
+        $page = Cache::remember('investor_relations_page', 3600, function () {
+            return \App\Models\InvestorRelationsPage::first();
+        });
+
+        return view('pages.investor-relations', compact('page'));
     }
 }

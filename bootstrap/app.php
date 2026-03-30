@@ -12,10 +12,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Append TrackPageView to web middleware group
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
+            \App\Http\Middleware\TrackPageView::class,
+        ]);
+        
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminOnly::class,
             'finance' => \App\Http\Middleware\FinanceMiddleware::class,
+            'track.pageview' => \App\Http\Middleware\TrackPageView::class,
         ]);
+    })
+    ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule) {
+        $schedule->command('sitemap:sanaa')->weekly();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

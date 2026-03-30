@@ -172,13 +172,14 @@ body {
 .mobile-nav {
     display: none;
     position: fixed;
-    top: var(--nav-height);
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(0, 0, 0, 0.98);
     backdrop-filter: blur(20px);
-    z-index: var(--mobile-nav-z-index);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: calc(var(--nav-z-index) + 10);
     padding: 2rem;
     overflow-y: auto;
 }
@@ -211,6 +212,51 @@ body {
 .mobile-nav-links a:hover,
 .mobile-nav-links a.active {
     color: var(--accent-green);
+}
+
+/* Mobile Nav Header */
+.mobile-nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav-header .nav-logo img {
+    height: 28px;
+}
+
+.mobile-close-btn {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.mobile-close-btn:hover {
+    color: var(--accent-green);
+}
+
+/* Mobile Nav CTA Button */
+.btn-nav-cta {
+    display: block !important;
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-green-hover));
+    color: white !important;
+    padding: 1rem 1.5rem !important;
+    border-radius: 50px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-nav-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
 }
 
 /* 5. UNIFIED CONTENT SPACING */

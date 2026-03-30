@@ -6,69 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    {{-- SEO Meta Tags --}}
-    <title>{{ $seoData['title'] ?? 'Sanaa Co. Blog - Minimalist Thoughts' }}</title>
-    <meta name="description" content="{{ $seoData['description'] ?? 'Sanaa Blog shares practical, minimalist insights on African digital infrastructure—BNPL, POS, EdTech, logistics, and finance. Powered by Sanaa Media, Sanaa Finance, and Soko 24.' }}">
-    <meta name="keywords" content="{{ $seoData['keywords'] ?? 'sanaa, blog, minimalism, technology, design, innovation' }}">
-    <meta name="author" content="{{ $seoData['author'] ?? 'Sanaa Team' }}">
-    <link rel="canonical" href="{{ $seoData['url'] ?? url()->current() }}">
-
-    {{-- Open Graph / Facebook --}}
-    <meta property="og:type" content="{{ isset($blog) ? 'article' : 'website' }}">
-    <meta property="og:title" content="{{ $seoData['title'] ?? 'Sanaa Co. Blog - Minimalist Thoughts' }}">
-    <meta property="og:description" content="{{ $seoData['description'] ?? ($blog->excerpt ?? 'Sanaa Blog shares practical, minimalist insights on African digital infrastructure—BNPL, POS, EdTech, logistics, and finance. Powered by Sanaa Media, Sanaa Finance, and Soko 24.') }}">
-    <meta property="og:image" content="{{ $seoData['image'] ?? cdn_asset('storage/images/sanaa.png') }}">
-    <meta property="og:url" content="{{ $seoData['url'] ?? url()->current() }}">
-    <meta property="og:site_name" content="Sanaa Blog">
-    @isset($seoData['published_time'])
-        <meta property="article:published_time" content="{{ $seoData['published_time'] }}">
-    @endisset
-    @isset($seoData['modified_time'])
-        <meta property="article:modified_time" content="{{ $seoData['modified_time'] }}">
-    @endisset
-    @isset($seoData['author'])
-        <meta property="article:author" content="{{ $seoData['author'] }}">
-    @endisset
-
-    {{-- Twitter Card --}}
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $seoData['title'] ?? 'Sanaa Co. Blog - Minimalist Thoughts' }}">
-    <meta name="twitter:description" content="{{ $seoData['description'] ?? ($blog->excerpt ?? 'Discover minimalist insights and profound thoughts on technology, design, and innovation.') }}">
-    <meta name="twitter:image" content="{{ $seoData['image'] ?? cdn_asset('storage/images/sanaa.png') }}">
-    <meta name="twitter:site" content="@sanaa_co">
-
-    @stack('meta')
-
-    {{-- Structured Data --}}
-    @isset($blog)
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "{{ $blog->title }}",
-        "description": "{{ $blog->excerpt }}",
-        "image": "{{ $blog->featured_image_url }}",
-        "author": {
-            "@type": "Person",
-            "name": "{{ $blog->author->name ?? 'Sanaa Team' }}"
-        },
-        "publisher": {
-            "@type": "Organization",
-            "name": "Sanaa",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "{{ cdn_asset('images/sanaa-logo.png') }}"
-            }
-        },
-        "datePublished": "{{ $blog->published_at ? $blog->published_at->toISOString() : $blog->created_at->toISOString() }}",
-        "dateModified": "{{ $blog->updated_at->toISOString() }}",
-        "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": "{{ $blog->url }}"
-        }
-    }
-    </script>
-    @endisset
+    @include('partials.seo')
 
     {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -172,7 +110,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center space-x-8">
-                    <a href="https://sanaa.co/" class="text-xl font-bold text-white hover:text-green-400 transition-colors">
+                    <a href="https://sanaa.ug/" class="text-xl font-bold text-white hover:text-green-400 transition-colors">
                         Sanaa
                     </a>
                     <div class="hidden md:flex space-x-6">

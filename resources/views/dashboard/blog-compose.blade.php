@@ -71,9 +71,66 @@
                         </div>
 
                         <div>
-                            <label for="body" class="block text-sm font-medium text-gray-700">Body</label>
-                            <textarea id="body" name="body" rows="12" required placeholder="Write beautifully. Supports HTML." class="mt-2 w-full rounded-lg border border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 py-3 px-3 leading-7">{{ old('body') }}</textarea>
-                            <div class="mt-1 text-xs text-gray-500"><span id="bodyWords">0</span> words • <span id="bodyMinutes">1</span> min read</div>
+                            <label for="body" class="block text-sm font-medium text-gray-700 mb-2">Body</label>
+                            
+                            <!-- Formatting Toolbar (Sticky) -->
+                            <div class="sticky top-[72px] z-50 border border-gray-300 rounded-t-lg bg-gray-50/95 backdrop-blur shadow-sm p-2 flex flex-wrap items-center gap-1 transition-all duration-300">
+                                <button type="button" onclick="formatText('bold')" class="p-2 rounded hover:bg-gray-200 transition" title="Bold (Ctrl+B)">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>
+                                </button>
+                                <button type="button" onclick="formatText('italic')" class="p-2 rounded hover:bg-gray-200 transition" title="Italic (Ctrl+I)">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"/></svg>
+                                </button>
+                                <button type="button" onclick="formatText('underline')" class="p-2 rounded hover:bg-gray-200 transition" title="Underline (Ctrl+U)">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg>
+                                </button>
+                                <button type="button" onclick="formatText('strike')" class="p-2 rounded hover:bg-gray-200 transition" title="Strikethrough">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M10 19h4v-3h-4v3zM5 4v3h5v3h4V7h5V4H5zM3 14h18v-2H3v2z"/></svg>
+                                </button>
+                                <div class="w-px h-6 bg-gray-300 mx-1"></div>
+                                <button type="button" onclick="formatText('h1')" class="px-2 py-1 rounded hover:bg-gray-200 transition font-bold text-sm" title="Heading 1">H1</button>
+                                <button type="button" onclick="formatText('h2')" class="px-2 py-1 rounded hover:bg-gray-200 transition font-bold text-sm" title="Heading 2">H2</button>
+                                <button type="button" onclick="formatText('h3')" class="px-2 py-1 rounded hover:bg-gray-200 transition font-bold text-sm" title="Heading 3">H3</button>
+                                <div class="w-px h-6 bg-gray-300 mx-1"></div>
+                                <button type="button" onclick="formatText('ul')" class="p-2 rounded hover:bg-gray-200 transition" title="Bullet List">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>
+                                </button>
+                                <button type="button" onclick="formatText('ol')" class="p-2 rounded hover:bg-gray-200 transition" title="Numbered List">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"/></svg>
+                                </button>
+                                <button type="button" onclick="formatText('quote')" class="p-2 rounded hover:bg-gray-200 transition" title="Quote">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
+                                </button>
+                                <button type="button" onclick="formatText('code')" class="p-2 rounded hover:bg-gray-200 transition" title="Code Block">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                                </button>
+                                <div class="w-px h-6 bg-gray-300 mx-1"></div>
+                                <button type="button" onclick="formatText('link')" class="p-2 rounded hover:bg-gray-200 transition" title="Insert Link">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                                </button>
+                                <button type="button" onclick="insertImage()" class="p-2 rounded hover:bg-gray-200 transition" title="Insert Image">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                </button>
+                                <button type="button" onclick="formatText('clear')" class="ml-auto p-2 rounded hover:bg-gray-200 transition text-gray-400" title="Clear Selection">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+                            
+                            <textarea id="body" name="body" required placeholder="Write your post here... Use the toolbar above for formatting." class="w-full rounded-b-lg border border-t-0 border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 p-4 leading-7 font-serif resize-none overflow-hidden transition-all duration-300 min-h-[450px]">{{ old('body') }}</textarea>
+                            <div class="mt-4 space-y-2">
+                                <div class="flex items-center justify-between text-xs text-gray-500">
+                                    <div class="flex items-center gap-3">
+                                        <span><span id="bodyWords">0</span> words</span>
+                                        <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                                        <span><span id="bodyMinutes">1</span> min read</span>
+                                    </div>
+                                    <p id="wordGoalText" class="uppercase tracking-widest font-medium text-gray-400 text-[10px]">Goal: 0%</p>
+                                </div>
+                                <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden shadow-inner">
+                                    <div id="wordGoalBar" data-goal="1000" class="h-full bg-emerald-400 transition-all duration-500 ease-out shadow-sm" style="width:0%"></div>
+                                </div>
+                                <p class="text-[10px] text-gray-400 italic">Target: 1,000 words for optimal SEO</p>
+                            </div>
                         </div>
 
                         <div>
@@ -147,44 +204,181 @@
 
     @push('scripts')
     <script>
-        // Excerpt counter
-        const excerpt = document.getElementById('excerpt');
-        const excerptCount = document.getElementById('excerptCount');
-        if (excerpt && excerptCount) {
-            const updateExcerpt = () => {
-                const len = (excerpt.value || '').trim().length;
-                excerptCount.textContent = Math.min(len, 160);
-            };
-            excerpt.addEventListener('input', updateExcerpt);
-            updateExcerpt();
+        // Text Formatting Functions
+        function formatText(command) {
+            const textarea = document.getElementById('body');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            let formattedText = '';
+            
+            switch(command) {
+                case 'bold':
+                    formattedText = `**${selectedText || 'bold text'}**`;
+                    break;
+                case 'italic':
+                    formattedText = `*${selectedText || 'italic text'}*`;
+                    break;
+                case 'underline':
+                    formattedText = `<u>${selectedText || 'underlined text'}</u>`;
+                    break;
+                case 'h1':
+                    formattedText = `# ${selectedText || 'Heading 1'}`;
+                    break;
+                case 'h2':
+                    formattedText = `## ${selectedText || 'Heading 2'}`;
+                    break;
+                case 'h3':
+                    formattedText = `### ${selectedText || 'Heading 3'}`;
+                    break;
+                case 'ul':
+                    formattedText = `- ${selectedText || 'List item'}`;
+                    break;
+                case 'ol':
+                    formattedText = `1. ${selectedText || 'List item'}`;
+                    break;
+                case 'quote':
+                    formattedText = `> ${selectedText || 'Quote'}`;
+                    break;
+                case 'code':
+                    formattedText = `\`\`\`\n${selectedText || 'code here'}\n\`\`\``;
+                    break;
+                case 'strike':
+                    formattedText = `~~${selectedText || 'strikethrough text'}~~`;
+                    break;
+                case 'clear':
+                    textarea.value = textarea.value.substring(0, start) + selectedText + textarea.value.substring(end);
+                    textarea.focus();
+                    textarea.setSelectionRange(start, start + selectedText.length);
+                    updateBodyStats();
+                    updatePreview();
+                    return;
+                case 'link':
+                    const url = prompt('Enter URL:');
+                    if (url) {
+                        formattedText = `[${selectedText || 'link text'}](${url})`;
+                    } else return;
+                    break;
+            }
+            
+            textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+            textarea.focus();
+            const newPos = start + formattedText.length;
+            textarea.setSelectionRange(newPos, newPos);
+            updateBodyStats();
+            updatePreview();
         }
 
-        // Body counters and preview
+        function insertImage() {
+            const textarea = document.getElementById('body');
+            const url = prompt('Enter image URL:');
+            if (!url) return;
+            
+            const altText = prompt('Enter image description (alt text):') || 'image';
+            const imageMarkdown = `\n![${altText}](${url})\n`;
+            
+            const start = textarea.selectionStart;
+            textarea.value = textarea.value.substring(0, start) + imageMarkdown + textarea.value.substring(start);
+            textarea.focus();
+            updateBodyStats();
+            updatePreview();
+        }
+
+        // Keyboard shortcuts for formatting
+        document.addEventListener('keydown', (e) => {
+            const textarea = document.getElementById('body');
+            if (document.activeElement !== textarea) return;
+            
+            if ((e.ctrlKey || e.metaKey) && !e.shiftKey) {
+                switch(e.key.toLowerCase()) {
+                    case 'b':
+                        e.preventDefault();
+                        formatText('bold');
+                        break;
+                    case 'i':
+                        e.preventDefault();
+                        formatText('italic');
+                        break;
+                    case 'u':
+                        e.preventDefault();
+                        formatText('underline');
+                        break;
+                    case 'k':
+                        e.preventDefault();
+                        formatText('link');
+                        break;
+                }
+            }
+        });
+
+        // Character counters and live preview
         const titleEl = document.getElementById('title');
+        const excerpt = document.getElementById('excerpt');
         const bodyEl = document.getElementById('body');
         const wordsEl = document.getElementById('bodyWords');
         const minsEl = document.getElementById('bodyMinutes');
+        const excerptCount = document.getElementById('excerptCount');
         const previewTitle = document.getElementById('previewTitle');
         const previewExcerpt = document.getElementById('previewExcerpt');
         const previewBody = document.getElementById('previewBody');
+
+        const wordGoalBar = document.getElementById('wordGoalBar');
+        const wordGoalText = document.getElementById('wordGoalText');
+        const wordGoalTarget = Number(wordGoalBar?.dataset.goal || 1000);
+
         function updateBodyStats() {
             const text = (bodyEl?.value || '').replace(/<[^>]*>?/gm, ' ');
             const wc = text.trim() ? text.trim().split(/\s+/).length : 0;
-            wordsEl && (wordsEl.textContent = wc);
-            minsEl && (minsEl.textContent = Math.max(1, Math.ceil(wc/200)));
+            if (wordsEl) wordsEl.textContent = wc;
+            if (minsEl) minsEl.textContent = Math.max(1, Math.ceil(wc / 200));
+
+            // Update Word Goal
+            if (wordGoalBar) {
+                const pct = Math.min(100, Math.round((wc / wordGoalTarget) * 100));
+                wordGoalBar.style.width = pct + '%';
+                wordGoalBar.classList.toggle('bg-red-400', pct < 30);
+                wordGoalBar.classList.toggle('bg-amber-400', pct >= 30 && pct < 70);
+                wordGoalBar.classList.toggle('bg-emerald-400', pct >= 70);
+                if (wordGoalText) {
+                    wordGoalText.textContent = `Goal: ${pct}%`;
+                }
+            }
+
+            // Auto-resize textarea
+            if (bodyEl) {
+                bodyEl.style.height = 'auto';
+                bodyEl.style.height = (bodyEl.scrollHeight) + 'px';
+            }
         }
+
+        function updateExcerptCount() {
+            const len = (excerpt?.value || '').trim().length;
+            if (excerptCount) excerptCount.textContent = Math.min(len, 160);
+        }
+
         function updatePreview() {
             if (previewTitle && titleEl) previewTitle.textContent = titleEl.value || 'Your title appears here';
             if (previewExcerpt && excerpt) previewExcerpt.textContent = excerpt.value || 'A short summary of your article.';
             if (previewBody && bodyEl) {
                 const text = bodyEl.value || '';
-                previewBody.innerHTML = text ? text.replace(/\n/g, '<br>') : '';
+                // Simple markdown-to-html preview
+                let html = text
+                    .replace(/^### (.+)$/gm, '<h3 class="font-bold text-lg mt-4">$1</h3>')
+                    .replace(/^## (.+)$/gm, '<h2 class="font-bold text-xl mt-4">$1</h2>')
+                    .replace(/^# (.+)$/gm, '<h1 class="font-bold text-2xl mt-4">$1</h1>')
+                    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                    .replace(/\n\n/g, '</p><p class="mt-4">')
+                    .replace(/\n/g, '<br>');
+                previewBody.innerHTML = '<p>' + html + '</p>';
             }
         }
+
         bodyEl?.addEventListener('input', () => { updateBodyStats(); updatePreview(); });
         titleEl?.addEventListener('input', updatePreview);
-        excerpt?.addEventListener('input', updatePreview);
+        excerpt?.addEventListener('input', () => { updateExcerptCount(); updatePreview(); });
         updateBodyStats();
+        updateExcerptCount();
         updatePreview();
 
         // Featured image preview

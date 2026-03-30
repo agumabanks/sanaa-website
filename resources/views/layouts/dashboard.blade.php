@@ -28,9 +28,9 @@ use Illuminate\Support\Facades\Route;
         <x-banner />
 
         <div class="min-h-screen flex" id="dashboard-root">
-            <!-- Sidebar -->
-            <aside class="hidden md:flex md:flex-col w-64 bg-black text-white border-r border-white/10">
-                <div class="h-16 flex items-center px-6 border-b border-white/10">
+            <!-- Sidebar - Sticky and non-scrolling -->
+            <aside class="hidden md:flex md:flex-col w-64 bg-black text-white border-r border-white/10 sticky top-0 h-screen shrink-0 overflow-y-auto">
+                <div class="h-16 flex items-center px-6 border-b border-white/10 flex-shrink-0">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3 text-white/90 hover:text-white transition-colors">
                         <img src="{{ cdn_storage('images/sanaa-side-bar-logo.png') }}" alt="{{ config('app.name', 'Sanaa Admin') }}" class="h-8 w-auto" />
                         <span class="sr-only">{{ config('app.name', 'Sanaa Admin') }}</span>
@@ -90,7 +90,11 @@ use Illuminate\Support\Facades\Route;
                         @endif
                         
                         {!! $navItem('dashboard.categories', 'Categories', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M3 5h8v8H3V5zm10 0h8v8h-8V5zM3 15h8v4H3v-4zm10 0h8v4h-8v-4z'/></svg>") !!}
-                        {!! $navItem('dashboard.team', 'Team', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z'/></svg>") !!}
+                        <div class="px-3 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/50">Site</div>
+                        {!! $navItem('dashboard.pages.index', 'Pages', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 7V3.5L19.5 9H14z'/></svg>") !!}
+                        {!! $navItem('dashboard.footer.edit', 'Footer', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M3 4h18v2H3V4zm0 4h18v2H3V8zm0 8h18v2H3v-2zm0 4h12v2H3v-2z'/></svg>") !!}
+                        {!! $navItem('dashboard.domains.index', 'Domains', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M12 2a10 10 0 100 20 10 10 0 000-20zm0 2c1.85 0 3.55.63 4.9 1.69L5.69 17.9A8 8 0 0112 4zm0 16a8 8 0 004.9-1.69L6.69 8.1A8 8 0 0012 20z'/></svg>") !!}
+                        {!! $navItem('dashboard.team', 'Team', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.34 0-.67.02-.99.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z'/></svg>") !!}
                         {!! $navItem('dashboard.careers', 'Careers', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M20 6h-4V4H8v2H4v2h16V6zm-1 4H5l-1 10h18L19 10zM9 6h6v2H9V6z'/></svg>") !!}
                         {!! $navItem('dashboard.partners', 'Partners', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h10v-2.5c0-1.1.9-2 2-2h2.03C15.45 13.4 11.33 13 8 13zm8 0c-.34 0-.67.02-.99.05 1.72.45 2.99 1.26 3.68 2.45H23v-1c0-2.33-4.67-3.5-7-3.5z'/></svg>") !!}
                         {!! $navItem('dashboard.users', 'Users', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>") !!}
@@ -111,6 +115,7 @@ use Illuminate\Support\Facades\Route;
                             <a href="{{ route('admin.finance.team-members.index') }}" class="block text-xs text-white/60 hover:text-white">Team</a>
                             <a href="{{ route('admin.finance.communities.index') }}" class="block text-xs text-white/60 hover:text-white">Communities</a>
                             <a href="{{ route('admin.finance.compliance-items.index') }}" class="block text-xs text-white/60 hover:text-white">Compliance</a>
+                            <a href="{{ route('admin.finance.pages.index') }}" class="block text-xs text-white/60 hover:text-white">Pages</a>
                             <a href="{{ route('admin.finance.analytics') }}" class="block text-xs text-white/60 hover:text-white">Analytics</a>
                         </div>
                         @endif
@@ -146,10 +151,10 @@ use Illuminate\Support\Facades\Route;
                 @endif
             </aside>
 
-            <!-- Content -->
+            <!-- Content - With margin to account for fixed sidebar -->
             <div class="flex-1 flex flex-col">
                 <!-- Header -->
-                <header class="bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200 p-4 flex items-center justify-between sticky top-0 z-10">
+                <header class="bg-white border-b border-gray-200 p-4 flex items-center justify-between sticky top-0 z-10 shadow-sm">
                     <div class="flex items-center gap-3">
                         <button id="mobile-menu-button" class="md:hidden inline-flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-400" aria-label="Open menu">
                             <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/></svg>
@@ -216,6 +221,10 @@ use Illuminate\Support\Facades\Route;
                         @endif
                         
                         {!! $navItem('dashboard.categories', 'Categories', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M3 5h8v8H3V5zm10 0h8v8h-8V5zM3 15h8v4H3v-4zm10 0h8v4h-8v-4z'/></svg>") !!}
+                        <div class="px-3 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/50">Site</div>
+                        {!! $navItem('dashboard.pages.index', 'Pages', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 7V3.5L19.5 9H14z'/></svg>") !!}
+                        {!! $navItem('dashboard.footer.edit', 'Footer', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M3 4h18v2H3V4zm0 4h18v2H3V8zm0 8h18v2H3v-2zm0 4h12v2H3v-2z'/></svg>") !!}
+                        {!! $navItem('dashboard.domains.index', 'Domains', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M12 2a10 10 0 100 20 10 10 0 000-20zm0 2c1.85 0 3.55.63 4.9 1.69L5.69 17.9A8 8 0 0112 4zm0 16a8 8 0 004.9-1.69L6.69 8.1A8 8 0 0012 20z'/></svg>") !!}
                         {!! $navItem('dashboard.team', 'Team', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.34 0-.67.02-.99.05 1.72.45 2.99 1.26 3.68 2.45H23v-1c0-2.33-4.67-3.5-7-3.5z'/></svg>") !!}
                         {!! $navItem('dashboard.careers', 'Careers', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M20 6h-4V4H8v2H4v2h16V6zm-1 4H5l-1 10h18L19 10zM9 6h6v2H9V6z'/></svg>") !!}
                         {!! $navItem('dashboard.partners', 'Partners', "<svg class='w-4 h-4' viewBox='0 0 24 24' fill='currentColor'><path d='M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h10v-2.5c0-1.1.9-2 2-2h2.03C15.45 13.4 11.33 13 8 13zm8 0c-.34 0-.67.02-.99.05 1.72.45 2.99 1.26 3.68 2.45H23v-1c0-2.33-4.67-3.5-7-3.5z'/></svg>") !!}

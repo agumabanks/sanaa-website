@@ -1,9 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
-
-// use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BusinessCategoryController;
@@ -23,6 +21,8 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\FinanceController;
+use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\Admin\Finance\PageController as AdminFinancePageController;
 use App\Http\Controllers\Admin\Finance\PricingPlanController as AdminFinancePricingPlanController;
 use App\Http\Controllers\Admin\Finance\CardController as AdminFinanceCardController;
 use App\Http\Controllers\Admin\Finance\TechnologyController as AdminFinanceTechnologyController;
@@ -30,11 +30,17 @@ use App\Http\Controllers\Admin\Finance\TeamMemberController as AdminFinanceTeamM
 use App\Http\Controllers\Admin\Finance\CommunityController as AdminFinanceCommunityController;
 use App\Http\Controllers\Admin\Finance\ComplianceItemController as AdminFinanceComplianceItemController;
 use App\Http\Controllers\FinanceContactController;
+use App\Http\Controllers\Admin\SanaaCardsSettingsController;
+use App\Http\Controllers\Api\EnhancedBlogController;
 use App\Models\Policy; 
+use App\Models\SitePage;
  
 
+// Locale switcher
+Route::get('/locale/{locale}', [LocaleController::class, 'set'])->name('locale.set');
+
 // Landing Pages
-Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/{locale?}', [PageController::class, 'home'])->where('locale', 'en|fr|sw')->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/policy', [PageController::class, 'policy'])->name('policy');
 Route::get('/company', [PageController::class, 'company'])->name('company');
@@ -44,10 +50,27 @@ Route::get('/products', [OfferingController::class, 'index'])->defaults('type', 
 Route::get('/services', [ServicesController::class, 'index'])->name('services');
 Route::get('/bulk-sms', [PageController::class, 'bulkSms'])->name('bulk-sms');
 Route::get('/prices', [PageController::class, 'prices'])->name('prices');
+Route::view('/sanaa-cloud', 'pages.sanaa-cloud')->name('sanaa-cloud');
 Route::get('/careers', [CareerController::class, 'index'])->name('careers');
+Route::get('/careers/{career:slug}', [CareerController::class, 'show'])->name('careers.show');
+Route::get('/careers/{career:slug}/apply', [CareerController::class, 'apply'])->name('careers.apply');
+Route::post('/careers/{career:slug}/apply', [CareerController::class, 'submitApplication'])->name('careers.apply.submit');
 Route::get('/partners', [PartnerController::class, 'index'])->name('partners');
 Route::get('/why-sanaa', [PageController::class, 'whySanaa'])->name('why-sanaa');
 Route::get('/investor-relations', [PageController::class, 'investorRelations'])->name('investor-relations');
+
+// Public CMS pages by slug (drafts visible only to admins)
+Route::get('/p/{page:slug}', function (SitePage $page) {
+    $isPublished = (bool) $page->status;
+    if (! $isPublished && !(auth()->check() && auth()->user()->isAdmin())) {
+        abort(404);
+    }
+    return view('pages.site-page', [
+        'page' => $page,
+        'title' => $page->meta_title ?: ($page->title . ' | ' . config('app.name')),
+        'metaDescription' => $page->meta_description,
+    ]);
+})->name('page.show');
 
 // Finance routes
 Route::prefix('finance')->name('finance.')->group(function () {
@@ -78,13 +101,27 @@ Route::prefix('finance')->name('finance.')->group(function () {
     Route::get('/stats', [FinanceController::class, 'stats'])->name('stats');
     Route::get('/founder-message', [FinanceController::class, 'founderMessage'])->name('founder-message');
     Route::get('/cloud-alerts', [FinanceController::class, 'cloudAlerts'])->name('cloud-alerts');
-    Route::get('/news-insights', [FinanceController::class, 'newsInsights'])->name('news-insights');
+    Route::get('/news-insights', function () {
+        return redirect('/blog');
+    })->name('news-insights');
 
     // Section-scoped search
     Route::get('/search', [FinanceController::class, 'search'])->name('search');
 
     // Dynamic CMS pages (by slug)
     Route::get('/p/{page:slug}', [FinanceController::class, 'show'])->name('show');
+});
+
+// Sanaa Cards routes
+Route::prefix('sanaa-cards')->name('sanaa-cards.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\SanaaCardsController::class, 'index'])->name('index');
+    Route::get('/features', [\App\Http\Controllers\SanaaCardsController::class, 'features'])->name('features');
+    Route::get('/pricing', [\App\Http\Controllers\SanaaCardsController::class, 'pricing'])->name('pricing');
+});
+
+Route::prefix('admin/sanaa-cards')->name('admin.sanaa-cards.')->middleware(['auth'])->group(function () {
+    Route::get('/settings', [SanaaCardsSettingsController::class, 'edit'])->name('settings.edit');
+    Route::post('/settings', [SanaaCardsSettingsController::class, 'update'])->name('settings.update');
 });
 
 // Admin → Finance (isolated)
@@ -99,6 +136,7 @@ Route::middleware(['auth', 'finance'])->prefix('admin/finance')->name('admin.fin
     Route::resource('team-members', AdminFinanceTeamMemberController::class);
     Route::resource('communities', AdminFinanceCommunityController::class);
     Route::resource('compliance-items', AdminFinanceComplianceItemController::class);
+    Route::resource('pages', AdminFinancePageController::class);
 
     // Placeholder analytics dashboard
     Route::get('/analytics', function () {
@@ -134,7 +172,9 @@ Route::post('/contact', [ContactController::class, 'store'])
 // Blog routes
 Route::prefix('blog')->name('blog.')->group(function () {
     Route::get('/', [BlogController::class, 'index'])->name('index');
+    Route::get('/feed', [BlogController::class, 'feed'])->name('feed');
     Route::get('/for-you', [BlogController::class, 'forYou'])->middleware('auth')->name('for-you');
+    Route::get('/author/{author}/{slug?}', [BlogController::class, 'author'])->name('author');
     // Category and tag routes
     Route::get('/category/{category:slug}', [BlogController::class, 'category'])->name('category');
     Route::get('/tag/{tag:slug}', [BlogController::class, 'tag'])->name('tag');
@@ -265,6 +305,11 @@ Route::prefix('api')->name('api.')->middleware('throttle:60,1')->group(function 
     Route::post('blogs/{blog}/like', [BlogController::class, 'like'])->name('blogs.like');
     Route::post('blogs/{blog}/bookmark', [BlogController::class, 'bookmark'])->name('blogs.bookmark');
     Route::post('blogs/{blog}/share', [BlogController::class, 'share'])->name('blogs.share');
+    Route::middleware('auth')->group(function () {
+        Route::post('blogs/{blog}/autosave', [EnhancedBlogController::class, 'autoSave'])->name('blogs.autosave');
+        Route::get('blogs/{blog}/ai', [EnhancedBlogController::class, 'getContentSuggestions'])->name('blogs.ai');
+        Route::get('blogs/{blog}/seo', [EnhancedBlogController::class, 'getSEORecommendations'])->name('blogs.seo');
+    });
 });
 
 // Newsletter subscription
@@ -284,6 +329,7 @@ Route::post('newsletter/subscribe', [NewsletterController::class, 'subscribe'])-
 
 // Sitemap
 Route::get('sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('sitemap/pages.xml', [SitemapController::class, 'pages'])->name('sitemap.pages');
 Route::get('sitemap/blogs.xml', [SitemapController::class, 'blogs'])->name('sitemap.blogs');
 Route::get('sitemap-finance.xml', [SitemapController::class, 'finance'])->name('sitemap.finance');
 
@@ -308,6 +354,8 @@ Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.
 
 
 Route::get('/api/product/{productId}', [PageController::class, 'getProductDetails']);
+// Public API: domain configuration for clients
+Route::get('/api/domain-config', [\App\Http\Controllers\Admin\DomainController::class, 'config'])->name('api.domain-config');
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -319,8 +367,22 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
+        if (Auth::user()->isAdmin()) {
+            return view('admin.dashboard.index');
+        }
         return view('dashboard.index');
     })->name('dashboard');
+
+    Route::get('/dashboard/followers', function () {
+        $user = auth()->user();
+        $followers = $user->followers()->withCount('blogs')->paginate(20);
+        $following = $user->following()->withCount('blogs')->paginate(20);
+        return view('dashboard.followers', compact('followers', 'following'));
+    })->name('dashboard.followers');
+
+    Route::get('/dashboard/notifications', function () {
+        return view('dashboard.notifications');
+    })->name('dashboard.notifications');
 
     // Shortcut to Finance admin from the dashboard
     Route::get('/dashboard/finance', function () {
@@ -338,23 +400,40 @@ Route::middleware([
             return view('dashboard.blog-compose', compact('categories'));
         })->name('dashboard.blog.compose');
 
+        Route::get('/dashboard/blog/{blog}/edit', function (\App\Models\Blog $blog) {
+            $blog->load(['author', 'category', 'tags']);
+            $categories = \App\Models\BlogCategory::orderBy('name')->get();
+            return view('dashboard.blog-edit', compact('blog', 'categories'));
+        })->name('dashboard.blog.edit');
+
         Route::get('/dashboard/blog/manage', function () {
-            $posts = \App\Models\Blog::with(['author', 'category'])->orderByDesc('created_at')->paginate(10);
-            return view('dashboard.blog-manage', compact('posts'));
+            $posts = \App\Models\Blog::with(['author', 'category'])->orderByDesc('created_at')->paginate(20);
+            return view('admin.blog.index', compact('posts'));
         })->name('dashboard.blog.manage');
 
         Route::get('/dashboard/categories', function () {
-            return view('dashboard.categories');
+            return view('admin.categories.index');
         })->name('dashboard.categories');
 
-        Route::get('/dashboard/team', function () {
-            $teamMembers = \App\Models\TeamMember::all();
-            return view('dashboard.team', compact('teamMembers'));
-        })->name('dashboard.team');
+        Route::get('/dashboard/team', [TeamController::class, 'adminIndex'])->name('dashboard.team');
         Route::get('/dashboard/team/{member}', [TeamController::class, 'edit'])->name('dashboard.team.edit');
 
-        Route::get('/dashboard/careers', function () {
-            return view('dashboard.careers');
+        // Careers Management
+        Route::prefix('dashboard/careers')->name('admin.careers.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\CareerController::class, 'index'])->name('index');
+            Route::get('/create', [\App\Http\Controllers\Admin\CareerController::class, 'create'])->name('create');
+            Route::post('/', [\App\Http\Controllers\Admin\CareerController::class, 'store'])->name('store');
+            Route::get('/{career}', [\App\Http\Controllers\Admin\CareerController::class, 'show'])->name('show');
+            Route::get('/{career}/edit', [\App\Http\Controllers\Admin\CareerController::class, 'edit'])->name('edit');
+            Route::put('/{career}', [\App\Http\Controllers\Admin\CareerController::class, 'update'])->name('update');
+            Route::delete('/{career}', [\App\Http\Controllers\Admin\CareerController::class, 'destroy'])->name('destroy');
+            Route::post('/{career}/toggle-status', [\App\Http\Controllers\Admin\CareerController::class, 'toggleStatus'])->name('toggle-status');
+            Route::get('/{career}/applications', [\App\Http\Controllers\Admin\CareerController::class, 'applications'])->name('applications');
+            Route::put('/{career}/applications/{application}', [\App\Http\Controllers\Admin\CareerController::class, 'updateApplicationStatus'])->name('applications.update');
+        });
+        // Legacy route for dashboard.careers
+        Route::get('/careers-legacy', function () {
+            return redirect()->route('admin.careers.index');
         })->name('dashboard.careers');
 
         Route::get('/dashboard/partners', function () {
@@ -375,8 +454,13 @@ Route::middleware([
 
         Route::get('/dashboard/offerings', function () {
             $items = \App\Models\Offering::all();
-            return view('dashboard.offerings', compact('items'));
+            return view('admin.products.index', compact('items'));
         })->name('dashboard.offerings');
+
+        // Landing Page Builder
+        Route::resource('dashboard/landing-sections', \App\Http\Controllers\Admin\LandingSectionController::class)->names('admin.landing-sections');
+        Route::post('dashboard/landing-sections/{landingSection}/toggle', [\App\Http\Controllers\Admin\LandingSectionController::class, 'toggle'])->name('admin.landing-sections.toggle');
+        Route::post('dashboard/landing-sections/reorder', [\App\Http\Controllers\Admin\LandingSectionController::class, 'reorder'])->name('admin.landing-sections.reorder');
 
         // Policy Management
         Route::get('/dashboard/policies', [PolicyController::class, 'adminIndex'])->name('dashboard.policies');
@@ -408,14 +492,45 @@ Route::middleware([
         Route::put('/dashboard/offering/{offering}', [OfferingController::class, 'update'])->name('dashboard.offering.update');
         Route::delete('/dashboard/offering/{offering}', [OfferingController::class, 'destroy'])->name('dashboard.offering.destroy');
 
+        // Footer management
+        Route::get('/dashboard/footer', [\App\Http\Controllers\Admin\FooterController::class, 'edit'])->name('dashboard.footer.edit');
+        Route::put('/dashboard/footer', [\App\Http\Controllers\Admin\FooterController::class, 'update'])->name('dashboard.footer.update');
+        Route::post('/dashboard/footer/links/page', [\App\Http\Controllers\Admin\FooterController::class, 'addPageLink'])->name('dashboard.footer.links.page');
+        Route::post('/dashboard/footer/links/custom', [\App\Http\Controllers\Admin\FooterController::class, 'addCustomLink'])->name('dashboard.footer.links.custom');
+        Route::delete('/dashboard/footer/links/delete', [\App\Http\Controllers\Admin\FooterController::class, 'deleteLink'])->name('dashboard.footer.links.delete');
+
+        // Domain settings
+        Route::get('/dashboard/domains', [\App\Http\Controllers\Admin\DomainController::class, 'index'])->name('dashboard.domains.index');
+        Route::get('/dashboard/domains/{domain}/edit', [\App\Http\Controllers\Admin\DomainController::class, 'edit'])->name('dashboard.domains.edit');
+        Route::put('/dashboard/domains/{domain}', [\App\Http\Controllers\Admin\DomainController::class, 'update'])->name('dashboard.domains.update');
+        Route::post('/dashboard/domains/bulk-update', [\App\Http\Controllers\Admin\DomainController::class, 'bulkUpdate'])->name('dashboard.domains.bulk-update');
+
+        // Site pages CMS
+        Route::get('/dashboard/pages', [\App\Http\Controllers\Admin\SitePageController::class, 'index'])->name('dashboard.pages.index');
+        Route::get('/dashboard/pages/create', [\App\Http\Controllers\Admin\SitePageController::class, 'create'])->name('dashboard.pages.create');
+        Route::post('/dashboard/pages', [\App\Http\Controllers\Admin\SitePageController::class, 'store'])->name('dashboard.pages.store');
+        Route::get('/dashboard/pages/{page}/edit', [\App\Http\Controllers\Admin\SitePageController::class, 'edit'])->name('dashboard.pages.edit');
+        Route::get('/dashboard/pages/{page}/builder', [\App\Http\Controllers\Admin\SitePageController::class, 'builder'])->name('dashboard.pages.builder');
+        Route::put('/dashboard/pages/{page}', [\App\Http\Controllers\Admin\SitePageController::class, 'update'])->name('dashboard.pages.update');
+        Route::put('/dashboard/pages/{page}/blocks', [\App\Http\Controllers\Admin\SitePageController::class, 'updateBlocks'])->name('dashboard.pages.blocks');
+        Route::post('/dashboard/pages/{page}/duplicate', [\App\Http\Controllers\Admin\SitePageController::class, 'duplicate'])->name('dashboard.pages.duplicate');
+        Route::post('/dashboard/pages/{page}/toggle-status', [\App\Http\Controllers\Admin\SitePageController::class, 'toggleStatus'])->name('dashboard.pages.toggle-status');
+        Route::delete('/dashboard/pages/{page}', [\App\Http\Controllers\Admin\SitePageController::class, 'destroy'])->name('dashboard.pages.destroy');
+
         // Services routes
         Route::get('/dashboard/services', [ServicesController::class, 'adminIndex'])->name('dashboard.services.index');
+        Route::get('/dashboard/services/page-settings', [ServicesController::class, 'editPage'])->name('dashboard.services.page');
+        Route::put('/dashboard/services/page-settings', [ServicesController::class, 'updatePage'])->name('dashboard.services.page.update');
         Route::resource('dashboard/services', ServicesController::class)->only(['create', 'store', 'show', 'edit', 'update', 'destroy'])->names('dashboard.services');
+
+        // Investor Relations management
+        Route::get('/dashboard/investor-relations', [\App\Http\Controllers\InvestorRelationsController::class, 'edit'])->name('dashboard.investor-relations.edit');
+        Route::put('/dashboard/investor-relations', [\App\Http\Controllers\InvestorRelationsController::class, 'update'])->name('dashboard.investor-relations.update');
 
         // Users
         Route::get('/dashboard/users', function () {
             $users = \App\Models\User::orderBy('name')->get();
-            return view('dashboard.users', compact('users'));
+            return view('admin.users.index', compact('users'));
         })->name('dashboard.users');
         Route::post('/dashboard/users', [UserManagementController::class, 'store'])->name('dashboard.users.store');
         Route::put('/dashboard/users/{user}', [UserManagementController::class, 'update'])->name('dashboard.users.update');

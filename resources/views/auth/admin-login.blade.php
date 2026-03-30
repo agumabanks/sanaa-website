@@ -1,51 +1,56 @@
 @section('title', 'Admin Login | ' . config('app.name'))
 <x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+    <style>
+        .sj-wrap{min-height:100vh;background:#000;display:grid;place-items:center;padding:2rem}
+        .sj-card{width:100%;max-width:480px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:32px;color:#fff;backdrop-filter:blur(10px)}
+        .sj-logo{display:flex;justify-content:center;margin-bottom:16px}
+        .sj-title{font-weight:200;letter-spacing:.08em;text-align:center;font-size:28px;margin-bottom:6px}
+        .sj-sub{color:#9ca3af;text-align:center;font-size:12px;margin-bottom:24px}
+        .sj-input{width:100%;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#fff;padding:12px 14px;font-size:14px;outline:none}
+        .sj-input:focus{border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.15)}
+        .sj-label{display:block;color:#d1d5db;font-size:12px;margin:12px 0 6px}
+        .sj-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+        .sj-cta{display:inline-flex;align-items:center;justify-content:center;width:100%;background:#10b981;color:#000;border:0;border-radius:999px;padding:12px 16px;font-weight:600;margin-top:18px}
+        .sj-cta:hover{background:#34d399}
+        .sj-link{color:#9ca3af;text-decoration:none;font-size:12px}
+        .sj-link:hover{color:#fff}
+        .sj-error{margin-bottom:8px;color:#fca5a5;font-size:12px}
+    </style>
 
-        <h1 class="text-2xl font-bold mb-6 text-center">{{ __('Admin Login') }}</h1>
-
-        <x-validation-errors class="mb-4" />
-
-        @session('status')
-            <div class="mb-4 font-medium text-sm text-green-600">
-                {{ $value }}
+    <div class="sj-wrap">
+        <div class="sj-card">
+            <div class="sj-logo">
+                <img src="{{ asset('storage/images/sanaa-logo-b.svg') }}" alt="{{ config('app.name') }}" style="height:28px;filter:invert(1)">
             </div>
-        @endsession
+            <div class="sj-title">Sanaa Admin</div>
+            <div class="sj-sub">Think different. Keep it simple.</div>
 
-        <form method="POST" action="{{ route('admin.login.submit') }}">
-            @csrf
+            <x-validation-errors class="sj-error" />
 
-            <div>
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            </div>
+            @session('status')
+                <div class="sj-error">{{ $value }}</div>
+            @endsession
 
-            <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
-            </div>
+            <form method="POST" action="{{ route('admin.login.submit') }}">
+                @csrf
+                <label class="sj-label" for="email">Email</label>
+                <input id="email" class="sj-input" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" />
 
-            <div class="block mt-4">
-                <label for="remember_me" class="flex items-center">
-                    <x-checkbox id="remember_me" name="remember" />
-                    <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-                </label>
-            </div>
+                <label class="sj-label" for="password">Password</label>
+                <input id="password" class="sj-input" type="password" name="password" required autocomplete="current-password" />
 
-            <div class="flex items-center justify-between mt-4">
-                @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
-                    </a>
-                @endif
+                <div class="sj-row">
+                    <label class="inline-flex items-center gap-2 text-xs text-gray-300">
+                        <x-checkbox id="remember_me" name="remember" />
+                        <span>Remember me</span>
+                    </label>
+                    @if (Route::has('password.request'))
+                        <a class="sj-link" href="{{ route('password.request') }}">Forgot password?</a>
+                    @endif
+                </div>
 
-                <x-button class="ms-4">
-                    {{ __('Log in') }}
-                </x-button>
-            </div>
-        </form>
-    </x-authentication-card>
+                <button class="sj-cta" type="submit">Log in</button>
+            </form>
+        </div>
+    </div>
 </x-guest-layout>

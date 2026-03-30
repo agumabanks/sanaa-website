@@ -1,4 +1,16 @@
+# Allow all search engines
 User-agent: *
-Disallow:
-Sitemap: https://sanaa.co/sitemap.xml
-Sitemap: https://sanaa.co/sitemap-finance.xml
+Allow: /
+
+# Disallow sensitive areas
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /dashboard
+Disallow: /dashboard/*
+Disallow: /login
+Disallow: /register
+Disallow: /password
+Disallow: /account
+
+# Sitemap location
+Sitemap: https://sanaa.ug/sitemap.xml

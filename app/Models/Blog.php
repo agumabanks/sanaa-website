@@ -153,6 +153,16 @@ class Blog extends Model
         return $this->belongsToMany(User::class, 'blog_user_saves')->withTimestamps();
     }
 
+    public function bookmarks()
+    {
+        return $this->belongsToMany(User::class, 'user_bookmarks', 'blog_id', 'user_id')->withTimestamps();
+    }
+
+    public function readingHistory()
+    {
+        return $this->hasMany(\App\Models\ReadingHistory::class, 'blog_id');
+    }
+
     public function comments()
     {
         return $this->hasMany(BlogComment::class)->where('status', 'approved');

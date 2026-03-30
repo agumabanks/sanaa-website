@@ -1,25 +1,11 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $c['meta']['title'] }}</title>
-    <meta name="description" content="{{ $c['meta']['description'] }}">
+@section('seo_title', $c['meta']['title'])
+@section('seo_description', $c['meta']['description'])
+
+@push('meta')
     <link rel="canonical" href="{{ $c['meta']['canonical'] }}">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="{{ $c['meta']['title'] }}">
-    <meta property="og:description" content="{{ $c['meta']['description'] }}">
-    <meta property="og:image" content="{{ $c['meta']['og_image'] }}">
-    <meta property="og:url" content="{{ $c['meta']['canonical'] }}">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $c['meta']['title'] }}">
-    <meta name="twitter:description" content="{{ $c['meta']['description'] }}">
-    <meta name="twitter:image" content="{{ $c['meta']['og_image'] }}">
-    <meta name="theme-color" content="#000000">
-    @vite(['resources/css/app.css'])
-    <style>
-      .sticky-head{backdrop-filter:saturate(180%) blur(8px)}
-    </style>
+@endpush
+
+@push('schema')
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -52,6 +38,20 @@
       ]
     }
     </script>
+@endpush
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @include('partials.seo', [
+        'image' => $c['meta']['og_image']
+    ])
+    @vite(['resources/css/app.css'])
+    <style>
+      .sticky-head{backdrop-filter:saturate(180%) blur(8px)}
+    </style>
 </head>
 <body class="antialiased bg-black text-white">
   <!-- Header -->

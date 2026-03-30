@@ -82,7 +82,7 @@ return [
     ],
     
     'email' => [
-        'newsletter_from' => env('NEWSLETTER_FROM_EMAIL', 'noreply@sanaa.co'),
+        'newsletter_from' => env('NEWSLETTER_FROM_EMAIL', 'noreply@sanaa.ug'),
         'newsletter_name' => env('NEWSLETTER_FROM_NAME', 'Sanaa Blog'),
         'mailchimp_api_key' => env('MAILCHIMP_API_KEY', ''),
         'mailchimp_list_id' => env('MAILCHIMP_LIST_ID', ''),

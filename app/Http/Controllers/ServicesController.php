@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
+use App\Models\ServicesPageSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,7 +15,8 @@ class ServicesController extends Controller
     public function index()
     {
         $services = Service::where('active', true)->get();
-        return view('pages.services', compact('services'));
+        $settings = ServicesPageSetting::getAllSettings();
+        return view('pages.services', compact('services', 'settings'));
     }
 
     /**
@@ -23,7 +25,58 @@ class ServicesController extends Controller
     public function adminIndex()
     {
         $services = Service::all();
-        return view('dashboard.services.index', compact('services'));
+        return view('admin.services.index', compact('services'));
+    }
+
+    /**
+     * Show the services page settings editor.
+     */
+    public function editPage()
+    {
+        $settings = ServicesPageSetting::getAllSettings();
+        return view('dashboard.services.page-settings', compact('settings'));
+    }
+
+    /**
+     * Update the services page settings.
+     */
+    public function updatePage(Request $request)
+    {
+        $fields = [
+            // Hero
+            'hero_eyebrow', 'hero_title', 'hero_subtitle', 'hero_cta_primary_text', 'hero_cta_secondary_text',
+            // Stats
+            'stat_1_value', 'stat_1_label', 'stat_2_value', 'stat_2_label',
+            'stat_3_value', 'stat_3_label', 'stat_4_value', 'stat_4_label',
+            // Services Section
+            'services_eyebrow', 'services_title', 'services_subtitle',
+            // Why Sanaa
+            'why_eyebrow', 'why_title', 'why_subtitle',
+            // Sectors
+            'sectors_eyebrow', 'sectors_title',
+            // CTA
+            'cta_eyebrow', 'cta_title', 'cta_subtitle', 'cta_primary_text', 
+            'cta_secondary_text', 'cta_secondary_link', 'cta_footer',
+        ];
+
+        foreach ($fields as $field) {
+            if ($request->has($field)) {
+                $type = in_array($field, ['hero_subtitle', 'services_subtitle', 'why_subtitle', 'cta_subtitle']) ? 'textarea' : 'text';
+                ServicesPageSetting::set($field, $request->input($field), $type);
+            }
+        }
+
+        // Handle JSON fields (why_features, sectors)
+        if ($request->has('why_features')) {
+            ServicesPageSetting::set('why_features', $request->input('why_features'), 'json');
+        }
+        if ($request->has('sectors')) {
+            ServicesPageSetting::set('sectors', $request->input('sectors'), 'json');
+        }
+
+        ServicesPageSetting::clearCache();
+
+        return redirect()->route('dashboard.services.page')->with('success', 'Services page updated successfully.');
     }
 
     /**

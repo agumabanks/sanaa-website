@@ -1,63 +1,83 @@
 @extends('layouts.blog')
 
-@section('title', $blog->title . ' - ' . config('app.name'))
-@section('description', Str::limit(strip_tags($blog->body ?? ''), 160))
+@section('seo_title', $seoData['title'] ?? ($blog->title . ' - ' . config('app.name')))
+@section('seo_description', $seoData['description'] ?? Str::limit(strip_tags($blog->body ?? ''), 160))
+@section('seo_image', $seoData['image'] ?? $blog->featured_image_url)
+@section('seo_keywords', $seoData['keywords'] ?? $blog->tags->pluck('name')->implode(', '))
+@section('seo_author', $seoData['author'] ?? ($blog->author->name ?? 'Sanaa Team'))
 
 @push('meta')
-<!-- SEO Meta Tags -->
-<meta name="csrf-token" content="{{ csrf_token() }}">
-<meta name="keywords" content="{{ $blog->tags->pluck('name')->implode(', ') }}">
-<meta name="author" content="{{ $blog->author->name ?? 'Anonymous' }}">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="{{ url()->current() }}">
-
-<!-- Open Graph -->
-<meta property="og:title" content="{{ $blog->title }}">
-<meta property="og:description" content="{{ Str::limit(strip_tags($blog->body ?? ''), 160) }}">
-<meta property="og:image" content="{{ $blog->featured_image ? asset('storage/' . $blog->featured_image) : asset('images/default-blog-og.jpg') }}">
-<meta property="og:url" content="{{ url()->current() }}">
-<meta property="og:type" content="article">
-<meta property="og:site_name" content="{{ config('app.name') }}">
-<meta property="article:author" content="{{ $blog->author->name ?? 'Anonymous' }}">
-<meta property="article:published_time" content="{{ $blog->published_at ? $blog->published_at->toISOString() : $blog->created_at->toISOString() }}">
-<meta property="article:section" content="{{ $blog->category->name ?? 'Blog' }}">
+<meta name="keywords" content="{{ $seoData['keywords'] ?? $blog->tags->pluck('name')->implode(', ') }}">
+<meta name="author" content="{{ $seoData['author'] ?? ($blog->author->name ?? 'Anonymous') }}">
+<meta name="article:author" content="{{ $seoData['author'] ?? ($blog->author->name ?? 'Anonymous') }}">
+<meta property="article:author" content="{{ $seoData['author'] ?? ($blog->author->name ?? 'Anonymous') }}">
+<meta property="article:published_time" content="{{ $seoData['published_time'] ?? ($blog->published_at ? $blog->published_at->toISOString() : $blog->created_at->toISOString()) }}">
+<meta property="article:modified_time" content="{{ $seoData['modified_time'] ?? $blog->updated_at->toISOString() }}">
+<meta property="article:section" content="{{ $seoData['category'] ?? ($blog->category->name ?? 'Blog') }}">
+<meta property="article:publisher" content="Sanaa Co.">
+<link rel="author" href="{{ $seoData['author_url'] ?? ($blog->author ? $blog->author->author_url : route('blog.index')) }}">
 @foreach($blog->tags as $tag)
 <meta property="article:tag" content="{{ $tag->name }}">
 @endforeach
+@endpush
 
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ $blog->title }}">
-<meta name="twitter:description" content="{{ Str::limit(strip_tags($blog->body ?? ''), 160) }}">
-<meta name="twitter:image" content="{{ $blog->featured_image ? asset('storage/' . $blog->featured_image) : asset('images/default-blog-twitter.jpg') }}">
-<meta name="twitter:creator" content="{{ $blog->author->twitter_handle ?? '@' . str_replace(' ', '', $blog->author->name ?? 'anonymous') }}">
-
-<!-- Structured Data -->
+@push('schema')
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "{{ $blog->title }}",
-  "description": "{{ Str::limit(strip_tags($blog->body ?? ''), 160) }}",
-  "image": "{{ $blog->featured_image ? asset('storage/' . $blog->featured_image) : asset('images/default-blog-schema.jpg') }}",
+  "@type": "BlogPosting",
+  "headline": @json($blog->title),
+  "description": @json($seoData['description'] ?? Str::limit(strip_tags($blog->body ?? ''), 160)),
+  "image": [@json($seoData['image'] ?? ($blog->featured_image ? asset('storage/' . $blog->featured_image) : asset('images/default-blog-og.jpg')))],
   "author": {
     "@type": "Person",
-    "name": "{{ $blog->author->name ?? 'Anonymous' }}"
+    "name": @json($seoData['author'] ?? ($blog->author->name ?? 'Anonymous')),
+    "url": @json($seoData['author_url'] ?? ($blog->author ? $blog->author->author_url : route('blog.index')))
   },
   "publisher": {
     "@type": "Organization",
-    "name": "{{ config('app.name') }}",
+    "name": "Sanaa Co.",
+    "url": @json(url('/')),
     "logo": {
       "@type": "ImageObject",
-      "url": "{{ asset('images/logo.png') }}"
+      "url": @json(asset('storage/images/sanaa.png'))
     }
   },
-  "datePublished": "{{ $blog->published_at ? $blog->published_at->toISOString() : $blog->created_at->toISOString() }}",
-  "dateModified": "{{ $blog->updated_at->toISOString() }}",
+  "datePublished": @json($seoData['published_time'] ?? ($blog->published_at ? $blog->published_at->toISOString() : $blog->created_at->toISOString())),
+  "dateModified": @json($seoData['modified_time'] ?? $blog->updated_at->toISOString()),
+  "articleSection": @json($seoData['category'] ?? ($blog->category->name ?? 'Blog')),
+  "keywords": @json($seoData['keywords'] ?? $blog->tags->pluck('name')->implode(', ')),
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "{{ url()->current() }}"
-  }
+    "@id": @json($seoData['url'] ?? url()->current())
+  },
+  "url": @json($seoData['url'] ?? url()->current())
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Sanaa Blog",
+      "item": @json(route('blog.index'))
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": @json($seoData['author'] ?? ($blog->author->name ?? 'Anonymous')),
+      "item": @json($seoData['author_url'] ?? ($blog->author ? $blog->author->author_url : route('blog.index')))
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": @json($blog->title),
+      "item": @json($seoData['url'] ?? url()->current())
+    }
+  ]
 }
 </script>
 @endpush
@@ -879,6 +899,12 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
+.newsletter-footnote {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+}
 
 .newsletter-form {
   display: flex;
@@ -1414,10 +1440,21 @@ input:focus {
     </button>
     
     <button class="header-btn" id="textToSpeechBtn" data-tooltip="Listen">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
         <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
       </svg>
     </button>
+    
+    @auth
+      @if(Auth::user()->id === $blog->author_id || Auth::user()->isAdmin())
+        <a href="{{ route('dashboard.blog.edit', $blog) }}" class="header-btn" data-tooltip="Edit Post">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 000-1.42l-2.34-2.34a1.003 1.003 0 00-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/>
+          </svg>
+          Edit
+        </a>
+      @endif
+    @endauth
     
     <button class="header-btn" id="bookmarkBtn" data-tooltip="Bookmark">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1482,9 +1519,13 @@ input:focus {
                alt="{{ $blog->author ? $blog->author->name : 'Anonymous' }}"
                class="author-avatar">
           <div class="author-details">
-            <span class="author-name">
-              {{ $blog->author ? $blog->author->name : 'Anonymous' }}
-            </span>
+            @if($blog->author)
+            <a href="{{ $blog->author->author_url }}" class="author-name">
+              {{ $blog->author->name }}
+            </a>
+            @else
+            <span class="author-name">Anonymous</span>
+            @endif
           </div>
         </div>
         
@@ -1680,7 +1721,7 @@ input:focus {
              alt="{{ $blog->author->name }}" 
              class="author-bio-avatar">
         <div class="author-bio-info">
-          <h3>{{ $blog->author->name }}</h3>
+          <h3><a href="{{ $blog->author->author_url }}" class="author-name">{{ $blog->author->name }}</a></h3>
           @if($blog->author->title)
           <div class="author-title">{{ $blog->author->title }}</div>
           @endif
@@ -1715,6 +1756,7 @@ input:focus {
           Subscribe
         </button>
       </form>
+      <p class="newsletter-footnote" id="articleNewsletterFeedback" data-state="idle">No spam. Unsubscribe anytime.</p>
     </section>
     
     <!-- Navigation -->
@@ -2023,50 +2065,77 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Newsletter Signup
-  document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('newsletterEmail').value;
-    const submitBtn = this.querySelector('.newsletter-btn');
-    const originalText = submitBtn.textContent;
-    
-    submitBtn.textContent = 'Subscribing...';
-    submitBtn.disabled = true;
-    
-    fetch('{{ route("newsletter.subscribe") }}', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-      },
-      body: JSON.stringify({ email: email })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
+  const articleNewsletterForm = document.getElementById('newsletterForm');
+  const articleNewsletterEmail = document.getElementById('newsletterEmail');
+  const articleNewsletterFeedback = document.getElementById('articleNewsletterFeedback');
+
+  if (articleNewsletterForm && articleNewsletterEmail) {
+    articleNewsletterForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const submitBtn = this.querySelector('.newsletter-btn');
+      const originalText = submitBtn.textContent;
+      const email = articleNewsletterEmail.value.trim();
+
+      if (!email) {
+        articleNewsletterFeedback.textContent = 'Please enter a valid email.';
+        articleNewsletterFeedback.style.color = 'var(--accent-red, #f87171)';
+        articleNewsletterFeedback.dataset.state = 'error';
+        return;
+      }
+
+      submitBtn.textContent = 'Subscribing...';
+      submitBtn.disabled = true;
+      articleNewsletterFeedback.textContent = 'Subscribing...';
+      articleNewsletterFeedback.style.color = 'var(--accent-green, #34d399)';
+      articleNewsletterFeedback.dataset.state = 'pending';
+
+      try {
+        const response = await fetch('{{ route("newsletter.subscribe") }}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+          },
+          body: JSON.stringify({
+            email,
+            source: 'blog-article'
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Subscription failed');
+        }
+
         submitBtn.textContent = 'Subscribed!';
         submitBtn.style.background = 'var(--accent-green)';
-        document.getElementById('newsletterEmail').value = '';
-        
+        articleNewsletterEmail.value = '';
+        articleNewsletterFeedback.textContent = data.message || 'Thanks for subscribing!';
+        articleNewsletterFeedback.style.color = 'var(--accent-green, #34d399)';
+        articleNewsletterFeedback.dataset.state = 'success';
+      } catch (error) {
+        console.error('Newsletter subscription error:', error);
+        submitBtn.textContent = 'Try Again';
+        articleNewsletterFeedback.textContent = error.message || 'Something went wrong. Please try again.';
+        articleNewsletterFeedback.style.color = 'var(--accent-red, #f87171)';
+        articleNewsletterFeedback.dataset.state = 'error';
+      } finally {
         setTimeout(() => {
           submitBtn.textContent = originalText;
-          submitBtn.disabled = false;
           submitBtn.style.background = '';
-        }, 3000);
-      } else {
-        throw new Error(data.message || 'Subscription failed');
+          submitBtn.disabled = false;
+          if (articleNewsletterFeedback.dataset.state !== 'error') {
+            articleNewsletterFeedback.textContent = 'No spam. Unsubscribe anytime.';
+            articleNewsletterFeedback.style.color = 'rgba(255, 255, 255, 0.55)';
+            articleNewsletterFeedback.dataset.state = 'idle';
+          }
+        }, 2500);
       }
-    })
-    .catch(error => {
-      console.error('Newsletter subscription error:', error);
-      submitBtn.textContent = 'Try Again';
-      submitBtn.disabled = false;
-      
-      setTimeout(() => {
-        submitBtn.textContent = originalText;
-      }, 3000);
     });
-  });
+  }
   
   // Keyboard Shortcuts
   document.addEventListener('keydown', function(e) {

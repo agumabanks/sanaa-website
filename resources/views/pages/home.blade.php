@@ -1,8 +1,35 @@
 @extends('layouts.landing')
 
-@section('title', 'Home | ' . config('app.name'))
+@section('title', 'Sanaa Co. — Finance, Commerce, and Logistics for African Business')
 
 @section('hide_header', true)
+
+@section('seo_title', 'Sanaa Co. — Finance, Commerce, and Logistics for African Business')
+@section('seo_description', 'Sanaa is a member-owned African economic ecosystem. We finance businesses through our cooperative, connect them to markets on Soko 24, move goods via Baraka 24, and run their software on Sanaa infrastructure. Built in Uganda since 2021.')
+@section('seo_keywords', 'Sanaa Co,African business Uganda,Soko 24,Baraka 24,Sanaa Finance Cooperative,Sanaa Finance SaaS,Sanaa Cloud,Sanaa POS')
+@section('seo_image', asset('storage/images/sanaa-logo-b.svg'))
+
+@push('schema')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Sanaa Co.",
+  "url": "https://sanaa.ug",
+  "logo": "https://sanaa.ug/storage/images/sanaa-logo-b.svg",
+  "sameAs": [
+    "https://twitter.com/sanaaco",
+    "https://facebook.com/sanaaco"
+  ],
+  "description": "Sanaa finances, connects, moves, and powers African business through a cooperative, commerce, logistics, and infrastructure stack built in Uganda since 2021.",
+  "foundingDate": "2021",
+  "areaServed": [
+    "Uganda",
+    "Democratic Republic of the Congo"
+  ]
+}
+</script>
+@endpush
 
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -16,7 +43,6 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        cursor: none;
     }
 
     :root {
@@ -37,7 +63,6 @@
         color: var(--white);
         overflow-x: hidden;
         scroll-behavior: smooth;
-        cursor: none;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
@@ -149,124 +174,10 @@
         }
     }
 
-    /* Premium Navigation */
-    nav.premium-nav {
-        position: fixed;
-        top: 0;
-        width: 100%;
-        padding: 2rem 4rem;
-        z-index: 1000;
-        transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        mix-blend-mode: difference;
-    }
-
-    nav.premium-nav.scrolled {
-        background: rgba(0, 0, 0, 0.95);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        padding: 1rem 4rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        mix-blend-mode: normal;
-    }
-
-    .nav-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .logo {
-        font-size: 1.5rem;
-        font-weight: 200;
-        letter-spacing: 0.3rem;
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 3rem;
-        list-style: none;
-    }
-
-    .nav-link {
-        color: var(--white);
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 300;
-        letter-spacing: 0.05rem;
-        transition: all 0.3s ease;
-        position: relative;
-        cursor: pointer;
-    }
-
-    /* Header actions (auth + contact sales) */
-    .nav-actions {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .btn-nav {
-        padding: 0.5rem 1rem;
-        background: var(--emerald);
-        color: var(--pure-black);
-        text-decoration: none;
-        font-size: 0.85rem;
-        font-weight: 600;
-        letter-spacing: 0.02rem;
-        border-radius: 999px;
-        transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
-        white-space: nowrap;
-    }
-
-    .btn-nav:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
-        background: var(--emerald-light);
-    }
-
-    .btn-nav-outline {
-        padding: 0.5rem 1rem;
-        background: transparent;
-        color: var(--white);
-        border: 1px solid rgba(255, 255, 255, 0.35);
-        text-decoration: none;
-        font-size: 0.85rem;
-        font-weight: 500;
-        letter-spacing: 0.02rem;
-        border-radius: 999px;
-        transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
-        white-space: nowrap;
-    }
-
-    .btn-nav-outline:hover {
-        background: var(--white);
-        color: var(--pure-black);
-        transform: translateY(-1px);
-        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.15);
-    }
-
-    .nav-link::after {
-        content: '';
-        position: absolute;
-        bottom: -5px;
-        left: 0;
-        width: 0;
-        height: 1px;
-        background: var(--emerald);
-        transition: width 0.3s ease;
-    }
-
-    .nav-link:hover::after {
-        width: 100%;
-    }
 
     /* Enhanced Hero Section */
     .hero-premium {
-        height: 100vh;
+        min-height: 100svh;
         position: relative;
         overflow: hidden;
         display: flex;
@@ -287,7 +198,9 @@
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.9) 100%);
+        background:
+            linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 40%, rgba(0, 0, 0, 0.85) 100%),
+            radial-gradient(circle at 50% 35%, rgba(6, 8, 12, 0.55), transparent 60%);
     }
 
     .hero-particles {
@@ -329,18 +242,69 @@
         position: relative;
         z-index: 2;
         text-align: center;
-        max-width: 1200px;
-        padding: 0 2rem;
+        width: min(100%, 1120px);
+        max-width: none;
+        padding: 10.5rem 1.5rem 7rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.4rem;
+        margin-top: 0;
+    }
+
+    .hero-eyebrow {
+        font-size: 0.85rem;
+        letter-spacing: 0.5em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 0.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+        content: '';
+        width: 40px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .hero-insight {
+        margin: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.03);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 1.5rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.05rem;
+        line-height: 1.6;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+        font-weight: 300;
+    }
+
+    .hero-insight span {
+        font-size: 0.85rem;
+        letter-spacing: 0.4em;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
     }
 
     .hero-title {
-        font-size: clamp(3rem, 10vw, 7rem);
+        max-width: 11ch;
+        font-size: clamp(3.7rem, 8vw, 6.7rem);
         font-weight: 100;
-        letter-spacing: -0.02em;
-        line-height: 0.95;
-        margin-bottom: 2rem;
+        letter-spacing: -0.055em;
+        line-height: 0.9;
+        margin-bottom: 0;
         opacity: 0;
         animation: revealText 1s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+        filter: drop-shadow(0 24px 42px rgba(0, 0, 0, 0.75));
     }
 
     .hero-title-gradient {
@@ -348,6 +312,7 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        text-shadow: 0 4px 25px rgba(0, 0, 0, 0.35);
     }
 
     @keyframes revealText {
@@ -358,23 +323,35 @@
     }
 
     .hero-subtitle {
-        font-size: 1.25rem;
-        font-weight: 200;
-        letter-spacing: 0.1rem;
-        color: var(--black);
-        margin-bottom: 3rem;
+        font-size: 1.08rem;
+        font-weight: 300;
+        letter-spacing: 0.01em;
+        color: rgba(255, 255, 255, 0.78);
+        margin-bottom: 0;
         opacity: 0;
         animation: fadeInUp 1s ease 1s forwards;
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-        line-height: 1.6;
+        max-width: 60ch;
+        margin-left: 0;
+        margin-right: 0;
+        line-height: 1.75;
+        text-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+        position: relative;
+    }
+
+    .hero-subtitle::before {
+        content: '';
+        position: absolute;
+        inset: -1rem -1.5rem;
+        background: linear-gradient(120deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.2));
+        border-radius: 999px;
+        filter: blur(30px);
+        z-index: -1;
     }
 
     .hero-buttons {
         display: flex;
         gap: 1.5rem;
-        justify-content: center;
+        justify-content: flex-start;
         flex-wrap: wrap;
         opacity: 0;
         animation: fadeInUp 1s ease 1.5s forwards;
@@ -441,6 +418,68 @@
         color: var(--pure-black);
         transform: translateY(-2px);
         box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        .hero-premium {
+            height: auto;
+            min-height: auto;
+            padding: 7.25rem 0 3rem;
+        }
+
+        .hero-content {
+            padding: 0 1.25rem;
+            gap: 1.15rem;
+        }
+
+        .hero-title {
+            max-width: 9ch;
+            font-size: clamp(2.9rem, 13vw, 4.75rem);
+            line-height: 0.96;
+        }
+
+        .hero-panel {
+            padding: 1.5rem 1.35rem;
+            border-radius: 24px;
+            text-align: center;
+            align-items: center;
+        }
+
+        .hero-insight {
+            padding: 1rem 1.25rem;
+        }
+
+        .hero-subtitle {
+            max-width: 100%;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .hero-buttons {
+            justify-content: center;
+        }
+
+        .hero-buttons .btn-cta,
+        .hero-buttons .btn-cta-outline {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-eyebrow {
+            letter-spacing: 0.35em;
+            font-size: 0.7rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            letter-spacing: 0.05rem;
+        }
+
+        .hero-panel {
+            margin: 1rem auto 0;
+        }
     }
 
     /* Scroll Indicator */
@@ -602,6 +641,12 @@
 
     .service-card:hover .service-link {
         opacity: 1;
+        transform: translateX(5px);
+    }
+
+    .view-all-link:hover {
+        background: rgba(255,255,255,0.05);
+        border-color: rgba(255,255,255,0.4);
         transform: translateX(5px);
     }
 
@@ -890,67 +935,286 @@
         transform: rotate(90deg);
     }
 
-    /* Mobile Menu */
-    .menu-toggle {
+    .modal-content-body {
         display: none;
+    }
+
+    .modal-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2.5rem;
+        align-items: flex-start;
+    }
+
+    .modal-media {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #modalThumbnail {
+        width: 100%;
+        height: auto;
+        border-radius: 14px;
+        object-fit: cover;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-details {
+        display: flex;
         flex-direction: column;
-        gap: 4px;
-        cursor: pointer;
+        gap: 1.5rem;
+        color: var(--white);
     }
 
-    .menu-line {
-        width: 25px;
-        height: 1px;
-        background: var(--white);
-        transition: all 0.3s ease;
+    .modal-product-name {
+        font-size: 2rem;
+        letter-spacing: -0.02em;
+        color: var(--white);
     }
 
-    .menu-toggle.active .menu-line:nth-child(1) {
-        transform: rotate(45deg) translate(5px, 5px);
+    .modal-eyebrow {
+        font-size: 0.75rem;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 0.5rem;
     }
 
-    .menu-toggle.active .menu-line:nth-child(2) {
-        opacity: 0;
+    .modal-price-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
 
-    .menu-toggle.active .menu-line:nth-child(3) {
-        transform: rotate(-45deg) translate(5px, -5px);
+    #modalPrice {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--white);
     }
 
-    /* Responsive Design */
+    .modal-discount {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    #modalDiscountPrice {
+        text-decoration: line-through;
+        opacity: 0.75;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    #modalDiscountBadge {
+        padding: 0.35rem 0.8rem;
+        border-radius: 999px;
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--emerald);
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    #modalProductDescription {
+        line-height: 1.7;
+        color: var(--light-gray);
+    }
+
+    .modal-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .modal-error {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+        border-radius: 18px;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        background: rgba(239, 68, 68, 0.05);
+        color: #fecaca;
+        margin-top: 1.5rem;
+    }
+
+    .modal-error p {
+        margin-bottom: 1rem;
+    }
+
+    /* Join CTA */
+    .join-section {
+        position: relative;
+        padding: 6rem 1rem 7rem;
+        background: radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.35), transparent 55%),
+                    radial-gradient(circle at 80% 30%, rgba(6, 182, 212, 0.35), transparent 50%),
+                    var(--pure-black);
+    }
+
+    .join-card {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 3.5rem;
+        border-radius: 36px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: rgba(12, 12, 12, 0.7);
+        backdrop-filter: blur(30px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .join-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.08));
+        mix-blend-mode: lighten;
+        pointer-events: none;
+    }
+
+    .join-eyebrow {
+        font-size: 0.85rem;
+        letter-spacing: 0.45em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.45);
+        margin-bottom: 1rem;
+    }
+
+    .join-title {
+        font-size: clamp(2.75rem, 5vw, 4.5rem);
+        line-height: 1.1;
+        color: var(--white);
+        margin-bottom: 1.5rem;
+    }
+
+    .join-title span {
+        color: var(--emerald);
+        font-weight: 500;
+    }
+
+    .join-subtitle {
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 1.1rem;
+        max-width: 620px;
+    }
+
+    .join-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .join-cta-panel {
+        border-radius: 26px;
+        padding: 2.5rem;
+        background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(6,182,212,0.05));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .join-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .join-actions .btn-cta,
+    .join-actions .btn-cta-outline {
+        flex: 1;
+        min-width: 140px;
+        justify-content: center;
+    }
+
+    .join-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .join-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .join-meta span::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--emerald);
+    }
+
+    .join-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+
+    .join-stat-card {
+        padding: 1.5rem;
+        border-radius: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.02);
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+    }
+
+    .join-stat-value {
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--white);
+    }
+
+    .join-stat-label {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .join-logos {
+        margin-top: 2.5rem;
+        padding-top: 2.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 0.95rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+    }
+
     @media (max-width: 768px) {
-        .nav-links {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
+        .join-card {
+            padding: 2.25rem;
+        }
+
+        .join-actions .btn-cta,
+        .join-actions .btn-cta-outline {
+            flex: 1 1 100%;
+        }
+
+        .join-meta {
             flex-direction: column;
-            padding: 1rem;
-            gap: 1rem;
-            z-index: 999;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
+    }
 
-        .nav-links.mobile-open {
-            display: flex;
-        }
-
-        .nav-link {
-            padding: 0.5rem 0;
-            font-size: 1rem;
-        }
-
-        .menu-toggle {
-            display: flex;
-        }
-
-        .nav-actions {
-            display: none;
-        }
-
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
         .hero-title {
             font-size: clamp(2.5rem, 8vw, 4rem);
         }
@@ -1010,8 +1274,450 @@
         height: 25px;
         width: 40%;
     }
+
+    /* Disable decorative cursor on touch devices */
+    @media (pointer: coarse) {
+        .cursor,
+        .cursor-follower { display: none; }
+    }
 </style>
 @endverbatim
+
+<style>
+  /* Industries + Pricing (Square-inspired, Sanaa colors) */
+  .industry-premium, .pricing-premium { background: #000; position: relative; }
+
+  .hero-panel {
+    margin: 1rem auto 0;
+    max-width: 760px;
+    width: 100%;
+    background: linear-gradient(160deg, rgba(10, 10, 10, 0.84), rgba(22, 22, 22, 0.62));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 28px;
+    padding: 2rem 2.15rem;
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+    text-align: left;
+    transform: translateY(0);
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    position: relative;
+  }
+
+  .hero-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 2rem;
+    width: 88px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.9), rgba(16, 185, 129, 0));
+  }
+  
+  .hero-panel:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  /* Mission Section */
+  .mission-premium {
+    padding: 6rem 2rem;
+    background: #000;
+    position: relative;
+    text-align: center;
+  }
+
+  .mission-container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .mission-subtitle {
+    font-size: 1.5rem;
+    font-weight: 300;
+    line-height: 1.5;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .mission-insight {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .mission-insight span {
+    display: block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #10b981;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-eyebrow { color: #a3a3a3; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; }
+  .industry-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1.25rem; max-width: 1200px; margin: 0 auto; }
+  .industry-card { position: relative; border: 1px solid #1f2937; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, rgba(16,185,129,.08), rgba(16,185,129,.02)); transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease; }
+  .industry-card:hover { transform: translateY(-6px); border-color: rgba(16,185,129,.35); box-shadow: 0 18px 40px rgba(16,185,129,.12); }
+  .industry-media { height: 180px; background: #0b0b0b; display: grid; place-items: center; }
+  .industry-title { color: #fff; font-weight: 600; font-size: 1.1rem; }
+  .industry-meta { color: #9ca3af; font-size: .85rem; }
+  .industry-body { padding: 1rem 1rem 1.25rem; display:flex; align-items:center; justify-content:space-between; gap: .75rem; }
+  .industry-link { color: #10b981; font-weight: 500; text-decoration: none; }
+
+  .pricing-wrap { max-width: 1200px; margin: 0 auto; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); }
+  .pricing-card { border: 1px solid #1f2937; border-radius: 18px; background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); padding: 1.5rem; color: #fff; transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease; }
+  .pricing-card:hover { transform: translateY(-6px); border-color: rgba(16,185,129,.35); box-shadow: 0 18px 40px rgba(16,185,129,.12); }
+  .price-big { font-size: 2.25rem; font-weight: 200; letter-spacing: -.02em; }
+  .price-unit { color: #9ca3af; font-size: .9rem; }
+  .feature { display:flex; align-items:center; gap:.5rem; color:#d1d5db; font-size: .95rem; }
+  .dot { width: 6px; height: 6px; background:#10b981; border-radius: 999px; }
+  .btn-ghost { display:inline-block; border:1px solid #2f3a46; color:#10b981; padding:.7rem 1.1rem; border-radius: 999px; text-decoration:none; font-weight:600; }
+  .btn-solid { display:inline-block; background:#10b981; color:#000; padding:.7rem 1.1rem; border-radius: 999px; text-decoration:none; font-weight:700; }
+  .badge { display:inline-block; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:#000; background:#10b981; padding:.25rem .5rem; border-radius:999px; }
+
+  @media (max-width: 768px) {
+    .industry-media { height: 140px; }
+    .price-big { font-size: 1.75rem; }
+  }
+
+  .hero-stats-section {
+    padding: 0 2rem 5rem;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.96), #050505 100%);
+  }
+
+  .hero-stats-wrap {
+    max-width: 1200px;
+    margin: -1rem auto 0;
+    padding: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 30px;
+    background: rgba(14, 14, 14, 0.9);
+    backdrop-filter: blur(20px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.85rem;
+    position: relative;
+    z-index: 3;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  }
+
+  .hero-stats-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 2rem;
+    right: 2rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.45), transparent);
+  }
+
+  .hero-stat {
+    min-height: 108px;
+    padding: 1.15rem 1.1rem;
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+  }
+
+  .hero-stat:hover {
+    transform: translateY(-4px);
+    border-color: rgba(16, 185, 129, 0.22);
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.12), rgba(255, 255, 255, 0.03));
+  }
+
+  .hero-stat-value {
+    color: var(--white);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 0.45rem;
+  }
+
+  .hero-stat-label {
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .institutional-section {
+    padding: 7rem 2rem;
+    background: linear-gradient(180deg, #040404 0%, #0b1110 100%);
+  }
+
+  .institutional-shell {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem;
+    border-radius: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      radial-gradient(circle at top right, rgba(16, 185, 129, 0.15), transparent 35%),
+      linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  }
+
+  .institutional-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.9fr);
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .institutional-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+
+  .institutional-copy p {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.75;
+    font-size: 1rem;
+  }
+
+  .institutional-panel {
+    padding: 1.5rem;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .institutional-panel + .institutional-panel {
+    margin-top: 1rem;
+  }
+
+  .institutional-panel h3 {
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.58);
+    margin-bottom: 1rem;
+  }
+
+  .institutional-list {
+    display: grid;
+    gap: 0.85rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .institutional-list li {
+    color: rgba(255, 255, 255, 0.88);
+    line-height: 1.55;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .institutional-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7rem;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--emerald);
+  }
+
+  .service-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .service-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.14);
+    color: var(--emerald-light);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .service-actions {
+    margin-top: auto;
+    padding-top: 1.5rem;
+  }
+
+  .narrative-section {
+    padding: 7rem 2rem;
+    background: linear-gradient(180deg, #020202 0%, #08110f 100%);
+  }
+
+  .narrative-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .narrative-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+
+  .narrative-copy p {
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.85;
+    font-size: 1.02rem;
+  }
+
+  .layer-rail {
+    padding: 1.75rem;
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    display: grid;
+    gap: 0.9rem;
+    position: sticky;
+    top: 6rem;
+  }
+
+  .layer-item {
+    padding: 1rem 1.15rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .layer-title {
+    display: block;
+    color: var(--white);
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+
+  .layer-item p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .selector-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .selector-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .selector-card h3 {
+    font-size: 1.4rem;
+    color: var(--white);
+  }
+
+  .selector-card p {
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .founder-quote-section {
+    padding: 0 2rem 7rem;
+    background: #000;
+  }
+
+  .founder-quote-card {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 2.5rem;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(16, 185, 129, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .founder-quote-card blockquote {
+    font-size: clamp(1.6rem, 4vw, 2.5rem);
+    line-height: 1.4;
+    color: var(--white);
+    font-weight: 300;
+  }
+
+  .founder-quote-card p {
+    margin-top: 1rem;
+    color: rgba(255, 255, 255, 0.62);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+  }
+
+  .member-summary {
+    margin-top: 1rem;
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 1024px) {
+    .hero-stats-wrap,
+    .institutional-grid,
+    .narrative-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .layer-rail {
+      position: static;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-stats-section,
+    .institutional-section,
+    .narrative-section,
+    .founder-quote-section {
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+    }
+
+    .hero-stats-wrap,
+    .institutional-shell,
+    .founder-quote-card {
+      padding: 1.5rem;
+    }
+
+    .hero-stats-wrap {
+      margin-top: 0.5rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 540px) {
+    .hero-stats-wrap {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 @endpush
 
 @section('content')
@@ -1026,267 +1732,23 @@
             <div class="progress-bar">
                 <div class="progress" id="progress"></div>
             </div>
-            <p class="loader-text">Building the future</p>
+            <p class="loader-text">Built in Uganda</p>
         </div>
     </div>
 
-    <!-- Premium Navigation -->
-    <nav class="premium-nav" id="navbar">
-        <div class="nav-container">
-            <a href="{{ url()->current() }}" class="logo" id="home-logo" aria-label="Reload home">
-                <img src="{{ asset('storage/images/sanaa-logo-b.svg') }}" alt="Sanaa" style="height: 28px; filter: invert(1);">
-            </a>
-            <ul class="nav-links">
-                <li><a href="#hero" class="nav-link">HOME</a></li>
-                <li><a href="#services" class="nav-link">SERVICES</a></li>
-                <li><a href="#team" class="nav-link">TEAM</a></li>
-                <li><a href="#products" class="nav-link">PRODUCTS</a></li>
-                <li><a href="#blog" class="nav-link">BLOG</a></li>
-                <li><a href="https://soko.sanaa.co" target="_blank" class="nav-link">SOKO 24</a></li>
-            </ul>
-            <div class="nav-actions">
-                <a href="{{ route('contact') }}" class="btn-nav-outline">Contact Sales</a>
-                @auth
-                    <a href="{{ route('dashboard') }}" class="btn-nav">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="btn-nav-outline">Sign In</a>
-                    <a href="{{ route('register') }}" class="btn-nav">Create Account</a>
-                @endauth
-            </div>
-            <div class="menu-toggle" id="menuToggle">
-                <span class="menu-line"></span>
-                <span class="menu-line"></span>
-                <span class="menu-line"></span>
-            </div>
-        </div>
-    </nav>
+    <x-header :transparent="true" />
 
-    <!-- Enhanced Hero Section -->
-    <section id="hero" class="hero-premium">
-        <video id="hero-video" autoplay muted loop playsinline webkit-playsinline preload="auto" class="hero-video" poster="{{ asset('storage/images/sanaa-sky.png') }}">
-            <source id="hero-video-source" data-src="{{ asset('storage/images/live.mp4') }}" type="video/mp4">
-        </video>
-        <div class="hero-overlay"></div>
-        <div class="hero-particles"></div>
-        
-        <div class="hero-content">
-            <h1 class="hero-title">
-                <span class="hero-title-gradient">Building the future<br>we want</span>
-            </h1>
-            <p class="hero-subtitle">
-                Our mission is to empower businesses with modern digital infrastructure for payments, media and commerce.
-            </p>
-            <div class="hero-buttons">
-                <a href="#services" class="btn-cta">
-                    <span>Explore Sanaa</span>
-                </a>
-                <a href="https://soko.sanaa.co" target="_blank" class="btn-cta-outline">
-                    Shop on Soko 24
-                </a>
-            </div>
-        </div>
-        
-        <div class="scroll-indicator">
-            <div class="scroll-line"></div>
-        </div>
-    </section>
+    <div class="menu-toggle-placeholder sm:hidden" id="menuToggle"></div>
 
-    <!-- Premium Services Section -->
-    <section id="services" class="services-premium">
-        <div class="section-header">
-            <h2 class="section-title reveal-element">Sanaa Products & Services</h2>
-        </div>
-        <div class="services-grid">
-            @php
-                try {
-                    $offerings = \App\Models\Offering::latest()->take(6)->get();
-                } catch (\Throwable $e) {
-                    $offerings = collect();
-                }
-            @endphp
-            @forelse($offerings as $index => $offering)
-                <div class="service-card" style="--delay: {{ $index + 1 }}">
-                    <div class="service-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                        </svg>
-                    </div>
-                    <h3 class="service-title">{{ $offering->title }}</h3>
-                    <p class="service-description">{{ $offering->description }}</p>
-                    @if($offering->link)
-                        <a href="{{ $offering->link }}" target="_blank" class="service-link">Learn More →</a>
-                    @endif
-                </div>
-            @empty
-                @for($i = 1; $i <= 3; $i++)
-                <div class="service-card" style="--delay: {{ $i }}">
-                    <div class="service-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="service-title">Coming Soon</h3>
-                    <p class="service-description">New innovative services are being developed to better serve your business needs.</p>
-                </div>
-                @endfor
-            @endforelse
-        </div>
-    </section>
-
-    <!-- Premium Team Section -->
-    <section id="team" class="team-premium">
-        <div class="section-header">
-            <h2 class="section-title reveal-element">Meet the Team</h2>
-        </div>
-        <div class="team-grid">
-            @foreach($teamMembers as $index => $member)
-            <div class="team-member" style="--delay: {{ $index + 1 }}">
-                <div class="member-image-container">
-                    @if($member->photo)
-                        <img src="{{ asset('storage/'.$member->photo) }}" alt="{{ $member->name }}" class="member-image" loading="lazy">
-                    @else
-                        <div class="member-image" style="background: linear-gradient(135deg, var(--dark-gray), var(--emerald));"></div>
-                    @endif
-                    <div class="member-overlay">
-                        @if($member->bio)
-                            <p class="member-bio">{{ $member->bio }}</p>
-                        @endif
-                    </div>
-                </div>
-                <h3 class="member-name">{{ $member->name }}</h3>
-                @if($member->title)
-                    <p class="member-title">{{ $member->title }}</p>
-                @endif
-            </div>
-            @endforeach
-        </div>
-    </section>
-
-    <!-- Premium Products Section -->
-    <section id="products" class="products-premium">
-        <div class="section-header">
-            <h2 class="section-title reveal-element">Featured Products</h2>
-            <p class="section-subtitle reveal-element" style="color: var(--light-gray); margin-top: 1rem;">Discover our selection of quality products from Soko 24</p>
-        </div>
-        
-        <!-- Loading State -->
-        <div id="products-loading" class="products-grid">
-            @for ($i = 0; $i < 8; $i++)
-                <div class="product-card-premium skeleton">
-                    <div class="skeleton-img"></div>
-                    <div style="padding: 1.5rem;">
-                        <div class="skeleton-title"></div>
-                        <div class="skeleton-price"></div>
-                    </div>
-                </div>
-            @endfor
-        </div>
-        
-        <!-- Products Container -->
-        <div class="products-grid" id="product-container" style="display: none;">
-            @if(isset($sokoProducts['data']) && count($sokoProducts['data']) > 0)
-                @foreach(array_slice($sokoProducts['data'], 0, 8) as $index => $product)
-                    <div class="product-card-premium" data-product-id="{{ $product['id'] }}" style="--delay: {{ $index + 1 }}">
-                        <div class="product-image-wrapper">
-                            <img src="{{ $product['thumbnail_image'] }}" alt="{{ $product['name'] }}" class="product-image" loading="lazy" onerror="this.src='/img/placeholder-product.jpg';">
-                            @if($product['has_discount'])
-                                <span class="product-badge">{{ $product['discount'] }}</span>
-                            @endif
-                        </div>
-                        <div class="product-info">
-                            <h3 class="product-name">{{ $product['name'] }}</h3>
-                            <div class="product-price">
-                                <span class="price-current">{{ str_replace('/=', '', $product['main_price']) }}</span>
-                                @if($product['has_discount'])
-                                    <span class="price-original">{{ str_replace('/=', '', $product['stroked_price']) }}</span>
-                                @endif
-                            </div>
-                            <button class="product-action quick-view-btn">Quick View</button>
-                        </div>
-                    </div>
-                @endforeach
-            @endif
-        </div>
-        
-        <div style="text-align: center; margin-top: 4rem;">
-            <a href="https://soko.sanaa.co" class="btn-cta" target="_blank">
-                <span>Visit Soko 24</span>
-            </a>
-        </div>
-    </section>
-
-    <!-- Product Modal -->
-    <div id="productModal" class="modal-premium">
-        <div class="modal-content-premium">
-            <button class="modal-close close-modal">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            
-            <div id="modal-loading" class="text-center" style="padding: 3rem;">
-                <div class="skeleton-img" style="height: 300px; margin-bottom: 2rem;"></div>
-                <div class="skeleton-title" style="height: 30px; margin-bottom: 1rem;"></div>
-                <div class="skeleton-price" style="height: 20px; width: 30%;"></div>
-            </div>
-            
-            <div id="modal-content" style="display: none;">
-                <!-- Modal content will be populated by JavaScript -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Premium Blog Section (Keep existing) -->
-    <section id="blog" class="relative py-40 bg-black overflow-hidden">
-        <!-- Keep the existing premium blog section HTML as is -->
-        @includeIf('partials.blog-section')
-    </section>
-
-
-    <section class="relative py-32 bg-black overflow-hidden">
-        <!-- Spacer Section -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="h-32 flex items-center justify-center">
-                <div class="w-1 h-16 bg-gradient-to-b from-emerald-500/20 to-transparent"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Join Section with Premium Style -->
-    <section class="relative py-32  bg-black overflow-hidden">
-        <div class="absolute inset-0">
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square rounded-full blur-3xl opacity-10 bg-gradient-to-r from-emerald-400 to-cyan-400"></div>
-        </div>
-        
-        <div class="relative max-w-4xl mx-auto px-4 text-center">
-            <h2 class="text-5xl md:text-6xl font-thin text-white mb-8 tracking-tight">
-                Join the <span class="font-normal">400+</span> businesses<br>
-                running with <span class="text-emerald-400">Sanaa</span>
-            </h2>
-            <div class="flex justify-center gap-4 mb-6">
-                <a href="#" class="btn-cta">
-                    <span>Get Started</span>
-                </a>
-                <a href="#" class="btn-cta-outline">
-                    Contact Sales
-                </a>
-            </div>
-            <p class="text-sm text-gray-400">*Source: Q1 2023 Earnings Report</p>
-        </div>
-    </section>
-
-
-     <section class="relative py-32 bg-black overflow-hidden">
-        <!-- Spacer Section -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="h-32 flex items-center justify-center">
-                <div class="w-1 h-16 bg-gradient-to-b from-emerald-500/20 to-transparent"></div>
-            </div>
-        </div>
-    </section>
+    @include('pages.sections.hero')
+    @include('pages.sections.metrics')
+    @include('pages.sections.cooperative')
+    @include('pages.sections.offerings')
+    @include('pages.sections.ecosystem')
+    @include('pages.sections.pricing')
+    @include('pages.sections.blog')
+    @include('pages.sections.founder-quote')
+    @include('pages.sections.team')
 
 @endsection
 
@@ -1435,74 +1897,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Navbar Scroll Effect
-    const navbar = document.getElementById('navbar');
-    let lastScroll = 0;
-
-    window.addEventListener('scroll', () => {
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll > 100) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-        
-        lastScroll = currentScroll;
-    });
-
-    // Smooth Scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-
-    // Mobile Menu Toggle
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.querySelector('.nav-links');
-    if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
-            menuToggle.classList.toggle('active');
-            navLinks.classList.toggle('mobile-open');
-            console.log('Mobile menu toggled:', navLinks.classList.contains('mobile-open') ? 'opened' : 'closed');
-        });
-
-        // Close menu when clicking on a link
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                menuToggle.classList.remove('active');
-                navLinks.classList.remove('mobile-open');
-                console.log('Mobile menu closed via link click');
-            });
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
-                menuToggle.classList.remove('active');
-                navLinks.classList.remove('mobile-open');
-                console.log('Mobile menu closed via outside click');
-            }
-        });
-    }
-
-    // Home logo reloads the page
-    const homeLogo = document.getElementById('home-logo');
-    if (homeLogo) {
-        homeLogo.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.location.reload();
-        });
-    }
-
     // Intersection Observer for Animations
     const observerOptions = {
         threshold: 0.1,
@@ -1549,46 +1943,6 @@ document.addEventListener('DOMContentLoaded', function() {
             productContainer.style.display = 'grid';
         }
     }, 1500);
-
-    // Product Modal
-    const modal = document.getElementById('productModal');
-    const modalLoading = document.getElementById('modal-loading');
-    const modalContent = document.getElementById('modal-content');
-    
-    // Quick View buttons
-    document.querySelectorAll('.quick-view-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const card = this.closest('.product-card-premium');
-            const productId = card.dataset.productId;
-            
-            // Show modal
-            modal.classList.add('show');
-            modalLoading.style.display = 'block';
-            modalContent.style.display = 'none';
-            
-            // Simulate loading product details
-            setTimeout(() => {
-                modalLoading.style.display = 'none';
-                modalContent.style.display = 'block';
-                // Add product details here
-            }, 1000);
-        });
-    });
-
-    // Close modal
-    document.querySelectorAll('.close-modal').forEach(btn => {
-        btn.addEventListener('click', () => {
-            modal.classList.remove('show');
-        });
-    });
-
-    // Close modal on outside click
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.classList.remove('show');
-        }
-    });
 
     // Initialize Swiper for blog
     if (document.querySelector('.blog-swiper')) {

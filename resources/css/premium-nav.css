@@ -1,0 +1,117 @@
+/**
+ * Sanaa Premium Navigation System
+ * Inspired by Square and Revolut
+ * Focus: Motion, Clarity, and Visual Excellence
+ */
+
+:root {
+    /* Premium Motion Tokens */
+    --ease-premium: cubic-bezier(0.16, 1, 0.3, 1); /* Apple-like snap */
+    --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --duration-fast: 250ms;
+    --duration-standard: 400ms;
+    --duration-slow: 600ms;
+
+    /* Glassmorphism Tokens */
+    --glass-bg: rgba(255, 255, 255, 0.05); /* Lighter touch */
+    --glass-blur: blur(20px);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.06);
+    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    
+    /* Active State Glow */
+    --nav-accent: #10b981; 
+    --nav-glow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+
+/* 1. ANIMATION KEYFRAMES */
+@keyframes premiumFadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes premiumScaleIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* 2. UTILITIES */
+.animate-entrance {
+    animation: premiumFadeInUp var(--duration-standard) var(--ease-premium) forwards;
+    opacity: 0;
+}
+
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+
+/* 3. ULTRA-PREMIUM NAV BAR */
+.premium-glass-nav {
+    background: rgba(255, 255, 255, 0.01); /* Ultra-subtle glass */
+    backdrop-filter: blur(24px); /* Higher blur for smoothness */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03); /* Fainter border */
+    transition: all var(--duration-standard) var(--ease-premium);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); /* Deeper shadow for elevation */
+}
+
+.nav-link-premium {
+    position: relative;
+    font-weight: 500;
+    letter-spacing: 0.01em; /* Slight tracking for readability */
+    transition: color var(--duration-fast) ease;
+}
+
+/* Magnetic Hover Pill effect */
+.nav-link-premium::before {
+    content: '';
+    position: absolute;
+    inset: -6px -12px;
+    background: rgba(255, 255, 255, 0);
+    border-radius: 99px;
+    z-index: -1;
+    transform: scale(0.9);
+    transition: all var(--duration-fast) var(--ease-premium);
+}
+
+.nav-link-premium:hover::before {
+    background: rgba(255, 255, 255, 0.08); /* Subtle pill on hover */
+    transform: scale(1);
+}
+
+/* 4. MEGA MENU - REFINED */
+.mega-menu-container {
+    perspective: 2000px;
+}
+
+.mega-menu-panel {
+    transform-origin: top center;
+    background: #050505; /* Deep black */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+    border-radius: 20px;
+}
+
+/* 5. COMPONENTS */
+.search-shortcut {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    font-family: monospace;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* 6. BUTTONS */
+.btn-fintech-primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all var(--duration-fast) var(--ease-premium);
+}
+
+.btn-fintech-primary:hover {
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+    transform: translateY(-1px);
+}

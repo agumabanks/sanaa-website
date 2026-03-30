@@ -134,7 +134,9 @@
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <a href="{{ route('blog.show', $post->slug) }}" target="_blank" class="text-xs px-2 py-1 rounded border border-gray-300 text-gray-700 hover:text-black hover:border-gray-400">View</a>
-                                            <button onclick="toggleEdit({{ $post->id }})" class="text-xs px-2 py-1 rounded border border-gray-300 text-gray-700 hover:text-black hover:border-gray-400">Edit</button>
+                                            <a href="{{ route('dashboard.blog.edit', $post) }}" class="text-xs px-2 py-1 rounded border border-emerald-400 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700">
+                                                Edit in Canvas
+                                            </a>
                                         </div>
                                     </div>
 
@@ -153,47 +155,7 @@
                                         <span>{{ $post->likes }} likes</span>
                                     </div>
 
-                                    <!-- Inline Edit Form (Hidden by default) -->
-                                    <div id="edit-form-{{ $post->id }}" class="mt-4 hidden">
-                                        <form method="POST" action="{{ route('dashboard.blog.update', $post) }}" enctype="multipart/form-data" class="space-y-4 border-t border-gray-100 pt-4">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div>
-                                                    <label for="title-{{ $post->id }}" class="block text-sm font-medium text-gray-700">Title</label>
-                                                    <input id="title-{{ $post->id }}" name="title" value="{{ $post->title }}" class="mt-2 w-full rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 py-2.5 px-3" />
-                                                </div>
-                                                <div>
-                                                    <label for="slug-{{ $post->id }}" class="block text-sm font-medium text-gray-700">Slug</label>
-                                                    <input id="slug-{{ $post->id }}" name="slug" value="{{ $post->slug }}" class="mt-2 w-full rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 py-2.5 px-3" />
-                                                </div>
-                                            </div>
-                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                <div>
-                                                    <label for="status-{{ $post->id }}" class="block text-sm font-medium text-gray-700">Status</label>
-                                                    <select id="status-{{ $post->id }}" name="status" class="mt-2 w-full rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 py-2.5 px-3">
-                                                        <option value="draft" @selected($post->status==='draft')>Draft</option>
-                                                        <option value="published" @selected($post->status==='published')>Published</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label for="published_at-{{ $post->id }}" class="block text-sm font-medium text-gray-700">Publish At</label>
-                                                    <input type="datetime-local" id="published_at-{{ $post->id }}" name="published_at" value="{{ optional($post->published_at)->format('Y-m-d\TH:i') }}" class="mt-2 w-full rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 py-2.5 px-3" />
-                                                </div>
-                                                <div class="flex items-end">
-                                                    <label class="inline-flex items-center gap-2 text-sm text-gray-700">
-                                                        <input type="checkbox" name="featured" value="1" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-400" @checked($post->featured) />
-                                                        Featured
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <input type="hidden" name="author_id" value="{{ $post->author_id ?? auth()->id() }}" />
-                                            <div class="flex items-center justify-end gap-3">
-                                                <button type="button" onclick="toggleEdit({{ $post->id }})" class="inline-flex items-center rounded-lg bg-gray-600 text-white px-4 py-2.5 text-sm font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">Cancel</button>
-                                                <button type="submit" class="inline-flex items-center rounded-lg bg-emerald-600 text-white px-4 py-2.5 text-sm font-medium hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400">Update</button>
-                                            </div>
-                                        </form>
-                                    </div>
+                                    <!-- Inline edit removed in favor of dedicated canvas -->
 
                                     <div class="flex items-center justify-end gap-3 mt-3">
                                         <form method="POST" action="{{ route('dashboard.blog.toggle-status', $post) }}" class="inline">
@@ -273,13 +235,6 @@
         statusFilter?.addEventListener('change', applyFilters);
         categoryFilter?.addEventListener('change', applyFilters);
 
-        // Toggle edit form
-        function toggleEdit(postId) {
-            const form = document.getElementById(`edit-form-${postId}`);
-            if (form) {
-                form.classList.toggle('hidden');
-            }
-        }
     </script>
     @endpush
 </x-dashboard-layout>

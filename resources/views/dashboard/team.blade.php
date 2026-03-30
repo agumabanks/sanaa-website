@@ -44,8 +44,45 @@
                         <textarea id="team-bio" name="bio" rows="3" placeholder="Short background and focus areas" class="mt-2 w-full rounded-lg border border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 py-2.5 px-3"></textarea>
                     </div>
                     <div>
-                        <label for="team-photo" class="block text-sm font-medium text-gray-700">Photo</label>
-                        <input id="team-photo" name="photo" type="file" accept="image/*" class="mt-2 block w-full text-sm text-gray-700 file:mr-4 file:py-2.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+                        <label class="block text-sm font-medium text-gray-700">Photo</label>
+                        <div class="mt-2 flex items-center gap-4">
+                            <label class="inline-flex items-center gap-2 text-sm">
+                                <input type="radio" name="photo_mode" value="upload" class="text-emerald-600" checked>
+                                <span>Upload from computer</span>
+                            </label>
+                            <label class="inline-flex items-center gap-2 text-sm">
+                                <input type="radio" name="photo_mode" value="existing" class="text-emerald-600">
+                                <span>Choose from server</span>
+                            </label>
+                        </div>
+                        <div id="upload-wrapper" class="mt-3">
+                            <input id="team-photo" name="photo" type="file" accept="image/*" class="block w-full text-sm text-gray-700 file:mr-4 file:py-2.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+                        </div>
+                        <input type="hidden" name="photo_existing" id="photo_existing" />
+                        @if(isset($availableImages) && $availableImages->count())
+                        <div id="existing-wrapper" class="mt-3 hidden">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                                @foreach(($availableImagesPage ?? $availableImages) as $img)
+                                    <button type="button" data-path="{{ $img['path'] }}" data-url="{{ $img['url'] }}" class="select-image relative rounded-lg overflow-hidden border border-gray-200 hover:border-emerald-400">
+                                        <img src="{{ $img['url'] }}" alt="{{ $img['name'] }}" class="w-full h-24 object-cover" loading="lazy"/>
+                                        <span class="selected-overlay pointer-events-none absolute inset-0 hidden bg-emerald-500/30"></span>
+                                    </button>
+                                @endforeach
+                            </div>
+                            @isset($availableImagesPage)
+                                <div class="mt-3">
+                                    {{ $availableImagesPage->withQueryString()->links() }}
+                                </div>
+                            @endisset
+                            <p class="text-xs text-gray-500 mt-2">Click an image to select. Selected image will be used unless you upload a new one.</p>
+                        </div>
+                        @else
+                        <div id="existing-wrapper" class="mt-3 hidden">
+                            <div class="rounded-lg border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500">
+                                No server images found under storage/app/public. Upload one or place files in team/, images/, uploads/, photos/, media/, avatars/ and refresh.
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
                 <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-end gap-3 rounded-b-2xl">
@@ -86,8 +123,44 @@
                                             <textarea id="bio-{{ $member->id }}" name="bio" rows="3" class="mt-2 w-full rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 py-2.5 px-3">{{ $member->bio }}</textarea>
                                         </div>
                                         <div class="md:col-span-2">
-                                            <label for="photo-{{ $member->id }}" class="block text-sm font-medium text-gray-700">Photo</label>
-                                            <input id="photo-{{ $member->id }}" name="photo" type="file" accept="image/*" class="mt-2 block w-full text-sm text-gray-700 file:mr-4 file:py-2.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+                                            <label class="block text-sm font-medium text-gray-700">Photo</label>
+                                            <div class="mt-2 flex items-center gap-4">
+                                                <label class="inline-flex items-center gap-2 text-sm">
+                                                    <input type="radio" name="photo_mode_{{ $member->id }}" value="upload" class="text-emerald-600" checked>
+                                                    <span>Upload</span>
+                                                </label>
+                                                <label class="inline-flex items-center gap-2 text-sm">
+                                                    <input type="radio" name="photo_mode_{{ $member->id }}" value="existing" class="text-emerald-600">
+                                                    <span>Choose existing</span>
+                                                </label>
+                                            </div>
+                                            <div class="mt-2" id="upload-{{ $member->id }}">
+                                                <input id="photo-{{ $member->id }}" name="photo" type="file" accept="image/*" class="block w-full text-sm text-gray-700 file:mr-4 file:py-2.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+                                            </div>
+                                            <input type="hidden" name="photo_existing" id="photo_existing_{{ $member->id }}" />
+                                            @if(isset($availableImages) && $availableImages->count())
+                                            <div class="mt-2 hidden" id="existing-{{ $member->id }}">
+                                                <div class="grid grid-cols-6 gap-3">
+                                                    @foreach(($availableImagesPage ?? $availableImages) as $img)
+                                                        <button type="button" data-target="photo_existing_{{ $member->id }}" data-path="{{ $img['path'] }}" data-url="{{ $img['url'] }}" class="select-image relative rounded-lg overflow-hidden border border-gray-200 hover:border-emerald-400">
+                                                            <img src="{{ $img['url'] }}" alt="{{ $img['name'] }}" class="w-full h-16 object-cover" loading="lazy"/>
+                                                            <span class="selected-overlay pointer-events-none absolute inset-0 hidden bg-emerald-500/30"></span>
+                                                        </button>
+                                                    @endforeach
+                                                </div>
+                                                @isset($availableImagesPage)
+                                                    <div class="mt-3">
+                                                        {{ $availableImagesPage->withQueryString()->links() }}
+                                                    </div>
+                                                @endisset
+                                            </div>
+                                            @else
+                                            <div class="mt-2 hidden" id="existing-{{ $member->id }}">
+                                                <div class="rounded-lg border border-dashed border-gray-300 p-4 text-center text-xs text-gray-500">
+                                                    No server images found yet.
+                                                </div>
+                                            </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -107,4 +180,52 @@
             @endif
         </div>
     </div>
+    @push('scripts')
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create form toggle
+        const uploadWrapper = document.getElementById('upload-wrapper');
+        const existingWrapper = document.getElementById('existing-wrapper');
+        document.querySelectorAll('input[name="photo_mode"]').forEach(r => {
+            r.addEventListener('change', () => {
+                const isExisting = r.value === 'existing' && r.checked;
+                if (uploadWrapper) uploadWrapper.classList.toggle('hidden', isExisting);
+                if (existingWrapper) existingWrapper.classList.toggle('hidden', !isExisting);
+            });
+        });
+        function bindImageSelectors(scope=document){
+            scope.querySelectorAll('.select-image').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const path = btn.getAttribute('data-path');
+                    const target = btn.getAttribute('data-target') || 'photo_existing';
+                    const input = document.getElementById(target);
+                    if (input) input.value = path;
+
+                    const container = btn.parentElement;
+                    container.querySelectorAll('.select-image').forEach(b => {
+                        b.classList.remove('ring-2','ring-emerald-500');
+                        const ov = b.querySelector('.selected-overlay');
+                        if (ov) ov.classList.add('hidden');
+                    });
+                    btn.classList.add('ring-2','ring-emerald-500');
+                    const overlay = btn.querySelector('.selected-overlay');
+                    if (overlay) overlay.classList.remove('hidden');
+                }, { passive: true });
+            });
+        }
+        bindImageSelectors();
+        // Per-member toggles
+        document.querySelectorAll('[id^="upload-"]').forEach(wrapper => {
+            const id = wrapper.id.replace('upload-','');
+            const radios = document.querySelectorAll(`input[name="photo_mode_${id}"]`);
+            const existing = document.getElementById(`existing-${id}`);
+            radios.forEach(r => r.addEventListener('change', () => {
+                const isExisting = r.value === 'existing' && r.checked;
+                wrapper.classList.toggle('hidden', isExisting);
+                if (existing) existing.classList.toggle('hidden', !isExisting);
+            }));
+        });
+    });
+    </script>
+    @endpush
 </x-dashboard-layout>

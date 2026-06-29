@@ -1,6 +1,4 @@
-<footer class="bg-black text-white py-16" style="font-family: 'Montserrat', sans-serif;" role="contentinfo">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<footer class="bg-black text-white py-16" role="contentinfo">
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Footer Navigation Sections -->

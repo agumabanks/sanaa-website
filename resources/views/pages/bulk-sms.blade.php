@@ -1,6 +1,9 @@
 @extends('layouts.landing')
 
 @section('title', 'Bulk SMS | ' . config('app.name'))
+@section('seo_title', 'Bulk SMS Uganda | Sanaa Co. — Business SMS Messaging')
+@section('seo_description', 'Send bulk SMS messages to your customers in Uganda. Reliable business SMS messaging for notifications, marketing, and customer engagement.')
+@section('seo_keywords', 'bulk SMS Uganda, business SMS, SMS marketing Uganda, Sanaa SMS, mobile messaging Africa')
 
 @section('content')
     <section class="py-12 bg-white">

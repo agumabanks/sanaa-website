@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\BlogCategory;
+use App\Models\BlogTag;
 use App\Models\FinancePage;
 use App\Models\User;
 use Illuminate\Http\Response;
@@ -30,6 +32,8 @@ class SitemapController extends Controller
         $items[] = ['loc' => self::BASE_URL . '/investor-relations', 'priority' => '0.7', 'changefreq' => 'monthly'];
         $items[] = ['loc' => self::BASE_URL . '/why-sanaa', 'priority' => '0.7', 'changefreq' => 'monthly'];
         $items[] = ['loc' => self::BASE_URL . '/blog', 'priority' => '0.9', 'changefreq' => 'daily'];
+        $items[] = ['loc' => self::BASE_URL . '/blog/feed', 'priority' => '0.4', 'changefreq' => 'hourly'];
+        $items[] = ['loc' => self::BASE_URL . '/blog/feed.json', 'priority' => '0.4', 'changefreq' => 'hourly'];
         $items[] = ['loc' => self::BASE_URL . '/policies', 'priority' => '0.5', 'changefreq' => 'monthly'];
         $items[] = ['loc' => self::BASE_URL . '/policies/privacy-notice', 'priority' => '0.5', 'changefreq' => 'monthly'];
         $items[] = ['loc' => self::BASE_URL . '/policies/terms-conditions', 'priority' => '0.5', 'changefreq' => 'monthly'];
@@ -129,20 +133,39 @@ class SitemapController extends Controller
         $authors = User::whereHas('blogs', fn ($query) => $query->published())
             ->orderBy('name')
             ->get();
+        $categories = BlogCategory::query()
+            ->where('is_active', true)
+            ->whereHas('blogs', fn ($query) => $query->published())
+            ->orderBy('name')
+            ->get();
+        $tags = BlogTag::query()
+            ->whereHas('blogs', fn ($query) => $query->published())
+            ->orderBy('name')
+            ->get();
 
         $items = $posts->map(fn ($p) => [
             'loc' => self::BASE_URL . '/blog/' . $p->slug,
             'lastmod' => optional($p->updated_at)->toAtomString(),
             'changefreq' => 'weekly',
             'priority' => '0.6',
-        ])->concat(
-            $authors->map(fn ($author) => [
+        ])->concat($authors->map(fn ($author) => [
                 'loc' => route('blog.author', ['author' => $author->id, 'slug' => $author->author_slug]),
                 'lastmod' => optional($author->updated_at)->toAtomString(),
                 'changefreq' => 'weekly',
                 'priority' => '0.5',
-            ])
-        );
+            ]))
+            ->concat($categories->map(fn ($category) => [
+                'loc' => route('blog.category', ['category' => $category->slug]),
+                'lastmod' => optional($category->updated_at)->toAtomString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.5',
+            ]))
+            ->concat($tags->map(fn ($tag) => [
+                'loc' => route('blog.tag', ['tag' => $tag->slug]),
+                'lastmod' => optional($tag->updated_at)->toAtomString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.4',
+            ]));
 
         $xml = view('partials.sitemap-urlset', ['items' => $items]);
         return response($xml, 200)->header('Content-Type', 'application/xml');

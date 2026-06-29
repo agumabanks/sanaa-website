@@ -38,7 +38,7 @@ class Blog extends Model
     /**
      * Build a URL-safe, unique slug from the given value.
      */
-    public static function generateUniqueSlug(string $value = null, $ignoreId = null): string
+    public static function generateUniqueSlug(?string $value = null, $ignoreId = null): string
     {
         $slug = Str::slug((string) $value);
         if ($slug === '') {
@@ -85,6 +85,8 @@ class Blog extends Model
         'meta_title',
         'meta_description',
         'keywords',
+        'content_json',
+        'is_rich_text',
     ];
 
     protected $casts = [
@@ -96,6 +98,8 @@ class Blog extends Model
         'bookmarks' => 'integer',
         'saves' => 'integer',
         'reading_time' => 'integer',
+        'content_json' => 'array',
+        'is_rich_text' => 'boolean',
     ];
 
     // Scopes

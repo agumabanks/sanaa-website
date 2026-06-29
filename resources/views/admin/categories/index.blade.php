@@ -24,6 +24,15 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @forelse($blogCategories as $category)
+                    @php
+                        $blogCategoryPayload = e(json_encode([
+                            'id' => $category->id,
+                            'name' => $category->name,
+                            'description' => $category->description,
+                            'color' => $category->color,
+                            'is_active' => (bool) $category->is_active,
+                        ]));
+                    @endphp
                     <div class="content-card p-5 group hover:ring-2 hover:ring-blue-500/20 apple-transition">
                         <div class="flex items-start justify-between gap-3">
                             <div class="flex items-center gap-3">
@@ -38,6 +47,11 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 apple-transition">
+                                <button type="button" data-category="{{ $blogCategoryPayload }}" onclick="openEditBlogCat(this.dataset.category)" class="p-2 rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-600">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
                                 <a href="{{ route('blog.category', $category->slug) }}" target="_blank" class="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
@@ -86,6 +100,13 @@
                             </thead>
                             <tbody class="divide-y divide-gray-100">
                                 @foreach($businessCategories as $cat)
+                                    @php
+                                        $businessCategoryPayload = e(json_encode([
+                                            'id' => $cat->id,
+                                            'name' => $cat->name,
+                                            'description' => $cat->description,
+                                        ]));
+                                    @endphp
                                     <tr class="table-row">
                                         <td class="px-6 py-4">
                                             <span class="font-medium text-gray-900">{{ $cat->name }}</span>
@@ -96,7 +117,7 @@
                                         <td class="px-6 py-4 text-sm text-gray-500">{{ Str::limit($cat->description, 50) }}</td>
                                         <td class="px-6 py-4">
                                             <div class="flex items-center justify-end gap-2">
-                                                <button onclick="editBusinessCat({{ json_encode($cat) }})" class="p-2 rounded-lg hover:bg-blue-50 text-gray-500 hover:text-blue-600 apple-transition">
+                                                <button type="button" data-category="{{ $businessCategoryPayload }}" onclick="openEditBusinessCat(this.dataset.category)" class="p-2 rounded-lg hover:bg-blue-50 text-gray-500 hover:text-blue-600 apple-transition">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                                     </svg>
@@ -203,10 +224,94 @@
         </div>
     </div>
 
+    <div id="edit-blog-cat-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50" onclick="closeDashboardModal('edit-blog-cat-modal')"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md apple-shadow-lg" onclick="event.stopPropagation()">
+                <div class="p-6 border-b border-gray-100">
+                    <h3 class="text-lg font-semibold text-gray-900">Edit Blog Category</h3>
+                </div>
+                <form method="POST" id="edit-blog-cat-form" class="p-6 space-y-5">
+                    @csrf
+                    @method('PUT')
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                        <input type="text" name="name" id="edit-blog-cat-name" required class="input-field" placeholder="Category name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea name="description" id="edit-blog-cat-description" rows="2" class="input-field" placeholder="Optional description"></textarea>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                            <input type="color" name="color" id="edit-blog-cat-color" class="h-10 w-20 rounded border border-gray-300">
+                        </div>
+                        <label class="inline-flex items-center gap-2 pt-6 text-sm text-gray-700">
+                            <input type="checkbox" name="is_active" id="edit-blog-cat-active" value="1" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-400">
+                            Active category
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-end gap-3 pt-4">
+                        <button type="button" onclick="closeDashboardModal('edit-blog-cat-modal')" class="btn-secondary">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-business-cat-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50" onclick="closeDashboardModal('edit-business-cat-modal')"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md apple-shadow-lg" onclick="event.stopPropagation()">
+                <div class="p-6 border-b border-gray-100">
+                    <h3 class="text-lg font-semibold text-gray-900">Edit Business Type</h3>
+                </div>
+                <form method="POST" id="edit-business-cat-form" class="p-6 space-y-5">
+                    @csrf
+                    @method('PUT')
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                        <input type="text" name="name" id="edit-business-cat-name" required class="input-field" placeholder="Business type name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea name="description" id="edit-business-cat-description" rows="2" class="input-field" placeholder="Optional description"></textarea>
+                    </div>
+                    <div class="flex items-center justify-end gap-3 pt-4">
+                        <button type="button" onclick="closeDashboardModal('edit-business-cat-modal')" class="btn-secondary">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
     <script>
-        function editBusinessCat(cat) {
-            alert('Edit functionality for business category: ' + cat.name);
+        const categoryUpdateBase = @json(url('/dashboard/category'));
+
+        function closeDashboardModal(id) {
+            document.getElementById(id)?.classList.add('hidden');
+        }
+
+        function openEditBlogCat(categoryPayload) {
+            const category = JSON.parse(categoryPayload);
+            document.getElementById('edit-blog-cat-form').action = `${categoryUpdateBase}/blog/${category.id}`;
+            document.getElementById('edit-blog-cat-name').value = category.name || '';
+            document.getElementById('edit-blog-cat-description').value = category.description || '';
+            document.getElementById('edit-blog-cat-color').value = category.color || '#3B82F6';
+            document.getElementById('edit-blog-cat-active').checked = !!category.is_active;
+            document.getElementById('edit-blog-cat-modal').classList.remove('hidden');
+        }
+
+        function openEditBusinessCat(categoryPayload) {
+            const category = JSON.parse(categoryPayload);
+            document.getElementById('edit-business-cat-form').action = `${categoryUpdateBase}/business/${category.id}`;
+            document.getElementById('edit-business-cat-name').value = category.name || '';
+            document.getElementById('edit-business-cat-description').value = category.description || '';
+            document.getElementById('edit-business-cat-modal').classList.remove('hidden');
         }
     </script>
     @endpush

@@ -5,6 +5,14 @@
 @section('seo_description', 'Sanaa Cloud is managed hosting and storage for businesses running on Soko 24 and Baraka 24. Full launch details are on the way.')
 @section('seo_image', asset('storage/images/sanaa-logo-b.svg'))
 
+@push('schema')
+    <x-schema-product
+        name="Sanaa Cloud"
+        description="Managed cloud hosting and storage for businesses on the Sanaa stack."
+        url="https://sanaa.ug/sanaa-cloud"
+        category="WebApplication" />
+@endpush
+
 @section('content')
 <section class="min-h-screen bg-black text-white flex items-center">
     <div class="max-w-4xl mx-auto px-6 py-32">

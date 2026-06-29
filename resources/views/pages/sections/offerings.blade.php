@@ -1,99 +1,207 @@
 @php
     $products = [
         [
-            'title' => 'Sanaa Finance Cooperative',
-            'badge' => 'Finance | Cooperative',
-            'description' => 'Member-owned financial institution for businesses that work with Sanaa. Cash loans and motorbike asset financing are already running, with BNPL for Soko 24 members on the way.',
-            'link' => '#cooperative',
-            'target' => null,
+            'title'       => 'Sanaa Finance Cooperative',
+            'badge'       => 'Finance — Cooperative',
+            'description' => 'Member-owned financial institution for businesses inside the Sanaa network.',
+            'link'        => '#cooperative',
+            'target'      => null,
         ],
         [
-            'title' => 'Sanaa Finance SaaS',
-            'badge' => 'SaaS | Finance',
-            'description' => 'SaaS financial management platform for SACCOs, MFIs, and money lenders. Loan tracking, member management, repayment schedules, and reporting — built for African financial institutions. If you run a SACCO or lending institution, this is your operating system.',
-            'link' => route('finance.index'),
-            'target' => null,
+            'title'       => 'Sanaa Finance SaaS',
+            'badge'       => 'SaaS — Finance',
+            'description' => 'Financial management platform for SACCOs, MFIs, and money lenders in Uganda.',
+            'link'        => route('finance.index'),
+            'target'      => null,
         ],
         [
-            'title' => 'Soko 24',
-            'badge' => 'Commerce',
-            'description' => 'East African marketplace and services platform with path-based multi-tenant routing. Sellers list stock and services in one place, with cooperative-linked trade flows coming next.',
-            'link' => 'https://soko24.co',
-            'target' => '_blank',
+            'title'       => 'Soko 24',
+            'badge'       => 'Commerce',
+            'description' => 'Online marketplace for Ugandan sellers to reach buyers across East Africa.',
+            'link'        => 'https://soko24.co',
+            'target'      => '_blank',
         ],
         [
-            'title' => 'Sanaa Media',
-            'badge' => 'Print | Branding',
-            'description' => 'Print and branding services from Nasser Road, Kampala. Business cards, rubber stamps, banners, branded merchandise, and marketing materials — produced and delivered. Also the anchor shop on Soko 24.',
-            'link' => 'https://soko24.co',
-            'target' => '_blank',
+            'title'       => 'Sanaa Media',
+            'badge'       => 'Print — Branding',
+            'description' => 'Print and branding services from Nasser Road, Kampala. Produced and delivered.',
+            'link'        => 'https://soko24.co',
+            'target'      => '_blank',
         ],
         [
-            'title' => 'Baraka 24',
-            'badge' => 'SaaS | Logistics',
-            'description' => 'A complete logistics operating system for courier and delivery companies. POS terminal, shipment tracking, dispatch management, rider cash accounts, COD reconciliation, and automated WhatsApp and SMS alerts — all on your own branded subdomain. Currently powering logistics operations in Uganda and DRC.',
-            'link' => 'https://baraka.sanaa.ug',
-            'target' => '_blank',
+            'title'       => 'Baraka 24',
+            'badge'       => 'SaaS — Logistics',
+            'description' => 'Logistics management platform for courier and delivery companies in Uganda, DRC, and South Africa. Expanding to Ethiopia.',
+            'link'        => 'https://baraka.sanaa.ug',
+            'target'      => '_blank',
         ],
         [
-            'title' => 'Sanaa POS',
-            'badge' => 'Infrastructure | POS',
-            'description' => 'Point-of-sale hardware and software for businesses that need checkout, stock movement, and sales visibility on the same stack that powers the rest of Sanaa.',
-            'link' => route('prices'),
-            'target' => null,
+            'title'       => 'Sanaa POS',
+            'badge'       => 'Infrastructure — POS',
+            'description' => 'Point-of-sale hardware and software for checkout, stock, and sales visibility.',
+            'link'        => route('prices'),
+            'target'      => null,
         ],
         [
-            'title' => 'Sanaa Cards',
-            'badge' => 'Infrastructure | Payments',
-            'description' => 'Corporate payment cards for businesses that need tighter spending control, better tracking, and a direct connection to the wider Sanaa rails.',
-            'link' => route('sanaa-cards.index'),
-            'target' => null,
+            'title'       => 'Sanaa Cards',
+            'badge'       => 'Infrastructure — Payments',
+            'description' => 'Corporate payment cards for businesses with spending control and tracking.',
+            'link'        => 'https://cards.sanaa.ug/',
+            'target'      => '_blank',
         ],
         [
-            'title' => 'Sanaa Cloud',
-            'badge' => 'Infrastructure',
-            'description' => 'Managed cloud hosting and storage for businesses on Soko 24 and Baraka 24. Buy more space, more compute, more capacity — without managing servers. Sanaa handles the infrastructure so you focus on the business.',
-            'link' => route('sanaa-cloud'),
-            'target' => null,
+            'title'       => 'Sanaa Cloud',
+            'badge'       => 'Infrastructure',
+            'description' => 'Managed cloud hosting and storage for businesses on Sanaa platforms.',
+            'link'        => route('sanaa-cloud'),
+            'target'      => null,
         ],
         [
-            'title' => 'Sanaa API',
-            'badge' => 'Developer Access',
-            'description' => 'Developer access to Soko 24 commerce, Sanaa Finance, and Baraka 24 logistics data. Documentation is in progress. Contact us for early access.',
-            'link' => route('contact'),
-            'target' => null,
+            'title'       => 'Sanaa API',
+            'badge'       => 'Developer Access',
+            'description' => 'Public developer documentation for the Sanaa Blog Syndication API.',
+            'link'        => route('developer-platforms'),
+            'target'      => null,
         ],
     ];
 @endphp
 
-<section id="products" class="services-premium">
-    <div class="section-header">
-        <div class="section-eyebrow mb-3">Products</div>
-        <h2 class="section-title reveal-element">The Sanaa Stack</h2>
-        <p class="section-subtitle reveal-element" style="color: var(--light-gray); margin-top: 1rem; max-width: 760px; margin-left: auto; margin-right: auto;">Finance comes first. Commerce, logistics, and infrastructure sit on top of it.</p>
-    </div>
+<section id="products" class="sn-section sn-products" aria-labelledby="products-heading">
+    <style>
+        .sn-products {
+            background: var(--paper);
+            border-top: 1px solid var(--stone-200);
+        }
 
-    <div class="services-grid">
-        @foreach($products as $index => $product)
-            <article class="service-card" style="--delay: {{ $index + 1 }}">
-                <div class="service-card-head">
-                    <div class="service-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                        </svg>
-                    </div>
-                    <span class="service-badge">{{ $product['badge'] }}</span>
-                </div>
+        .sn-products__header {
+            max-width: 54ch;
+            margin-bottom: 3rem;
+        }
 
-                <h3 class="service-title">{{ $product['title'] }}</h3>
-                <p class="service-description">{{ $product['description'] }}</p>
+        .sn-products__subtext {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--stone-500);
+            margin-top: 0.75rem;
+        }
 
-                <div class="service-actions">
-                    <a href="{{ $product['link'] }}" class="service-link" @if($product['target']) target="{{ $product['target'] }}" rel="noopener noreferrer" @endif>Open →</a>
-                </div>
+        .sn-products__grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+        }
+
+        .sn-product-card {
+            background: #ffffff;
+            border: 1px solid var(--stone-200);
+            border-radius: 18px;
+            box-shadow: var(--shadow-1);
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow 0.15s ease;
+        }
+
+        .sn-product-card:hover {
+            box-shadow: var(--shadow-2);
+        }
+
+        .sn-product-card--placeholder {
+            opacity: 0.48;
+        }
+
+        .sn-product-card__badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--emerald-600);
+            margin-bottom: 0.9rem;
+        }
+
+        .sn-product-card__title {
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.3;
+            margin-bottom: 0.65rem;
+        }
+
+        .sn-product-card__body {
+            font-size: 0.9rem;
+            line-height: 1.65;
+            color: var(--stone-500);
+            flex: 1;
+            margin-bottom: 1.25rem;
+        }
+
+        .sn-product-card__link {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--ink);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: color 0.15s ease;
+            margin-top: auto;
+        }
+
+        .sn-product-card__link:hover {
+            color: var(--emerald-600);
+        }
+
+        .sn-product-card--placeholder .sn-product-card__title {
+            color: var(--stone-400);
+        }
+
+        @media (max-width: 1100px) {
+            .sn-products__grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 760px) {
+            .sn-products__grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sn-products__grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <div class="sn-container">
+        <div class="sn-products__header">
+            <p class="sn-eyebrow sn-eyebrow--emerald">Products</p>
+            <h2 class="sn-h2" id="products-heading">What we run.</h2>
+            <p class="sn-products__subtext">Finance comes first. Commerce, logistics, and infrastructure sit on top.</p>
+        </div>
+
+        <div class="sn-products__grid">
+            @foreach($products as $product)
+                <article class="sn-product-card">
+                    <div class="sn-product-card__badge">{{ $product['badge'] }}</div>
+                    <h3 class="sn-product-card__title">{{ $product['title'] }}</h3>
+                    <p class="sn-product-card__body">{{ $product['description'] }}</p>
+                    <a href="{{ $product['link'] }}"
+                       class="sn-product-card__link"
+                       @if($product['target']) target="{{ $product['target'] }}" rel="noopener noreferrer" @endif>
+                        Open &rarr;
+                    </a>
+                </article>
+            @endforeach
+
+            <article class="sn-product-card sn-product-card--placeholder" aria-hidden="true">
+                <div class="sn-product-card__badge">&nbsp;</div>
+                <h3 class="sn-product-card__title">One more thing is coming. Not yet.</h3>
+                <p class="sn-product-card__body">&nbsp;</p>
+                <span class="sn-product-card__link" style="cursor: default;">&nbsp;</span>
             </article>
-        @endforeach
+        </div>
     </div>
 </section>

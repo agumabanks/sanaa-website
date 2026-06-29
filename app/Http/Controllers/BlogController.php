@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
@@ -129,6 +130,42 @@ class BlogController extends Controller
                 'updated' => $updated,
             ], 200)
             ->header('Content-Type', 'application/rss+xml; charset=UTF-8');
+    }
+
+    public function feedJson()
+    {
+        $posts = Blog::published()
+            ->with(['author', 'category', 'tags'])
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
+            ->limit(50)
+            ->get();
+
+        return response()
+            ->json([
+                'version' => 'https://jsonfeed.org/version/1.1',
+                'title' => config('app.name') . ' Blog',
+                'home_page_url' => route('blog.index'),
+                'feed_url' => route('blog.feed.json'),
+                'description' => 'Company insights from Sanaa',
+                'items' => $posts->map(function (Blog $post) {
+                    return [
+                        'id' => (string) $post->id,
+                        'url' => $post->url,
+                        'title' => $post->title,
+                        'summary' => $post->excerpt,
+                        'image' => $post->featured_image_url,
+                        'content_html' => $post->body,
+                        'date_published' => optional($post->published_at ?: $post->created_at)->toISOString(),
+                        'date_modified' => optional($post->updated_at)->toISOString(),
+                        'tags' => $post->tags->pluck('name')->values(),
+                        'author' => $post->author ? [
+                            'name' => $post->author->name,
+                            'url' => $post->author->author_url,
+                        ] : ['name' => 'Sanaa Team'],
+                    ];
+                })->values(),
+            ])
+            ->header('Cache-Control', 'public, max-age=300, s-maxage=600');
     }
 
     public function category(BlogCategory $category, Request $request)
@@ -510,7 +547,17 @@ class BlogController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:160',
             'keywords' => 'nullable|string|max:255',
+            'tags' => 'nullable|array|max:12',
+            'tags.*' => 'integer|exists:blog_tags,id',
+            'content_json' => 'nullable|string',
         ]);
+
+        $tagIds = collect($request->input('tags', []))
+            ->filter(fn ($id) => is_numeric($id))
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
 
         // Set author_id to current user if not provided
         if (!isset($validated['author_id'])) {
@@ -521,7 +568,20 @@ class BlogController extends Controller
             $validated['featured_image'] = $request->file('featured_image')->store('blogs', 'public');
         }
 
+        $contentJson = $request->input('content_json');
+        if (is_string($contentJson) && trim($contentJson) !== '') {
+            $decoded = json_decode($contentJson, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $validated['content_json'] = $decoded;
+                $validated['is_rich_text'] = true;
+            }
+        } else {
+            $validated['is_rich_text'] = Str::contains((string) ($validated['body'] ?? ''), '<');
+        }
+
+        unset($validated['tags']);
         $blog = Blog::create($validated);
+        $blog->tags()->sync($tagIds);
 
         if (auth()->user()?->isAdmin()) {
             return redirect()->route('dashboard.blog')->with('success', 'Blog post created successfully');
@@ -547,7 +607,17 @@ class BlogController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:160',
             'keywords' => 'nullable|string|max:255',
+            'tags' => 'nullable|array|max:12',
+            'tags.*' => 'integer|exists:blog_tags,id',
+            'content_json' => 'nullable|string',
         ]);
+
+        $tagIds = collect($request->input('tags', []))
+            ->filter(fn ($id) => is_numeric($id))
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
 
         if ($request->hasFile('featured_image')) {
             // Delete old image if exists
@@ -557,9 +627,44 @@ class BlogController extends Controller
             $validated['featured_image'] = $request->file('featured_image')->store('blogs', 'public');
         }
 
+        $contentJson = $request->input('content_json');
+        if (is_string($contentJson) && trim($contentJson) !== '') {
+            $decoded = json_decode($contentJson, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $validated['content_json'] = $decoded;
+                $validated['is_rich_text'] = true;
+            }
+        } else {
+            $validated['is_rich_text'] = Str::contains((string) ($validated['body'] ?? $blog->body), '<');
+        }
+
+        unset($validated['tags']);
         $blog->update($validated);
+        $blog->tags()->sync($tagIds);
 
         return redirect()->route('dashboard.blog')->with('success', 'Blog post updated successfully');
+    }
+
+    public function uploadInlineImage(Request $request)
+    {
+        $this->authorize('create', Blog::class);
+
+        $validated = $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'alt' => 'nullable|string|max:255',
+        ]);
+
+        $path = $request->file('image')->store('blogs/inline', 'public');
+        $imageSize = @getimagesize($request->file('image')->getRealPath()) ?: [null, null];
+
+        return response()->json([
+            'success' => true,
+            'path' => $path,
+            'url' => cdn_storage($path),
+            'alt' => $validated['alt'] ?? '',
+            'width' => $imageSize[0],
+            'height' => $imageSize[1],
+        ]);
     }
 
     public function destroy(Blog $blog)

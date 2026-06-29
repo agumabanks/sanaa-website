@@ -74,6 +74,29 @@
           <a href="#signup" data-cta="get-started" class="inline-flex items-center px-4 py-2 rounded-lg bg-emerald-500 text-black font-medium hover:bg-emerald-400">Get started</a>
           <a href="#sales" id="openSales" data-cta="contact-sales" class="inline-flex items-center px-4 py-2 rounded-lg border border-white/20 text-white/90 hover:bg-white/10">Contact sales</a>
         </div>
+        <!-- Mobile menu button -->
+        <button id="mobileMenuBtn" class="md:hidden flex flex-col justify-center items-center w-10 h-10 rounded-lg gap-1.5" aria-label="Toggle menu" aria-expanded="false">
+          <span class="w-5 h-0.5 bg-white rounded-full transition-all duration-300 origin-center" id="menuLine1"></span>
+          <span class="w-5 h-0.5 bg-white rounded-full transition-all duration-300 origin-center" id="menuLine2"></span>
+          <span class="w-5 h-0.5 bg-white rounded-full transition-all duration-300 origin-center" id="menuLine3"></span>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="md:hidden fixed inset-0 z-40 bg-black/98 backdrop-blur-xl hidden">
+      <div class="h-full overflow-y-auto pt-24 pb-8 px-6">
+        <nav class="space-y-2">
+          <a href="{{ route('products') }}" class="block py-3 text-2xl font-semibold text-white">Products</a>
+          <a href="#solutions" class="block py-3 text-2xl font-semibold text-white">Solutions</a>
+          <a href="{{ route('prices') }}" class="block py-3 text-2xl font-semibold text-white">Pricing</a>
+          <a href="#docs" class="block py-3 text-2xl font-semibold text-white">Docs</a>
+          <a href="{{ route('support') }}" class="block py-3 text-2xl font-semibold text-white">Support</a>
+          <a href="{{ route('contact') }}" class="block py-3 text-2xl font-semibold text-white">Contact</a>
+        </nav>
+        <div class="mt-8 pt-8 border-t border-white/10 space-y-3">
+          <a href="#signup" data-cta="get-started" class="block w-full py-4 text-center text-black bg-emerald-400 rounded-xl font-semibold hover:bg-emerald-300 transition-colors">Get started</a>
+          <a href="#sales" id="openSalesMobile" data-cta="contact-sales" class="block w-full py-4 text-center text-white border border-white/20 rounded-xl font-semibold hover:bg-white/5 transition-colors">Contact sales</a>
+        </div>
       </div>
     </div>
   </header>
@@ -86,8 +109,8 @@
         <p class="mt-4 text-lg text-white/80 max-w-2xl">{{ $c['hero']['subhead'] }}</p>
         <p class="mt-3 text-white/60 max-w-2xl">{{ $c['hero']['blurb'] }}</p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <a href="#signup" data-cta="get-started" class="inline-flex items-center px-5 py-3 rounded-xl bg-emerald-500 text-black font-semibold hover:bg-emerald-400">Get started</a>
-          <a href="#sales" id="openSales2" data-cta="contact-sales" class="inline-flex items-center px-5 py-3 rounded-xl border border-white/20 text-white hover:bg-white/10">Talk to sales</a>
+          <a href="#signup" data-cta="get-started" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-500 text-black font-semibold hover:bg-emerald-400 flex-1 sm:flex-none min-w-[140px]">Get started</a>
+          <a href="#sales" id="openSales2" data-cta="contact-sales" class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-white/20 text-white hover:bg-white/10 flex-1 sm:flex-none min-w-[140px]">Talk to sales</a>
         </div>
         <ul class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-white/80">
           @foreach($c['hero']['bullets'] as $b)
@@ -216,9 +239,9 @@
       <div class="max-w-7xl mx-auto px-6 py-16">
         <h2 id="pricing" class="text-2xl font-semibold">Start from <span class="text-emerald-400">UGX 150,000</span> / month</h2>
         <p class="mt-2 text-white/70">Plans for growing teams.</p>
-        <div class="mt-6 flex gap-3">
-          <a href="{{ route('prices') }}" class="inline-flex px-5 py-3 rounded-xl bg-emerald-500 text-black font-semibold hover:bg-emerald-400">See pricing</a>
-          <a href="#sales" id="openSales3" class="inline-flex px-5 py-3 rounded-xl border border-white/20 text-white hover:bg-white/10">Talk to sales</a>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="{{ route('prices') }}" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-500 text-black font-semibold hover:bg-emerald-400 flex-1 sm:flex-none min-w-[140px]">See pricing</a>
+          <a href="#sales" id="openSales3" class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-white/20 text-white hover:bg-white/10 flex-1 sm:flex-none min-w-[140px]">Talk to sales</a>
         </div>
       </div>
     </section>
@@ -242,9 +265,9 @@
     <section aria-labelledby="final" class="border-t border-white/10">
       <div class="max-w-7xl mx-auto px-6 py-16 text-center">
         <h2 id="final" class="text-3xl md:text-4xl font-semibold">Build your business the Sanaa way.</h2>
-        <div class="mt-6 flex justify-center gap-3">
-          <a href="#signup" data-cta="get-started" class="inline-flex items-center px-5 py-3 rounded-xl bg-emerald-500 text-black font-semibold hover:bg-emerald-400">Get started</a>
-          <a href="#sales" id="openSales4" data-cta="contact-sales" class="inline-flex items-center px-5 py-3 rounded-xl border border-white/20 text-white hover:bg-white/10">Book a demo</a>
+        <div class="mt-6 flex flex-wrap justify-center gap-3">
+          <a href="#signup" data-cta="get-started" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-500 text-black font-semibold hover:bg-emerald-400 flex-1 sm:flex-none min-w-[140px]">Get started</a>
+          <a href="#sales" id="openSales4" data-cta="contact-sales" class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-white/20 text-white hover:bg-white/10 flex-1 sm:flex-none min-w-[140px]">Book a demo</a>
         </div>
       </div>
     </section>
@@ -301,9 +324,43 @@
     const track = document.getElementById('ttrack');
     let idx = 0; setInterval(()=>{ idx=(idx+1)%{{ count($c['testimonials']) }}; track.style.transform=`translateX(-${idx*100}%)`; }, 5000);
 
+    // Mobile menu
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const line1 = document.getElementById('menuLine1');
+    const line2 = document.getElementById('menuLine2');
+    const line3 = document.getElementById('menuLine3');
+    let menuOpen = false;
+    mobileMenuBtn.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      mobileMenuBtn.setAttribute('aria-expanded', menuOpen);
+      mobileMenu.classList.toggle('hidden', !menuOpen);
+      document.body.classList.toggle('overflow-hidden', menuOpen);
+      if (menuOpen) {
+        line1.classList.add('rotate-45', 'translate-y-2');
+        line2.classList.add('opacity-0');
+        line3.classList.add('-rotate-45', '-translate-y-2');
+      } else {
+        line1.classList.remove('rotate-45', 'translate-y-2');
+        line2.classList.remove('opacity-0');
+        line3.classList.remove('-rotate-45', '-translate-y-2');
+      }
+    });
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuOpen = false;
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        mobileMenu.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+        line1.classList.remove('rotate-45', 'translate-y-2');
+        line2.classList.remove('opacity-0');
+        line3.classList.remove('-rotate-45', '-translate-y-2');
+      });
+    });
+
     // Sales modal
     const modal = document.getElementById('salesModal');
-    const openers = ['openSales','openSales2','openSales3','openSales4'].map(id=>document.getElementById(id));
+    const openers = ['openSales','openSales2','openSales3','openSales4','openSalesMobile'].map(id=>document.getElementById(id));
     const closers = [document.getElementById('closeSales'),document.getElementById('closeSales2'),document.getElementById('salesBackdrop')];
     openers.forEach(b=>b&&b.addEventListener('click',()=>{modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false');}));
     closers.forEach(b=>b&&b.addEventListener('click',()=>{modal.classList.add('hidden'); modal.setAttribute('aria-hidden','true');}));

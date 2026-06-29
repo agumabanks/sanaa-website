@@ -1,5 +1,6 @@
 /* Unified Navigation System */
 @import './navigation-system.css';
+@import './dashboard-custom.css';
 
 @tailwind base;
 @tailwind components;

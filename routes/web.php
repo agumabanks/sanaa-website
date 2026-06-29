@@ -2,6 +2,19 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+// Redirect soko.sanaa.ug → soko24.co
+if (request()->getHost() === 'soko.sanaa.ug') {
+    Route::get('{any}', function () {
+        return redirect('https://soko24.co' . request()->getRequestUri(), 301);
+    })->where('any', '.*');
+}
+
+// Google Search Console verification placeholder
+Route::get('/google-site-verification', function () {
+    return response('google-site-verification: [PASTE_CODE_HERE]', 200)
+        ->header('Content-Type', 'text/plain');
+});
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BusinessCategoryController;
@@ -173,6 +186,7 @@ Route::post('/contact', [ContactController::class, 'store'])
 Route::prefix('blog')->name('blog.')->group(function () {
     Route::get('/', [BlogController::class, 'index'])->name('index');
     Route::get('/feed', [BlogController::class, 'feed'])->name('feed');
+    Route::get('/feed.json', [BlogController::class, 'feedJson'])->name('feed.json');
     Route::get('/for-you', [BlogController::class, 'forYou'])->middleware('auth')->name('for-you');
     Route::get('/author/{author}/{slug?}', [BlogController::class, 'author'])->name('author');
     // Category and tag routes
@@ -475,10 +489,12 @@ Route::middleware([
         Route::post('/dashboard/policy/{key}', [PolicyController::class, 'update'])->name('dashboard.policy.update');
 
         Route::post('/dashboard/blog', [BlogController::class, 'store'])->name('dashboard.blog.store');
+        Route::post('/dashboard/blog/media', [BlogController::class, 'uploadInlineImage'])->name('dashboard.blog.media');
         Route::put('/dashboard/blog/{blog}', [BlogController::class, 'update'])->name('dashboard.blog.update');
         Route::delete('/dashboard/blog/{blog}', [BlogController::class, 'destroy'])->name('dashboard.blog.destroy');
         Route::patch('/dashboard/blog/{blog}/toggle-status', [BlogController::class, 'toggleStatus'])->name('dashboard.blog.toggle-status');
         Route::post('/dashboard/category', [BusinessCategoryController::class, 'store'])->name('dashboard.category.store');
+        Route::put('/dashboard/category/{type}/{category}', [BusinessCategoryController::class, 'update'])->name('dashboard.category.update');
         Route::post('/dashboard/team', [TeamController::class, 'store'])->name('dashboard.team.store');
         Route::put('/dashboard/team/{member}', [TeamController::class, 'update'])->name('dashboard.team.update');
         Route::delete('/dashboard/team/{member}', [TeamController::class, 'destroy'])->name('dashboard.team.destroy');

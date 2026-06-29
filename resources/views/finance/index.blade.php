@@ -1,8 +1,16 @@
 @extends('layouts.finance', [
-    'title' => 'Sanaa Finance SaaS | Financial Management for SACCOs and MFIs',
-    'metaDescription' => 'Sanaa Finance SaaS helps SACCOs, MFIs, money lenders, and business groups manage members, loans, repayments, and reporting in one system.',
+    'title' => 'Sanaa Finance SaaS — SACCO & MFI Management Software Uganda',
+    'metaDescription' => 'Cloud-based financial management software for SACCOs, MFIs, and money lenders in Uganda and East Africa. Loan tracking, member management, repayment schedules, and reporting.',
     'breadcrumbs' => [ ['name' => 'Overview'] ],
 ])
+
+@push('schema')
+    <x-schema-product
+        name="Sanaa Finance SaaS"
+        description="Cloud-based financial management software for SACCOs, MFIs, and money lenders in Uganda and East Africa."
+        url="https://sanaa.ug/finance"
+        category="FinanceApplication" />
+@endpush
 
 @section('content')
 {{-- Hero Section --}}
@@ -14,10 +22,10 @@
                     Built for Uganda
                 </span>
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900">
-                    Take total control of your <span class="text-emerald-600">cash flow</span>
+                    SACCO and MFI Management Software Built for Africa
                 </h1>
                 <p class="mt-6 text-lg text-gray-600 max-w-xl">
-                    Sanaa Finance is built for SACCOs, MFIs, money lenders, investment clubs, and schools that need clear loan tracking, member management, repayment schedules, and reporting.
+                    Sanaa Finance is the leading SACCO software Uganda trusts for loan tracking, member management, and regulatory reporting. Our cloud-based MFI loan management platform replaces spreadsheets with a cooperative management system East Africa can scale — from Kampala to Kinshasa. Built for SACCOs, microfinance institutions, money lenders, investment clubs, and schools that need clear repayment schedules, automated alerts, and Bank of Uganda-ready compliance.
                 </p>
                 <ul class="mt-6 grid grid-cols-2 gap-3 text-sm text-gray-700">
                     <li class="flex items-center gap-2">

@@ -29,8 +29,16 @@
     </style>
     @endpush
 
+    @push('schema')
+        <x-schema-product
+            name="Sanaa Cards"
+            description="Complete loyalty and membership card system for businesses in Uganda."
+            url="https://sanaa.ug/sanaa-cards"
+            category="BusinessApplication" />
+    @endpush
+
     {{-- HERO --}}
-    <section class="relative min-h-screen flex items-center pb-20 overflow-hidden bg-black" style="padding-top: 320px;">
+    <section class="relative min-h-screen flex items-center pt-32 sm:pt-40 md:pt-48 lg:pt-64 pb-20 overflow-hidden bg-black">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
@@ -60,7 +68,7 @@
                 </div>
                 <div class="relative hidden lg:block">
                     <div class="relative">
-                        <img src="{{ asset('storage/sanaa-cards/card1.png') }}" alt="Sanaa Loyalty Card" class="w-80 mx-auto rounded-2xl shadow-2xl float">
+                        <img src="{{ asset('storage/sanaa-cards/card1.png') }}" alt="Sanaa Loyalty Card" class="w-64 sm:w-72 md:w-80 mx-auto rounded-2xl shadow-2xl float">
                         <div class="absolute -bottom-4 -left-4 glass p-4 rounded-xl float" style="animation-delay:-2s">
                             <div class="text-xs text-emerald-400 font-bold uppercase mb-1">Rewards</div>
                             <div class="text-2xl font-black text-white">Live</div>

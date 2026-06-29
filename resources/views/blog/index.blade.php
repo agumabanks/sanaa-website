@@ -1,6 +1,14 @@
 {{-- resources/views/blog/index.blade.php --}}
 @extends('layouts.blog')
 
+@section('seo_title', $seoData['title'] ?? 'Sanaa Co. Blog')
+@section('seo_description', $seoData['description'] ?? 'Notes from the build. Finance, commerce, logistics, and infrastructure in Uganda, DRC, and South Africa. Expanding to Ethiopia.')
+@section('seo_image', $seoData['image'] ?? cdn_asset('storage/images/sanaa.png'))
+@section('seo_keywords', 'Sanaa blog, company insights, fintech insights, technology in Uganda, product strategy')
+@section('seo_type', 'website')
+@section('seo_robots', 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1')
+@section('seo_canonical', request()->fullUrl())
+
 @push('meta')
 @if(method_exists($blogs, 'onFirstPage'))
   @if(!$blogs->onFirstPage())
@@ -11,6 +19,48 @@
   @endif
 @endif
 <link rel="alternate" type="application/rss+xml" title="{{ config('app.name') }} Blog RSS" href="{{ route('blog.feed') }}" />
+<link rel="alternate" type="application/feed+json" title="{{ config('app.name') }} Blog JSON Feed" href="{{ route('blog.feed.json') }}" />
+<link rel="alternate" type="application/json" title="{{ config('app.name') }} Insights API" href="{{ url('/api/v1/insights') }}" />
+@endpush
+
+@push('schema')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": @json($seoData['title'] ?? 'Sanaa Co. Blog'),
+  "description": @json($seoData['description'] ?? 'Company insights from Sanaa'),
+  "url": @json(route('blog.index')),
+  "inLanguage": "en",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Sanaa Co.",
+    "url": @json(url('/')),
+    "logo": {
+      "@type": "ImageObject",
+      "url": @json(cdn_asset('storage/images/sanaa.png'))
+    }
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListOrder": "https://schema.org/ItemListOrderDescending",
+  "numberOfItems": {{ $blogs->count() }},
+  "itemListElement": [
+    @foreach($blogs as $index => $blog)
+    {
+      "@type": "ListItem",
+      "position": {{ $index + 1 }},
+      "url": @json($blog->url),
+      "name": @json($blog->title)
+    }@if(!$loop->last),@endif
+    @endforeach
+  ]
+}
+</script>
 @endpush
 
 @section('content')
@@ -392,7 +442,7 @@
                     <h3 class="text-lg font-bold group-hover:text-green-400 transition-colors">About Sanaa</h3>
                 </div>
                 <p class="text-sm text-gray-400 leading-relaxed text-center mb-4">
-                    Building digital infrastructure solutions across Africa. We believe in the power of minimalist design and profound simplicity.
+                    Sanaa builds finance, commerce, logistics, and infrastructure for African business. Registered in Uganda. Active in Uganda, DRC, and South Africa. Expanding to Ethiopia. Building since 2021.
                 </p>
                 <div class="text-center">
                     <a href="#" class="inline-flex items-center text-green-400 hover:text-green-300 text-sm font-medium transition-all duration-200 hover:scale-105 group">

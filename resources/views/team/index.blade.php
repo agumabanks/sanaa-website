@@ -1,5 +1,10 @@
 @extends('layouts.landing')
 
+@section('title', 'Our Team | ' . config('app.name'))
+@section('seo_title', 'Our Team | Sanaa Co. — Meet the People Building Africa\'s Digital Infrastructure')
+@section('seo_description', 'Meet the team behind Sanaa Co. — engineers, designers, and operators building finance, commerce, and logistics tools for African businesses.')
+@section('seo_keywords', 'Sanaa team, Aguma Banks Ibrahim, Sanaa leadership, Uganda fintech team, African tech talent')
+
 @section('content')
 <div class="container mx-auto py-12 px-4">
     <h1 class="text-3xl font-bold mb-8 text-center">Our Team</h1>

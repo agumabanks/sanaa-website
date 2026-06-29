@@ -1,6 +1,9 @@
 @extends('layouts.landing')
 
 @section('title', 'Hardware Rentals | ' . config('app.name'))
+@section('seo_title', 'Hardware Rentals | Sanaa Co. — POS & Tech Equipment')
+@section('seo_description', 'Rent POS hardware, tablets, and technology equipment for your business in Uganda. Flexible rental options for Soko 24 and Sanaa Finance deployments.')
+@section('seo_keywords', 'POS hardware rental Uganda, tablet rental, tech equipment rental, Sanaa hardware, business equipment Uganda')
 
 @section('content')
     <section class="py-12 bg-white">

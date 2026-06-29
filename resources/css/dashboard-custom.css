@@ -92,6 +92,48 @@ button:focus {
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
+.content-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.input-field {
+    width: 100%;
+    min-height: 2.75rem;
+    border-radius: 0.875rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: #ffffff;
+    color: #0f172a;
+    padding: 0.7rem 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+textarea.input-field {
+    min-height: 5rem;
+    resize: vertical;
+}
+
+.input-field:hover {
+    border-color: rgba(100, 116, 139, 0.45);
+}
+
+.input-field:focus {
+    background: #ffffff;
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+    outline: none;
+}
+
+.apple-transition {
+    transition: all 0.2s ease;
+}
+
+.apple-shadow-lg {
+    box-shadow: 0 24px 64px rgba(15, 23, 42, 0.18);
+}
+
 /* Gradient Backgrounds */
 .gradient-emerald {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);

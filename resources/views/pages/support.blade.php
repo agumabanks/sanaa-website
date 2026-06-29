@@ -1,6 +1,9 @@
 @extends('layouts.landing')
 
 @section('title', 'Support | ' . config('app.name'))
+@section('seo_title', 'Support | Sanaa Co. — Help Center & Customer Service')
+@section('seo_description', 'Get help with Sanaa products and services. Contact our support team for assistance with Soko 24, Sanaa Finance, Baraka 24, and other Sanaa platforms.')
+@section('seo_keywords', 'Sanaa support, Sanaa help, Soko 24 support, Sanaa Finance help, customer service Uganda')
 
 @section('content')
 <style>
@@ -41,57 +44,78 @@
         margin: -40px auto 0;
         padding: 0 20px;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
         gap: 30px;
         position: relative;
         z-index: 2;
     }
+
+    @media (max-width: 640px) {
+        .support-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 0 16px;
+        }
+        .support-card {
+            padding: 30px 20px !important;
+            min-height: auto;
+        }
+        .hero {
+            padding: 60px 16px 40px;
+        }
+        .hero h1 {
+            font-size: clamp(2rem, 6vw, 2.5rem);
+        }
+        .hero p {
+            font-size: 1rem;
+        }
+    }
     
     .support-card {
-        background: white !important;
-        border-radius: 20px !important;
-        padding: 40px 30px !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
-        transition: all 0.3s ease !important;
-        border: 1px solid rgba(0,0,0,0.05) !important;
+        background: white;
+        border-radius: 20px;
+        padding: 40px 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05);
         position: relative;
         overflow: hidden;
         min-height: 320px;
-        display: flex !important;
-        flex-direction: column !important;
+        display: flex;
+        flex-direction: column;
     }
     
     .support-card:hover {
-        transform: translateY(-5px) !important;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     }
     
     .card-icon {
-        width: 60px !important;
-        height: 60px !important;
-        background: linear-gradient(135deg, rgb(31, 193, 153) 0%, rgb(0, 178, 128) 100%) !important;
-        border-radius: 15px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        margin-bottom: 25px !important;
-        font-size: 24px !important;
-        color: white !important;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, rgb(31, 193, 153) 0%, rgb(0, 178, 128) 100%);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 25px;
+        font-size: 24px;
+        color: white;
         flex-shrink: 0;
     }
     
     .card-title {
-        font-size: 1.5rem !important;
-        font-weight: 600 !important;
-        margin-bottom: 15px !important;
-        color: #1d1d1f !important;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #1d1d1f;
         line-height: 1.3;
     }
     
     .card-description {
-        color: #6e6e73 !important;
-        margin-bottom: 25px !important;
-        line-height: 1.5 !important;
+        color: #6e6e73;
+        margin-bottom: 25px;
+        line-height: 1.5;
         flex-grow: 1;
         font-size: 1rem;
     }

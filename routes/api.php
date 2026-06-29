@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\Api\InsightController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -23,6 +24,12 @@ Route::middleware('throttle:60,1')->group(function () {
     // Categories & Tags
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/tags', [TagController::class, 'index']);
+
+    // Insights syndication API (cross-site consumption)
+    Route::get('/insights', [InsightController::class, 'index']);
+    Route::get('/insights/latest', [InsightController::class, 'latest']);
+    Route::get('/insights/manifest', [InsightController::class, 'manifest']);
+    Route::get('/insights/{blog:slug}', [InsightController::class, 'show']);
 });
 
 // Versioned API (recommended for external consumers)
@@ -39,4 +46,10 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
     // Categories & Tags
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/tags', [TagController::class, 'index']);
+
+    // Insights syndication API (cross-site consumption)
+    Route::get('/insights', [InsightController::class, 'index']);
+    Route::get('/insights/latest', [InsightController::class, 'latest']);
+    Route::get('/insights/manifest', [InsightController::class, 'manifest']);
+    Route::get('/insights/{blog:slug}', [InsightController::class, 'show']);
 });

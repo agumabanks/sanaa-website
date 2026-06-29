@@ -246,10 +246,11 @@ class SiteMenuSeeder extends Seeder
         ]);
 
         foreach ([
-            ['Services', 'services', 1],
-            ['Products', 'products', 2],
-            ['Sanaa Cards', 'sanaa-cards.index', 3],
-            ['Pricing', 'prices', 4],
+            ['Services', 'services', 1, null, false],
+            ['Products', 'products', 2, null, false],
+            ['Sanaa Cards', null, 3, 'https://cards.sanaa.ug', true],
+            ['Pricing', 'prices', 4, null, false],
+            ['Sanaa AI', null, 5, 'https://ai.sanaa.co', true],
         ] as $item) {
             SiteMenu::create([
                 'location' => 'footer',
@@ -257,6 +258,8 @@ class SiteMenuSeeder extends Seeder
                 'route_name' => $item[1],
                 'parent_id' => $footerProducts->id,
                 'sort_order' => $item[2],
+                'url' => $item[3],
+                'is_external' => $item[4],
             ]);
         }
 

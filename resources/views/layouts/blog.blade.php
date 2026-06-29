@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @include('partials.seo')
+    @stack('seo')
 
     {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">

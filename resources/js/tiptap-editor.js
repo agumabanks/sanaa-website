@@ -23,11 +23,29 @@ export function initTiptapEditor(mountPoint, hiddenInput, options = {}) {
         placeholder = 'Start writing your story...',
         initialContent = '',
         onUpdate = null,
+        jsonInput = null,
+        uploadUrl = '',
     } = options;
+
+    const editorStateInput = jsonInput || document.getElementById('content_json');
+    const uploadEndpoint = uploadUrl
+        || mountPoint.dataset.imageUploadUrl
+        || mountPoint.closest('form')?.dataset.imageUploadUrl
+        || '';
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
     // Create toolbar
     const toolbar = createToolbar();
     mountPoint.appendChild(toolbar);
+
+    const imageTools = createImageTools();
+    mountPoint.appendChild(imageTools);
+
+    const imageUploadInput = document.createElement('input');
+    imageUploadInput.type = 'file';
+    imageUploadInput.accept = 'image/*';
+    imageUploadInput.className = 'hidden';
+    mountPoint.appendChild(imageUploadInput);
 
     // Create editor container
     const editorContainer = document.createElement('div');
@@ -67,7 +85,7 @@ export function initTiptapEditor(mountPoint, hiddenInput, options = {}) {
                 types: ['heading', 'paragraph'],
             }),
         ],
-        content: initialContent || hiddenInput.value || '',
+        content: normalizeInitialContent(initialContent || hiddenInput.value || ''),
         editorProps: {
             attributes: {
                 class: 'tiptap-prose',
@@ -75,15 +93,30 @@ export function initTiptapEditor(mountPoint, hiddenInput, options = {}) {
         },
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
+            const json = editor.getJSON();
             hiddenInput.value = html;
+            if (editorStateInput) {
+                editorStateInput.value = JSON.stringify(json);
+            }
 
             // Update stats
             updateStatusBar(statusBar, editor);
+
+            document.dispatchEvent(new CustomEvent('tiptap:updated', {
+                detail: {
+                    html,
+                    json,
+                    text: editor.getText(),
+                    wordCount: editor.storage.characterCount.words(),
+                    charCount: editor.storage.characterCount.characters(),
+                },
+            }));
 
             // Custom callback
             if (onUpdate) {
                 onUpdate({
                     html,
+                    json,
                     text: editor.getText(),
                     wordCount: editor.storage.characterCount.words(),
                     charCount: editor.storage.characterCount.characters(),
@@ -92,15 +125,31 @@ export function initTiptapEditor(mountPoint, hiddenInput, options = {}) {
         },
         onSelectionUpdate: ({ editor }) => {
             updateToolbarState(toolbar, editor);
+            syncImageTools(imageTools, editor);
         },
     });
 
     // Attach toolbar handlers
-    attachToolbarHandlers(toolbar, editor);
+    attachToolbarHandlers(toolbar, editor, {
+        imageTools,
+        imageUploadInput,
+        uploadEndpoint,
+        csrfToken,
+        editorContainer,
+    });
+    attachImageInteractions(editor, {
+        mountPoint,
+        imageTools,
+        imageUploadInput,
+        uploadEndpoint,
+        csrfToken,
+        editorContainer,
+    });
 
     // Initial update
     updateStatusBar(statusBar, editor);
     updateToolbarState(toolbar, editor);
+    syncImageTools(imageTools, editor);
 
     return editor;
 }
@@ -237,6 +286,38 @@ function createToolbar() {
     return toolbar;
 }
 
+function createImageTools() {
+    const imageTools = document.createElement('div');
+    imageTools.className = 'tiptap-media-popover hidden';
+    imageTools.innerHTML = `
+        <div class="tiptap-media-card">
+            <div class="tiptap-media-header">
+                <div>
+                    <strong>Add Or Edit Image</strong>
+                    <p>Upload from your device or paste an existing image URL.</p>
+                </div>
+                <button type="button" class="tiptap-media-close" data-action="imageClose" aria-label="Close image tool">x</button>
+            </div>
+            <label class="tiptap-media-field">
+                <span>Image URL</span>
+                <input type="url" placeholder="https://example.com/photo.jpg" data-image-src>
+            </label>
+            <label class="tiptap-media-field">
+                <span>Alt Text</span>
+                <input type="text" placeholder="Describe the image for readers and SEO" data-image-alt maxlength="255">
+            </label>
+            <div class="tiptap-media-actions">
+                <button type="button" class="tiptap-media-btn secondary" data-action="imageUpload">Upload Photo</button>
+                <button type="button" class="tiptap-media-btn secondary" data-action="imageRemove">Remove</button>
+                <button type="button" class="tiptap-media-btn primary" data-action="imageApply">Insert Image</button>
+            </div>
+            <p class="tiptap-media-hint" data-image-status>Tip: drag and drop or paste screenshots directly into the editor.</p>
+        </div>
+    `;
+
+    return imageTools;
+}
+
 /**
  * Create the status bar
  */
@@ -279,11 +360,16 @@ function updateStatusBar(statusBar, editor) {
  */
 function updateToolbarState(toolbar, editor) {
     // Text formatting buttons
-    const actions = ['bold', 'italic', 'underline', 'strike', 'blockquote', 'bulletList', 'orderedList', 'codeBlock'];
+    const actions = ['bold', 'italic', 'underline', 'strike', 'blockquote', 'bulletList', 'orderedList', 'codeBlock', 'image'];
     actions.forEach(action => {
         const btn = toolbar.querySelector(`[data-action="${action}"]`);
         if (btn) {
-            btn.classList.toggle('active', editor.isActive(action === 'bulletList' ? 'bulletList' : action === 'orderedList' ? 'orderedList' : action));
+            const activeName = action === 'orderedList'
+                ? 'orderedList'
+                : action === 'bulletList'
+                    ? 'bulletList'
+                    : action;
+            btn.classList.toggle('active', editor.isActive(activeName));
         }
     });
 
@@ -317,10 +403,46 @@ function updateToolbarState(toolbar, editor) {
     }
 }
 
+function syncImageTools(imageTools, editor) {
+    const srcInput = imageTools.querySelector('[data-image-src]');
+    const altInput = imageTools.querySelector('[data-image-alt]');
+    const status = imageTools.querySelector('[data-image-status]');
+    const imageAttrs = editor.getAttributes('image');
+    const hasSelectedImage = editor.isActive('image');
+    const applyButton = imageTools.querySelector('[data-action="imageApply"]');
+    const removeButton = imageTools.querySelector('[data-action="imageRemove"]');
+
+    if (hasSelectedImage) {
+        srcInput.value = imageAttrs.src || '';
+        altInput.value = imageAttrs.alt || '';
+        if (status) {
+            status.textContent = 'Editing selected image.';
+        }
+        if (applyButton) {
+            applyButton.textContent = 'Update Image';
+        }
+        if (removeButton) {
+            removeButton.disabled = false;
+        }
+    } else {
+        if (status) {
+            status.textContent = 'Tip: drag and drop or paste screenshots directly into the editor.';
+        }
+        if (applyButton) {
+            applyButton.textContent = 'Insert Image';
+        }
+        if (removeButton) {
+            removeButton.disabled = true;
+        }
+    }
+}
+
 /**
  * Attach click handlers to toolbar buttons
  */
-function attachToolbarHandlers(toolbar, editor) {
+function attachToolbarHandlers(toolbar, editor, context) {
+    const { imageTools, imageUploadInput, uploadEndpoint, csrfToken, editorContainer } = context;
+
     // Undo/Redo
     toolbar.querySelector('[data-action="undo"]')?.addEventListener('click', () => {
         editor.chain().focus().undo().run();
@@ -397,10 +519,145 @@ function attachToolbarHandlers(toolbar, editor) {
 
     // Image
     toolbar.querySelector('[data-action="image"]')?.addEventListener('click', () => {
-        const url = window.prompt('Enter image URL:');
-        if (url) {
-            editor.chain().focus().setImage({ src: url }).run();
+        toggleImageTools(imageTools, editor);
+    });
+
+    imageTools.querySelector('[data-action="imageClose"]')?.addEventListener('click', () => {
+        imageTools.classList.add('hidden');
+    });
+
+    imageTools.querySelector('[data-action="imageUpload"]')?.addEventListener('click', () => {
+        if (uploadEndpoint) {
+            imageUploadInput.click();
+        } else {
+            setImageStatus(imageTools, 'Image upload is not configured for this editor.');
         }
+    });
+
+    imageTools.querySelector('[data-action="imageApply"]')?.addEventListener('click', () => {
+        const src = imageTools.querySelector('[data-image-src]')?.value.trim();
+        const alt = imageTools.querySelector('[data-image-alt]')?.value.trim() || '';
+
+        if (!src) {
+            setImageStatus(imageTools, 'Add an image URL or upload a file first.');
+            return;
+        }
+
+        applyImage(editor, { src, alt });
+        setImageStatus(imageTools, 'Image inserted.');
+        imageTools.classList.add('hidden');
+    });
+
+    imageTools.querySelector('[data-action="imageRemove"]')?.addEventListener('click', () => {
+        if (!editor.isActive('image')) {
+            return;
+        }
+
+        editor.chain().focus().deleteSelection().run();
+        syncImageTools(imageTools, editor);
+        setImageStatus(imageTools, 'Image removed.');
+    });
+
+    document.addEventListener('tiptap:open-image', () => {
+        toggleImageTools(imageTools, editor, true);
+    });
+
+    document.addEventListener('click', (event) => {
+        if (imageTools.classList.contains('hidden')) {
+            return;
+        }
+
+        const imageButton = toolbar.querySelector('[data-action="image"]');
+        if (
+            !imageTools.contains(event.target)
+            && !imageButton?.contains(event.target)
+            && !editorContainer.contains(event.target)
+        ) {
+            imageTools.classList.add('hidden');
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            imageTools.classList.add('hidden');
+        }
+    });
+
+    imageUploadInput.addEventListener('change', async (event) => {
+        const file = event.target.files?.[0];
+        if (!file) {
+            return;
+        }
+
+        try {
+            const uploaded = await uploadEditorImage(file, uploadEndpoint, csrfToken, imageTools);
+            applyImage(editor, {
+                src: uploaded.url,
+                alt: uploaded.alt || inferAltText(file.name),
+            });
+            setImageStatus(imageTools, 'Photo uploaded and inserted.');
+            imageTools.classList.add('hidden');
+        } catch (error) {
+            setImageStatus(imageTools, error.message || 'Upload failed.');
+        } finally {
+            imageUploadInput.value = '';
+        }
+    });
+}
+
+function attachImageInteractions(editor, context) {
+    const { mountPoint, imageTools, uploadEndpoint, csrfToken, editorContainer } = context;
+
+    const handleFileInsert = async (file) => {
+        if (!file || !uploadEndpoint) {
+            setImageStatus(imageTools, 'Image upload is not configured for this editor.');
+            return;
+        }
+
+        try {
+            const uploaded = await uploadEditorImage(file, uploadEndpoint, csrfToken, imageTools);
+            applyImage(editor, {
+                src: uploaded.url,
+                alt: uploaded.alt || inferAltText(file.name),
+            });
+            setImageStatus(imageTools, 'Photo uploaded and inserted.');
+        } catch (error) {
+            setImageStatus(imageTools, error.message || 'Upload failed.');
+        }
+    };
+
+    editorContainer.addEventListener('dragover', (event) => {
+        const hasImage = Array.from(event.dataTransfer?.files || []).some((file) => file.type.startsWith('image/'));
+        if (!hasImage) {
+            return;
+        }
+        event.preventDefault();
+        mountPoint.classList.add('is-dragging-media');
+    });
+
+    editorContainer.addEventListener('dragleave', () => {
+        mountPoint.classList.remove('is-dragging-media');
+    });
+
+    editorContainer.addEventListener('drop', async (event) => {
+        const file = Array.from(event.dataTransfer?.files || []).find((candidate) => candidate.type.startsWith('image/'));
+        if (!file) {
+            return;
+        }
+
+        event.preventDefault();
+        mountPoint.classList.remove('is-dragging-media');
+        await handleFileInsert(file);
+    });
+
+    editorContainer.addEventListener('paste', async (event) => {
+        const file = Array.from(event.clipboardData?.files || []).find((candidate) => candidate.type.startsWith('image/'));
+        if (!file) {
+            return;
+        }
+
+        event.preventDefault();
+        await handleFileInsert(file);
     });
 }
 
@@ -408,11 +665,14 @@ function attachToolbarHandlers(toolbar, editor) {
 document.addEventListener('DOMContentLoaded', () => {
     const mountPoint = document.getElementById('tiptap-editor-mount');
     const hiddenInput = document.getElementById('body');
+    const jsonInput = document.getElementById('content_json');
     
     if (mountPoint && hiddenInput) {
         window.tiptapEditor = initTiptapEditor(mountPoint, hiddenInput, {
             placeholder: 'Start writing your story...',
             initialContent: hiddenInput.value,
+            jsonInput,
+            uploadUrl: mountPoint.dataset.imageUploadUrl || mountPoint.closest('form')?.dataset.imageUploadUrl || '',
             onUpdate: ({ wordCount }) => {
                 // Update preview if it exists
                 const previewBody = document.getElementById('previewBody');
@@ -428,5 +688,110 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+function toggleImageTools(imageTools, editor, forceOpen = false) {
+    if (forceOpen) {
+        imageTools.classList.remove('hidden');
+    } else {
+        imageTools.classList.toggle('hidden');
+    }
+
+    if (!imageTools.classList.contains('hidden')) {
+        syncImageTools(imageTools, editor);
+        imageTools.querySelector('[data-image-src]')?.focus();
+    }
+}
+
+function setImageStatus(imageTools, message) {
+    const status = imageTools.querySelector('[data-image-status]');
+    if (status) {
+        status.textContent = message;
+    }
+}
+
+function applyImage(editor, { src, alt = '' }) {
+    if (editor.isActive('image')) {
+        editor.chain().focus().updateAttributes('image', {
+            src,
+            alt,
+            title: alt,
+        }).run();
+        return;
+    }
+
+    editor.chain().focus().setImage({
+        src,
+        alt,
+        title: alt,
+    }).createParagraphNear().run();
+}
+
+async function uploadEditorImage(file, uploadEndpoint, csrfToken, imageTools) {
+    document.dispatchEvent(new CustomEvent('tiptap:upload-state', {
+        detail: { state: 'uploading', fileName: file.name },
+    }));
+    setImageStatus(imageTools, `Uploading ${file.name}...`);
+
+    const payload = new FormData();
+    payload.append('image', file);
+    payload.append('alt', inferAltText(file.name));
+
+    const response = await fetch(uploadEndpoint, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json',
+        },
+        body: payload,
+    });
+
+    if (!response.ok) {
+        document.dispatchEvent(new CustomEvent('tiptap:upload-state', {
+            detail: { state: 'error', fileName: file.name },
+        }));
+        throw new Error('The image could not be uploaded.');
+    }
+
+    const uploaded = await response.json();
+    document.dispatchEvent(new CustomEvent('tiptap:upload-state', {
+        detail: { state: 'uploaded', fileName: file.name, url: uploaded.url },
+    }));
+
+    return uploaded;
+}
+
+function inferAltText(fileName) {
+    return String(fileName || '')
+        .replace(/\.[a-z0-9]+$/i, '')
+        .replace(/[-_]+/g, ' ')
+        .trim();
+}
+
+function normalizeInitialContent(content) {
+    const raw = String(content || '').trim();
+    if (!raw) {
+        return '';
+    }
+
+    const hasHtml = /<\/?[a-z][\s\S]*>/i.test(raw);
+    if (hasHtml) {
+        return raw;
+    }
+
+    return raw
+        .split(/\n{2,}/)
+        .map(paragraph => `<p>${escapeHtml(paragraph).replace(/\n/g, '<br>')}</p>`)
+        .join('');
+}
+
+function escapeHtml(text) {
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
 
 export default { initTiptapEditor };

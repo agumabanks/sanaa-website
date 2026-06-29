@@ -7,6 +7,33 @@
 @section('seo_author', $author->name)
 
 @push('schema')
+{{-- Person Schema for Author --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": @json($author->name),
+  "url": @json($author->author_url),
+  "image": @json($author->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($author->name) . '&background=00ff88&color=000000'),
+  "jobTitle": "Founder & CEO",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Sanaa Co.",
+    "url": "https://sanaa.ug"
+  },
+  "sameAs": [
+    "https://sanaa.ug",
+    "https://twitter.com/sanaaco"
+  ],
+  "description": @json('Founder of Sanaa Co. Writing about building the digital backbone for Africa\'s next economy.'),
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": @json($author->author_url)
+  }
+}
+</script>
+
+{{-- Collection Page Schema --}}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -33,6 +60,28 @@
       @endforeach
     ]
   }
+}
+</script>
+
+{{-- BreadcrumbList Schema --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Sanaa Blog",
+      "item": @json(route('blog.index'))
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": @json($author->name),
+      "item": @json($author->author_url)
+    }
+  ]
 }
 </script>
 @endpush

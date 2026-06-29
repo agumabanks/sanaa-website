@@ -1,15 +1,27 @@
 @extends('layouts.landing')
 
 @section('title', 'Policies & Legal Documents | ' . config('app.name'))
-@section('description', 'Comprehensive collection of our policies, terms, privacy notices, and legal documents.')
+@section('seo_title', 'Policies & Legal Documents | Sanaa Co.')
+@section('seo_description', 'Comprehensive collection of Sanaa policies, terms of service, privacy notices, security policies, and legal documents.')
+@section('seo_keywords', 'Sanaa privacy policy, Sanaa terms, legal documents, data protection Uganda, Sanaa policies')
 
 @push('styles')
 <style>
 .policy-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     gap: 2rem;
     margin-top: 2rem;
+}
+
+@media (max-width: 640px) {
+    .policy-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+    .policy-card {
+        padding: 1.5rem;
+    }
 }
 
 .policy-card {

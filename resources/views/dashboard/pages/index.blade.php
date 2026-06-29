@@ -17,7 +17,7 @@
       <div class="mb-4 p-3 rounded bg-green-100 text-green-800">{{ session('success') }}</div>
     @endif
 
-    <div class="bg-white shadow rounded overflow-hidden">
+    <div class="bg-white shadow rounded overflow-hidden overflow-x-auto">
       <table class="min-w-full">
         <thead>
           <tr class="bg-gray-50 text-left text-gray-700">

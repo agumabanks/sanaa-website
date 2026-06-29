@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/blog.js',
                 'resources/js/tiptap-editor.js',
+                'resources/js/blog-admin-editor.js',
             ],
             refresh: true,
         }),

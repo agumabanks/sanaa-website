@@ -1,6 +1,9 @@
 @extends('layouts.landing')
 
 @section('title', 'Careers | ' . config('app.name'))
+@section('seo_title', 'Careers | Sanaa Co. — Join the Team Building Africa\'s Digital Economy')
+@section('seo_description', 'Join Sanaa Co. and help build finance, commerce, and logistics tools for African businesses. View open positions in engineering, design, operations, and more.')
+@section('seo_keywords', 'Sanaa careers, Sanaa jobs, Uganda tech jobs, fintech careers Africa, Sanaa hiring, software engineer Uganda')
 
 @section('content')
     <!-- Hero Section -->

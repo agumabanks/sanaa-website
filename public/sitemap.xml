@@ -1,147 +1,172 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+    <url>
     <loc>https://sanaa.ug/</loc>
-        <changefreq>daily</changefreq>    <priority>1.0</priority>  </url>
-  <url>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/about</loc>
-        <changefreq>monthly</changefreq>    <priority>0.8</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/company</loc>
-        <changefreq>monthly</changefreq>    <priority>0.8</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/products</loc>
-        <changefreq>weekly</changefreq>    <priority>0.8</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/services</loc>
-        <changefreq>weekly</changefreq>    <priority>0.8</priority>  </url>
-  <url>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/careers</loc>
-        <changefreq>weekly</changefreq>    <priority>0.7</priority>  </url>
-  <url>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/partners</loc>
-        <changefreq>monthly</changefreq>    <priority>0.7</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/team</loc>
-        <changefreq>monthly</changefreq>    <priority>0.7</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/contact</loc>
-        <changefreq>monthly</changefreq>    <priority>0.8</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/support</loc>
-        <changefreq>monthly</changefreq>    <priority>0.7</priority>  </url>
-  <url>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/investor-relations</loc>
-        <changefreq>monthly</changefreq>    <priority>0.7</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/why-sanaa</loc>
-        <changefreq>monthly</changefreq>    <priority>0.7</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/blog</loc>
-        <changefreq>daily</changefreq>    <priority>0.9</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/policies</loc>
-        <changefreq>monthly</changefreq>    <priority>0.5</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/policies/privacy-notice</loc>
-        <changefreq>monthly</changefreq>    <priority>0.5</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/policies/terms-conditions</loc>
-        <changefreq>monthly</changefreq>    <priority>0.5</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/developer-platforms</loc>
-        <changefreq>monthly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://sanaa.ug/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://sanaa.ug/prices</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/finance</loc>
-        <changefreq>weekly</changefreq>    <priority>0.8</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/overview</loc>
-        <changefreq>monthly</changefreq>    <priority>0.7</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/pricing</loc>
-        <changefreq>monthly</changefreq>    <priority>0.7</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/cards</loc>
-        <changefreq>monthly</changefreq>    <priority>0.7</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/technologies</loc>
-        <changefreq>monthly</changefreq>    <priority>0.7</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/team</loc>
-        <changefreq>monthly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/communities</loc>
-        <changefreq>monthly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/compliance</loc>
-        <changefreq>monthly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/resources</loc>
-        <changefreq>monthly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/contact-sales</loc>
-        <changefreq>monthly</changefreq>    <priority>0.7</priority>  </url>
-  <url>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+            </url>
+    <url>
+    <loc>https://sanaa.ug/sanaa-cards</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+            </url>
+    <url>
+    <loc>https://sanaa.ug/sanaa-cloud</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+            </url>
+    <url>
+    <loc>https://sanaa.ug/blog</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+            </url>
+    <url>
+    <loc>https://sanaa.ug/blog/systems-are-the-real-foundation-of-business-success-by-nuwagaba-felix-coo-sanaa-co</loc>
+    <lastmod>2026-05-02T18:20:37+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://sanaa.ug/blog/the-reason-your-lending-business-isnt-growing-isnt-capital-its-control</loc>
+    <lastmod>2026-05-02T18:20:18+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://sanaa.ug/blog/i-dont-know-if-i-can-do-this-anymore</loc>
+    <lastmod>2026-05-02T23:26:55+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/introducing-soko-studio-create-high-converting-product-ads-in-minutes-right-inside-soko-24</loc>
-    <lastmod>2026-01-17T18:43:25+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-01T23:58:12+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/born-fighter-the-natural-born-leader-even-if-nobody-sees-it-yet</loc>
-    <lastmod>2026-01-15T06:49:01+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-02T19:37:01+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/fail-forward-how-to-turn-mistakes-into-momentum-without-hating-yourself</loc>
-    <lastmod>2026-01-14T17:05:43+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-02T18:20:48+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/the-tragedy-of-kafiti-the-village-wag-part-7-the-way-of-life</loc>
-    <lastmod>2026-01-13T11:35:25+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-02T19:37:35+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/sanaa-teenage-talk-growing-a-new-generation-of-african-dreamers</loc>
-    <lastmod>2026-01-17T14:00:22+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-02T19:38:12+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/soko24-business-from-stock-shelf-to-social-feed-in-one-click</loc>
-    <lastmod>2026-01-16T23:59:36+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-02T18:21:15+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/aguma-banks-ibrahim-building-the-apple-of-africa</loc>
-    <lastmod>2026-01-14T10:06:34+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-02T19:38:50+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/how-sanaa-media-empowers-african-content-creators</loc>
-    <lastmod>2026-01-17T00:12:26+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-02T21:23:48+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/area-wise-products-search-soko24</loc>
-    <lastmod>2026-01-16T04:38:33+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-04-30T19:01:06+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/empowering-saccos-money-lenders-sanaa-finance-strategic-edge</loc>
-    <lastmod>2026-01-15T06:49:04+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-01T20:25:43+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/reducing-costs-amplifying-impact-sanaa-media-automation-tools</loc>
-    <lastmod>2026-01-13T03:47:09+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-02T00:21:03+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/boosting-sales-reach-soko-24</loc>
-    <lastmod>2026-01-15T06:49:05+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-02T19:05:05+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/sanaa-cards-smart-secure-payments</loc>
-    <lastmod>2026-01-15T06:48:59+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-04-30T20:33:56+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/sanaa-smart-cards-revolutionising-sme-finance-and-cross-border-trade-in-the-eac</loc>
-    <lastmod>2026-01-17T18:43:25+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-02T04:30:03+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/how-digital-saccos-can-level-up-breaking-the-mobile-money-monopoly-with-tech</loc>
-    <lastmod>2026-01-17T18:43:26+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
+    <lastmod>2026-05-02T21:29:28+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
     <loc>https://sanaa.ug/blog/aguma-banks-ibrahim-the-future-of-money-lending-in-uganda-and-the-eac</loc>
-    <lastmod>2026-01-17T10:59:40+00:00</lastmod>    <changefreq>weekly</changefreq>    <priority>0.6</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/p/overview</loc>
-    <lastmod>2025-12-06T04:02:37+00:00</lastmod>    <changefreq>monthly</changefreq>    <priority>0.5</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/p/mobile-money-integration</loc>
-    <lastmod>2025-12-06T04:02:37+00:00</lastmod>    <changefreq>monthly</changefreq>    <priority>0.5</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/p/sacco-management</loc>
-    <lastmod>2025-12-06T04:02:37+00:00</lastmod>    <changefreq>monthly</changefreq>    <priority>0.5</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/p/school-fee-collection</loc>
-    <lastmod>2025-12-06T04:02:37+00:00</lastmod>    <changefreq>monthly</changefreq>    <priority>0.5</priority>  </url>
-  <url>
-    <loc>https://sanaa.ug/finance/p/business-loans</loc>
-    <lastmod>2025-12-06T04:02:37+00:00</lastmod>    <changefreq>monthly</changefreq>    <priority>0.5</priority>  </url>
+    <lastmod>2026-05-02T04:31:24+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
 </urlset>

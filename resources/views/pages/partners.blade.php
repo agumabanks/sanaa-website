@@ -1,6 +1,9 @@
 @extends('layouts.landing')
 
 @section('title', 'Partners | ' . config('app.name'))
+@section('seo_title', 'Partners | Sanaa Co. — Strategic Partners & Integrations')
+@section('seo_description', 'Discover Sanaa\'s partners and integrations. We work with banks, telcos, and technology providers to deliver seamless financial and commerce solutions across Uganda and Africa.')
+@section('seo_keywords', 'Sanaa partners, Soko24 integrations, MTN Mobile Money, Airtel Money, Uganda fintech partners, African business partners')
 
 @section('content')
     <section class="py-12 bg-white">

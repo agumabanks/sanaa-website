@@ -25,7 +25,7 @@
     @endpush
 
     {{-- Hero --}}
-    <section class="pb-16 bg-black relative overflow-hidden" style="padding-top: 384px;">
+    <section class="pt-32 sm:pt-40 md:pt-48 lg:pt-64 pb-16 bg-black relative overflow-hidden">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-emerald-500/10 via-transparent to-transparent"></div>

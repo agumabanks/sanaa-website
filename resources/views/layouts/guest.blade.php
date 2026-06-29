@@ -5,8 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         @include('partials.seo')
 
+        {{-- Resource Hints for Performance --}}
+        <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+        <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+        <link rel="dns-prefetch" href="https://fonts.bunny.net">
+        <link rel="dns-prefetch" href="https://www.gstatic.com">
+
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
 

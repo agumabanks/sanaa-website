@@ -1,7 +1,9 @@
 @extends('layouts.landing')
 
 @section('title', 'About Sanaa | ' . config('app.name'))
-@section('meta_description', 'Sanaa is building the digital backbone for Africa\'s next economy - modern tools for education, business, and finance for millions of Africans.')
+@section('seo_title', 'About Sanaa | Building the Digital Backbone for Africa\'s Next Economy')
+@section('seo_description', 'Sanaa is building the digital backbone for Africa\'s next economy - modern tools for education, business, and finance for millions of Africans.')
+@section('seo_keywords', 'Sanaa Co, Sanaa Uganda, Aguma Banks Ibrahim, African fintech, Uganda technology, Soko24, Baraka 24, EduOS')
 
 @section('content')
 {{-- Hero Section --}}

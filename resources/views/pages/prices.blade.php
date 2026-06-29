@@ -55,7 +55,7 @@
     <div class="max-w-6xl mx-auto px-6 py-28">
         <div class="max-w-3xl">
             <p class="text-xs uppercase tracking-[0.25em] text-gray-500">Sanaa POS Pricing</p>
-            <h1 class="mt-6 text-5xl font-light tracking-tight">Pricing for the POS layer, not the whole company.</h1>
+            <h1 class="mt-6 text-3xl sm:text-4xl md:text-5xl font-light tracking-tight">Pricing for the POS layer, not the whole company.</h1>
             <p class="mt-6 text-lg text-gray-300 leading-8">Sanaa POS has its own pricing. Soko 24, Baraka 24, and Sanaa Finance SaaS are priced separately because they solve different operating problems.</p>
         </div>
 
@@ -63,7 +63,7 @@
             @foreach($plans as $plan)
                 <article class="rounded-3xl border border-white/10 bg-white/5 p-8">
                     <p class="text-sm uppercase tracking-[0.2em] text-gray-500">{{ $plan['name'] }}</p>
-                    <h2 class="mt-4 text-4xl font-light">{{ $plan['price'] }}</h2>
+                    <h2 class="mt-4 text-3xl sm:text-4xl font-light">{{ $plan['price'] }}</h2>
                     <p class="mt-2 text-gray-400">{{ $plan['period'] }}</p>
                     <p class="mt-5 text-gray-300 leading-7">{{ $plan['description'] }}</p>
                     <ul class="mt-6 space-y-3 text-gray-300">

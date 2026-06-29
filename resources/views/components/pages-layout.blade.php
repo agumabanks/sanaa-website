@@ -6,9 +6,15 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @include('partials.seo')
+    @stack('seo')
+
+    {{-- Resource Hints for Performance --}}
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.bunny.net">
+    <link rel="dns-prefetch" href="https://www.gstatic.com">
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     {{-- Favicon --}}
@@ -27,7 +33,7 @@
     @include('components.header')
 
     <!-- Page Content -->
-    <main class="page-content pt-16">
+    <main class="page-content pt-24 md:pt-28">
         {{ $slot }}
     </main>
 

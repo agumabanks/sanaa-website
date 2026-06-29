@@ -2,109 +2,73 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Blog;
-use App\Models\FinancePage;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\File;
+use Illuminate\Console\Command;
+use Spatie\Sitemap\Sitemap;
+use Spatie\Sitemap\Tags\Url;
 
 class GenerateSitemap extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'sitemap:sanaa';
+    protected $signature = 'sitemap:generate';
+    protected $description = 'Generate the public/sitemap.xml file';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Generate the sitemap.xml file for sanaa.ug';
-
-    private const BASE_URL = 'https://sanaa.ug';
-
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+    public function handle(): int
     {
-        $this->info('Generating sitemap...');
+        $sitemap = Sitemap::create();
+        $base = 'https://sanaa.ug';
 
-        $items = [];
+        // Homepage
+        $sitemap->add(Url::create("{$base}/")
+            ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+            ->setPriority(1.0));
 
-        // Static pages
+        // Static pages (monthly, 0.8)
         $staticPages = [
-            '/' => ['priority' => '1.0', 'changefreq' => 'daily'],
-            '/about' => ['priority' => '0.8', 'changefreq' => 'monthly'],
-            '/company' => ['priority' => '0.8', 'changefreq' => 'monthly'],
-            '/products' => ['priority' => '0.8', 'changefreq' => 'weekly'],
-            '/services' => ['priority' => '0.8', 'changefreq' => 'weekly'],
-            '/careers' => ['priority' => '0.7', 'changefreq' => 'weekly'],
-            '/partners' => ['priority' => '0.7', 'changefreq' => 'monthly'],
-            '/team' => ['priority' => '0.7', 'changefreq' => 'monthly'],
-            '/contact' => ['priority' => '0.8', 'changefreq' => 'monthly'],
-            '/support' => ['priority' => '0.7', 'changefreq' => 'monthly'],
-            '/investor-relations' => ['priority' => '0.7', 'changefreq' => 'monthly'],
-            '/why-sanaa' => ['priority' => '0.7', 'changefreq' => 'monthly'],
-            '/blog' => ['priority' => '0.9', 'changefreq' => 'daily'],
-            '/policies' => ['priority' => '0.5', 'changefreq' => 'monthly'],
-            '/policies/privacy-notice' => ['priority' => '0.5', 'changefreq' => 'monthly'],
-            '/policies/terms-conditions' => ['priority' => '0.5', 'changefreq' => 'monthly'],
-            '/developer-platforms' => ['priority' => '0.6', 'changefreq' => 'monthly'],
-            '/finance' => ['priority' => '0.8', 'changefreq' => 'weekly'],
-            '/finance/overview' => ['priority' => '0.7', 'changefreq' => 'monthly'],
-            '/finance/pricing' => ['priority' => '0.7', 'changefreq' => 'monthly'],
-            '/finance/cards' => ['priority' => '0.7', 'changefreq' => 'monthly'],
-            '/finance/technologies' => ['priority' => '0.7', 'changefreq' => 'monthly'],
-            '/finance/team' => ['priority' => '0.6', 'changefreq' => 'monthly'],
-            '/finance/communities' => ['priority' => '0.6', 'changefreq' => 'monthly'],
-            '/finance/compliance' => ['priority' => '0.6', 'changefreq' => 'monthly'],
-            '/finance/resources' => ['priority' => '0.6', 'changefreq' => 'monthly'],
-            '/finance/contact-sales' => ['priority' => '0.7', 'changefreq' => 'monthly'],
+            '/about',
+            '/careers',
+            '/partners',
+            '/investor-relations',
+            '/contact',
+            '/prices',
         ];
-
-        foreach ($staticPages as $path => $data) {
-            $items[] = [
-                'loc' => self::BASE_URL . $path,
-                'priority' => $data['priority'],
-                'changefreq' => $data['changefreq']
-            ];
+        foreach ($staticPages as $page) {
+            $sitemap->add(Url::create("{$base}{$page}")
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                ->setPriority(0.8));
         }
 
-        // Blog posts
+        // Product pages (weekly, 0.9)
+        $productPages = [
+            '/finance',
+            '/sanaa-cards',
+            '/sanaa-cloud',
+        ];
+        foreach ($productPages as $page) {
+            $sitemap->add(Url::create("{$base}{$page}")
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                ->setPriority(0.9));
+        }
+
+        // Blog index (daily, 0.9)
+        $sitemap->add(Url::create("{$base}/blog")
+            ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+            ->setPriority(0.9));
+
+        // Blog posts (weekly, 0.7)
         try {
-            Blog::published()->latest()->each(function ($blog) use (&$items) {
-                $items[] = [
-                    'loc' => self::BASE_URL . '/blog/' . $blog->slug,
-                    'lastmod' => optional($blog->updated_at)->toAtomString(),
-                    'changefreq' => 'weekly',
-                    'priority' => '0.6',
-                ];
+            Blog::published()->latest()->get()->each(function (Blog $post) use ($sitemap, $base) {
+                $sitemap->add(Url::create("{$base}/blog/{$post->slug}")
+                    ->setLastModificationDate($post->updated_at)
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                    ->setPriority(0.7));
             });
         } catch (\Exception $e) {
-            $this->warn('Could not add blogs to sitemap: ' . $e->getMessage());
+            $this->warn('Could not add blog posts: ' . $e->getMessage());
         }
 
-        // Dynamic finance pages
-        try {
-            FinancePage::published()->each(function ($page) use (&$items) {
-                $items[] = [
-                    'loc' => self::BASE_URL . '/finance/p/' . $page->slug,
-                    'lastmod' => optional($page->updated_at)->toAtomString(),
-                    'changefreq' => 'monthly',
-                    'priority' => '0.5',
-                ];
-            });
-        } catch (\Exception $e) {
-            $this->warn('Could not add finance pages to sitemap: ' . $e->getMessage());
-        }
+        $sitemap->writeToFile(public_path('sitemap.xml'));
+        $this->info('Sitemap generated at public/sitemap.xml');
 
-        $xml = View::make('partials.sitemap-urlset', compact('items'))->render();
-        File::put(public_path('sitemap.xml'), $xml);
-
-        $this->info('Sitemap generated successfully at ' . public_path('sitemap.xml'));
+        return self::SUCCESS;
     }
 }

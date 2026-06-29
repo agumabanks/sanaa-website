@@ -15,7 +15,9 @@
     <title>{{ $title }}</title>
     <meta name="description" content="{{ $metaDescription }}">
     <meta name="keywords" content="Sanaa Finance, Uganda banking, SACCO management, ERP system, mobile money, MTN MoMo, Airtel Money, microfinance, business loans, SMS alerts, WhatsApp alerts, fintech Uganda, payment gateway, loan management, savings, investment clubs">
+    <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ $canonicalUrl }}">
+    @stack('seo')
     <link rel="icon" href="{{ asset('storage/images/sanaa.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('storage/images/sanaa.png') }}">
 
@@ -36,7 +38,18 @@
     <meta name="twitter:description" content="{{ $metaDescription }}">
     <meta name="twitter:image" content="{{ $ogImage }}">
 
-    <link rel="preconnect" href="https://fonts.bunny.net">
+    {{-- Hreflang tags for multilingual SEO --}}
+    <link rel="alternate" hreflang="en" href="{{ str_replace('/finance', '/en/finance', $canonicalUrl) }}" />
+    <link rel="alternate" hreflang="fr" href="{{ str_replace('/finance', '/fr/finance', $canonicalUrl) }}" />
+    <link rel="alternate" hreflang="sw" href="{{ str_replace('/finance', '/sw/finance', $canonicalUrl) }}" />
+    <link rel="alternate" hreflang="x-default" href="{{ $canonicalUrl }}" />
+
+    {{-- Resource Hints for Performance --}}
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.bunny.net">
+    <link rel="dns-prefetch" href="https://www.gstatic.com">
+
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css','resources/js/app.js'])
     <style>

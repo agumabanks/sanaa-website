@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Blog;
+use Illuminate\Support\Str;
 
 class SEOOptimizationService
 {
@@ -81,7 +82,221 @@ class SEOOptimizationService
         return $s;
     }
 
+    public function generateMetadata(Blog $blog, bool $overwrite = false): array
+    {
+        $plainText = $this->extractPlainText($blog->body ?? '');
+        $title = trim((string) $blog->title);
+        $primaryTopic = $this->buildPrimaryTopic($blog, $plainText);
+
+        $metaTitle = $this->buildMetaTitle($blog, $primaryTopic);
+        $metaDescription = $this->buildMetaDescription($blog, $plainText, $primaryTopic);
+        $keywords = $this->buildKeywords($blog, $plainText, $primaryTopic);
+
+        $payload = [];
+
+        if ($overwrite || blank($blog->meta_title)) {
+            $payload['meta_title'] = $metaTitle;
+        }
+
+        if ($overwrite || blank($blog->meta_description)) {
+            $payload['meta_description'] = $metaDescription;
+        }
+
+        if ($overwrite || blank($blog->keywords)) {
+            $payload['keywords'] = $keywords;
+        }
+
+        if ($overwrite || blank($blog->excerpt)) {
+            $payload['excerpt'] = $this->buildExcerpt($blog, $plainText, $primaryTopic, $overwrite);
+        }
+
+        if (($overwrite || blank($blog->reading_time)) && !blank($plainText)) {
+            $payload['reading_time'] = max(1, (int) ceil(str_word_count($plainText) / 200));
+        }
+
+        return $payload;
+    }
+
     // ----- helpers -----
+    private function buildMetaTitle(Blog $blog, string $primaryTopic): string
+    {
+        $title = trim((string) $blog->title);
+        $category = trim((string) optional($blog->category)->name);
+
+        $candidates = array_filter([
+            $title,
+            $title && $category ? "{$title} | {$category} Insights" : null,
+            $title && $primaryTopic ? "{$title} | {$primaryTopic}" : null,
+            $title ? "{$title} | Sanaa" : null,
+        ]);
+
+        foreach ($candidates as $candidate) {
+            $candidate = trim($candidate);
+            if (Str::length($candidate) >= 30 && Str::length($candidate) <= 60) {
+                return $candidate;
+            }
+        }
+
+        return Str::limit($title ?: 'Sanaa Blog', 60, '');
+    }
+
+    private function buildMetaDescription(Blog $blog, string $plainText, string $primaryTopic): string
+    {
+        $excerpt = trim((string) $blog->excerpt);
+        if ($excerpt !== '' && Str::length($excerpt) >= 120 && Str::length($excerpt) <= 160) {
+            return $excerpt;
+        }
+
+        $sentences = preg_split('/(?<=[.!?])\s+/', $plainText, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        $description = '';
+
+        foreach ($sentences as $sentence) {
+            $candidate = trim($description . ' ' . $sentence);
+            if (Str::length($candidate) > 160) {
+                break;
+            }
+            $description = $candidate;
+            if (Str::length($description) >= 130) {
+                break;
+            }
+        }
+
+        if ($description === '') {
+            $description = $plainText;
+        }
+
+        if ($primaryTopic !== '' && !str_contains(strtolower($description), strtolower($primaryTopic))) {
+            $description = trim($primaryTopic . '. ' . ltrim($description, '. '));
+        }
+
+        return $this->finishSentence(Str::limit($description, 160, ''));
+    }
+
+    private function buildKeywords(Blog $blog, string $plainText, string $primaryTopic): string
+    {
+        $keywords = [];
+
+        $titleWords = collect(preg_split('/\s+/', strtolower((string) $blog->title), -1, PREG_SPLIT_NO_EMPTY))
+            ->map(fn ($word) => trim($word, " \t\n\r\0\x0B.,:;!?()[]{}'\""))
+            ->filter(fn ($word) => Str::length($word) > 3);
+
+        foreach ($titleWords as $word) {
+            $keywords[] = Str::headline($word);
+        }
+
+        if ($primaryTopic !== '') {
+            $keywords[] = $primaryTopic;
+        }
+
+        if ($blog->category?->name) {
+            $keywords[] = $blog->category->name;
+        }
+
+        foreach ($blog->tags as $tag) {
+            $keywords[] = $tag->name;
+        }
+
+        foreach ($this->extractKeywordCandidates($plainText) as $candidate) {
+            $keywords[] = $candidate;
+        }
+
+        $keywords[] = 'Sanaa';
+        $keywords[] = 'Sanaa Uganda';
+        $keywords[] = 'Sanaa Blog';
+
+        $normalized = collect($keywords)
+            ->map(fn ($keyword) => trim((string) $keyword))
+            ->filter()
+            ->unique(fn ($keyword) => strtolower($keyword))
+            ->values();
+
+        $result = [];
+        foreach ($normalized as $keyword) {
+            $candidate = implode(', ', array_merge($result, [$keyword]));
+            if (Str::length($candidate) > 255) {
+                break;
+            }
+            $result[] = $keyword;
+        }
+
+        return implode(', ', $result);
+    }
+
+    private function buildExcerpt(Blog $blog, string $plainText, string $primaryTopic, bool $overwrite = false): string
+    {
+        $excerpt = trim((string) $blog->excerpt);
+        if (! $overwrite && $excerpt !== '') {
+            return Str::limit($excerpt, 500, '');
+        }
+
+        $description = $this->buildMetaDescription($blog, $plainText, $primaryTopic);
+        return Str::limit($description, 500, '');
+    }
+
+    private function buildPrimaryTopic(Blog $blog, string $plainText): string
+    {
+        foreach ([
+            trim((string) optional($blog->tags->first())->name),
+            trim((string) optional($blog->category)->name),
+        ] as $candidate) {
+            if ($candidate !== '') {
+                return $candidate;
+            }
+        }
+
+        return $this->extractKeywordCandidates($plainText)[0] ?? '';
+    }
+
+    private function extractPlainText(string $content): string
+    {
+        $text = preg_replace('/<[^>]+>/', ' ', $content);
+        $text = html_entity_decode((string) $text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        return trim((string) preg_replace('/\s+/', ' ', $text));
+    }
+
+    private function extractKeywordCandidates(string $plainText): array
+    {
+        $words = str_word_count(strtolower($plainText), 1);
+        $stopWords = [
+            'the','and','or','but','with','from','this','that','have','will','your','about','into','their','there',
+            'they','them','were','been','being','also','than','then','when','what','where','which','while','because',
+            'over','under','after','before','between','through','across','could','should','would','these','those',
+            'using','used','use','into','onto','such','only','more','most','some','many','each','much','very',
+            'here','just','like','make','made','does','doesn','dont','isnt','cant','blog','sanaa'
+        ];
+
+        $counts = [];
+        foreach ($words as $word) {
+            $word = trim($word);
+            if (Str::length($word) < 4 || in_array($word, $stopWords, true) || is_numeric($word)) {
+                continue;
+            }
+            $counts[$word] = ($counts[$word] ?? 0) + 1;
+        }
+
+        arsort($counts);
+
+        return collect(array_keys($counts))
+            ->take(8)
+            ->map(fn ($word) => Str::headline($word))
+            ->values()
+            ->all();
+    }
+
+    private function finishSentence(string $text): string
+    {
+        $text = trim($text);
+        if ($text === '') {
+            return '';
+        }
+
+        if (!preg_match('/[.!?]$/', $text)) {
+            $text .= '.';
+        }
+
+        return $text;
+    }
+
     private function getAvgSyllables(string $content): float
     {
         $words = str_word_count(strtolower(strip_tags($content)), 1);
@@ -138,4 +353,3 @@ class SEOOptimizationService
         return $score;
     }
 }
-

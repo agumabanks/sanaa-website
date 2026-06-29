@@ -2,6 +2,19 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('partials.seo')
+        @stack('seo')
+
+        {{-- Resource Hints for Performance --}}
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+        <link rel="dns-prefetch" href="https://www.gstatic.com">
+
+        {{-- Preload critical fonts --}}
+        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;700&display=swap"></noscript>
 
  <style>
     /* Ultra-premium Swiper customizations */
@@ -9,24 +22,24 @@
       padding: 0 80px;
       overflow: visible;
     }
-    
+
     .blog-swiper .swiper-slide {
       transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
       transform: scale(0.92) translateY(12px);
       opacity: 0.6;
     }
-    
+
     .blog-swiper .swiper-slide-active {
       transform: scale(1) translateY(0);
       opacity: 1;
     }
-    
+
     .blog-swiper .swiper-slide-next,
     .blog-swiper .swiper-slide-prev {
       transform: scale(0.96) translateY(6px);
       opacity: 0.8;
     }
-    
+
     /* Perfect line clamp */
     .line-clamp-3 {
       display: -webkit-box;
@@ -34,35 +47,35 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    
+
     /* Ultra-smooth scrolling */
     .swiper-wrapper {
       transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
     }
-    
+
     .swiper-wrapper::-webkit-scrollbar {
       display: none;
     }
-    
+
     /* Premium focus states with perfect radius */
     *:focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
       border-radius: 16px;
     }
-    
+
     /* Perfect responsive behavior */
     @media (max-width: 1024px) {
       .blog-swiper {
         padding: 0 60px;
       }
     }
-    
+
     @media (max-width: 768px) {
       .blog-swiper {
         padding: 0 24px;
       }
-      
+
       .blog-swiper-button-prev,
       .blog-swiper-button-next {
         width: 48px;
@@ -70,13 +83,13 @@
         left: 12px;
         right: 12px;
       }
-      
+
       .blog-swiper-button-next {
         right: 12px;
         left: auto;
       }
     }
-    
+
     @media (max-width: 640px) {
       .blog-swiper-button-prev,
       .blog-swiper-button-next {
@@ -409,7 +422,7 @@
   .product-card .card:hover {
     transform: translateY(-5px);
   }
-  
+
   .modal-dialog {
     max-width: 700px;
   }
@@ -419,11 +432,11 @@
   .product-price {
     margin-top: 15px;
   }
-  
+
   .modal-body .row {
     flex-direction: column;
   }
-  
+
   .product-slider, #modalSingleImage {
     margin-bottom: 25px;
   }
@@ -434,25 +447,25 @@
     padding-left: 20px;
     padding-right: 20px;
   }
-  
+
   .btn-primary.btn-lg {
     font-size: 0.95rem;
     padding: 0.375rem 1rem;
   }
-  
+
   .modal-content {
     border-radius: 10px;
   }
-  
+
   .modal-footer {
     flex-direction: column;
   }
-  
+
   .modal-footer .col-md-8,
   .modal-footer .col-md-4 {
     text-align: center !important;
   }
-  
+
   .modal-footer .btn {
     margin-top: 10px;
   }
@@ -464,20 +477,20 @@
         .dropdown-content {
             transition: all 0.2s ease-out;
         }
-        
+
         .dropdown-content.hidden {
             opacity: 0;
             transform: translateY(10px);
             pointer-events: none;
         }
-        
+
         /* Mobile menu animations */
         .mobile-menu {
             transition: max-height 0.3s ease-out;
             max-height: 0;
             overflow: hidden;
         }
-        
+
         .mobile-menu.active {
             max-height: 500px;
         }
@@ -489,7 +502,7 @@
             transition: opacity 0.2s ease-out;
             pointer-events: none;
         }
-        
+
         .overlay.active {
             opacity: 1;
             pointer-events: auto;
@@ -546,7 +559,7 @@
 
 
 
-        
+
 		<!-- Vendor CSS -->
 		<link rel="stylesheet" href="{{ asset('storage/vendor/bootstrap/css/bootstrap.min.css') }}">
 		<link rel="stylesheet" href="{{ asset('storage/vendor/fontawesome-free/css/all.min.css') }}">
@@ -555,7 +568,7 @@
 		<link rel="stylesheet" href="{{ asset('storage/vendor/owl.carousel/assets/owl.carousel.min.css') }}">
 		<link rel="stylesheet" href="{{ asset('storage/vendor/owl.carousel/assets/owl.theme.default.min.css') }}">
 		<link rel="stylesheet" href="{{ asset('storage/vendor/magnific-popup/magnific-popup.min.css') }}">
-       
+
        	<link id="skinCSS" rel="stylesheet" href="{{ asset('storage/css/skins/default.css') }}">
 
         <!-- Mobile Metas -->
@@ -567,7 +580,6 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
 
 
         <!-- Styles / Scripts -->
@@ -595,7 +607,7 @@
     @else
         <x-header />
         <!-- Add padding to the content below to prevent overlap -->
-        <div style="padding-top: 64px;"></div>
+        <div class="pt-24 md:pt-28"></div>
     @endif
     <!-- Main Content -->
     <main>
@@ -603,7 +615,7 @@
     </main>
 
 
-    
+
     <!-- Footer -->
     @include('components.footer')
 
@@ -630,7 +642,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
-	
+
     <script>
         // Dropdown functionality
         document.querySelectorAll('[data-dropdown]').forEach(dropdown => {
@@ -665,7 +677,6 @@ document.addEventListener('DOMContentLoaded', function() {
     </script>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
     <script>
       // Ensure clicking the header logo always reloads/navigates home

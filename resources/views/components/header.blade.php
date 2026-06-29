@@ -203,11 +203,14 @@
             <div class="hidden lg:flex items-center gap-2">
                 <!-- Language Selector -->
                 <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                    @php
+                        $currentLocale = app()->getLocale();
+                        $localeRedirect = url()->full();
+                    @endphp
                     <button
                         class="flex items-center gap-1.5 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/[0.05] transition-all duration-200"
                         @click="open = !open"
                     >
-                        @php $currentLocale = session('locale', config('app.locale', 'en')); @endphp
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
                         </svg>
@@ -226,15 +229,14 @@
                         class="absolute top-full right-0 mt-2 w-40 bg-[#0a0a0a] border border-white/[0.08] rounded-xl shadow-xl overflow-hidden py-1"
                         x-cloak
                     >
-                        @php $currentLocale = session('locale', config('app.locale', 'en')); @endphp
-                        <a href="{{ route('locale.set', 'en') }}" class="flex items-center gap-3 px-4 py-2.5 text-[13px] {{ $currentLocale === 'en' ? 'text-emerald-400 bg-white/[0.03]' : 'text-gray-400 hover:text-white hover:bg-white/[0.03]' }} transition-colors">
-                            <span>🇺🇸</span> English
+                        <a href="{{ route('locale.set', ['locale' => 'en', 'redirect' => $localeRedirect]) }}" class="flex items-center gap-3 px-4 py-2.5 text-[13px] {{ $currentLocale === 'en' ? 'text-emerald-400 bg-white/[0.03]' : 'text-gray-400 hover:text-white hover:bg-white/[0.03]' }} transition-colors">
+                            <span>🇺🇸</span> {{ __('messages.lang.en') }}
                         </a>
-                        <a href="{{ route('locale.set', 'fr') }}" class="flex items-center gap-3 px-4 py-2.5 text-[13px] {{ $currentLocale === 'fr' ? 'text-emerald-400 bg-white/[0.03]' : 'text-gray-400 hover:text-white hover:bg-white/[0.03]' }} transition-colors">
-                            <span>🇫🇷</span> French
+                        <a href="{{ route('locale.set', ['locale' => 'fr', 'redirect' => $localeRedirect]) }}" class="flex items-center gap-3 px-4 py-2.5 text-[13px] {{ $currentLocale === 'fr' ? 'text-emerald-400 bg-white/[0.03]' : 'text-gray-400 hover:text-white hover:bg-white/[0.03]' }} transition-colors">
+                            <span>🇫🇷</span> {{ __('messages.lang.fr') }}
                         </a>
-                        <a href="{{ route('locale.set', 'sw') }}" class="flex items-center gap-3 px-4 py-2.5 text-[13px] {{ $currentLocale === 'sw' ? 'text-emerald-400 bg-white/[0.03]' : 'text-gray-400 hover:text-white hover:bg-white/[0.03]' }} transition-colors">
-                            <span>🇺🇬</span> Swahili
+                        <a href="{{ route('locale.set', ['locale' => 'sw', 'redirect' => $localeRedirect]) }}" class="flex items-center gap-3 px-4 py-2.5 text-[13px] {{ $currentLocale === 'sw' ? 'text-emerald-400 bg-white/[0.03]' : 'text-gray-400 hover:text-white hover:bg-white/[0.03]' }} transition-colors">
+                            <span>🇺🇬</span> {{ __('messages.lang.sw') }}
                         </a>
                     </div>
                 </div>
